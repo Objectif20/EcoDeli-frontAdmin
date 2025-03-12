@@ -20,7 +20,7 @@ COPY . .
 RUN npm run build
 
 # Étape 8 : Exposer le port 80 pour l'application
-EXPOSE 80
+EXPOSE 5173
 
 # Étape 9 : Lancer un serveur statique pour servir l'application
-CMD ["serve", "-s", "dist", "-l", "80"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
