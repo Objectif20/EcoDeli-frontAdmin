@@ -1,9 +1,12 @@
+import AppRoutes from "./routes/routes"
+import './index.css'
+
 function App() {
 
   return (
 
     <>  
-    <h1>Bienvenue sur EcoDeli !</h1>  
+    <AppRoutes /> 
     </>
   )
 }

@@ -1,0 +1,62 @@
+import axios from "axios";
+import { store } from "../redux/store";
+import { login, logout } from "../redux/slices/authSlice";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+const publicEndpoints = ["/admin/auth/2fa/login"];
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const state = store.getState();
+    const accessToken = state.auth.accessToken;
+
+    if (accessToken && config.url && !publicEndpoints.includes(config.url)) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry && !publicEndpoints.includes(originalRequest.url)) {
+      originalRequest._retry = true;
+
+      try {
+        const { data } = await axios.get(`${API_BASE_URL}/admin/auth/refresh`, {
+          withCredentials: true,
+        });
+
+        store.dispatch(login({
+          accessToken: data.accessToken,
+          twoFactorRequired: false
+        }));
+
+        axiosInstance.defaults.headers.Authorization = `Bearer ${data.accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        store.dispatch(logout());
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;

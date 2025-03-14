@@ -1,0 +1,26 @@
+{
+    "pages" : {
+      "connexion" : {
+        "titre" : "Connexion",
+        "soustitre" : "Veuillez entre votre email ainsi que votre mot de passe pour vous connecter.",
+        "email" : "Email",
+        "placeholderEmail" : "Entrez votre email",
+        "motdepasse" : "Mot de passe",
+        "placeholderMotdepasse" : "Entrez votre mot de passe",
+        "connexion" : "Connexion",
+        "chargement" : "Chargement...",
+        "otp" : "Code de vérification",
+        "otpSousTitre" : "La double authentification est activée sur votre compte, veuillez saisir le code OTP présent dans votre authentificateur.",
+        "otpLabel" : "Code OTP",
+        "valider" : "Valider",
+        "erreurOtp" : "Votre code OTP est invalide"
+      },
+      "erreurs" : {
+        "404" : {
+          "titre" : "Erreur 404",
+          "message" : "La page que vous cherchez n'existe pas.",
+          "bouton" : "Revenir en arrière"
+        }
+      }
+    }
+}
