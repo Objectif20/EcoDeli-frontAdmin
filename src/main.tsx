@@ -3,12 +3,15 @@ import { Provider } from 'react-redux';
 import App from './App'; 
 import {store} from './redux/store'; 
 import './i18n';
+import { ThemeProvider } from './components/theme-provider';
 
 const rootElement = document.getElementById('root')!;
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   <Provider store={store}>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
     <App />
+    </ThemeProvider>
   </Provider>
 );

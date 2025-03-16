@@ -1,12 +1,38 @@
-// src/api/auth.api.ts
 import axiosInstance from "./axiosInstance";
 import { store } from "../redux/store";
 import { login, logout } from "../redux/slices/authSlice";
 
 interface LoginResponse {
-    accessToken: string | null;
-    two_factor_required?: boolean;
+  access_token: string | null;
+  two_factor_required?: boolean;
+}
+
+export const getAccessToken = async () => {
+  const currentAccessToken = store.getState().auth.accessToken;
+
+  if (currentAccessToken) {
+    return { accessToken: currentAccessToken };
   }
+
+  try {
+    const response = await axiosInstance.post<LoginResponse>(
+      "/admin/auth/refresh", 
+      {}, 
+      { withCredentials: true } 
+    );
+
+    if (response.data.access_token) {
+      store.dispatch(login({ accessToken: response.data.access_token, twoFactorRequired: false }));
+      return { accessToken: response.data.access_token };
+    }
+
+    throw new Error("Échec du rafraîchissement du token");
+  } catch (error) {
+    store.dispatch(logout()); 
+    console.error("Erreur lors du rafraîchissement du token:", error);
+    return { error: "Session expirée, veuillez vous reconnecter." };
+  }
+};
 
 export const loginAdmin = async (email: string, password: string) => {
   try {
@@ -14,13 +40,14 @@ export const loginAdmin = async (email: string, password: string) => {
 
     if (response.data.two_factor_required) {
       store.dispatch(login({ accessToken: null, twoFactorRequired: true }));
-      return { twoFactorRequired: true };
+      return { twoFactorRequired: true };  
     } else {
-      const { accessToken } = response.data;
-      store.dispatch(login({ accessToken, twoFactorRequired: false }));
-      return { accessToken };
+      const { access_token } = response.data;  
+      store.dispatch(login({ accessToken: access_token, twoFactorRequired: false }));
+      return { accessToken: access_token }; 
     }
   } catch (error) {
+    console.error("Erreur de connexion:", error);
     throw new Error("Erreur de connexion");
   }
 };
@@ -28,9 +55,9 @@ export const loginAdmin = async (email: string, password: string) => {
 export const loginAdminA2F = async (email: string, password: string, code: string) => {
   try {
     const response = await axiosInstance.post("/admin/auth/2fa/login", { email, password, code });
-    
+
     if (response && response.data && response.data.access_token) {
-      return { accessToken: response.data.access_token }; 
+      return { accessToken: response.data.access_token };
     } else {
       throw new Error("Access token manquant dans la réponse de l'API");
     }
@@ -42,18 +69,25 @@ export const loginAdminA2F = async (email: string, password: string, code: strin
 
 export const refreshAccessToken = async () => {
   try {
+    const currentAccessToken = store.getState().auth.accessToken;
+
+    if (!currentAccessToken) {
+      throw new Error("Aucun token d'accès disponible");
+    }
+
     const response = await axiosInstance.post<LoginResponse>("/admin/auth/refresh", {
-      token: store.getState().auth.accessToken,
+      token: currentAccessToken,
     });
 
-    if (response.data.accessToken) {
-      store.dispatch(login({ accessToken: response.data.accessToken, twoFactorRequired: false }));
-      return { accessToken: response.data.accessToken };
+    if (response.data.access_token) {
+      store.dispatch(login({ accessToken: response.data.access_token, twoFactorRequired: false }));
+      return { accessToken: response.data.access_token };
     }
 
     throw new Error("Échec du rafraîchissement du token");
   } catch (error) {
     store.dispatch(logout());
+    console.error("Erreur lors du rafraîchissement du token:", error);
     return { error: "Session expirée, veuillez vous reconnecter." };
   }
 };
@@ -61,7 +95,7 @@ export const refreshAccessToken = async () => {
 export const logoutAdmin = async () => {
   try {
     await axiosInstance.post("/admin/auth/logout");
-    store.dispatch(logout());
+    store.dispatch(logout());  
   } catch (error) {
     console.error("Erreur lors de la déconnexion", error);
   }
@@ -72,6 +106,7 @@ export const enableA2F = async (adminId: string) => {
     const response = await axiosInstance.post("/admin/auth/2fa/enable", { adminId });
     return response.data; 
   } catch (error) {
+    console.error("Erreur lors de l'activation de la double authentification", error);
     throw new Error("Erreur lors de l'activation de la double authentification");
   }
 };
@@ -79,8 +114,9 @@ export const enableA2F = async (adminId: string) => {
 export const disableA2F = async (adminId: string, code: string) => {
   try {
     const response = await axiosInstance.post("/admin/auth/2fa/disable", { adminId, code });
-    return response.data; 
+    return response.data;  
   } catch (error) {
+    console.error("Erreur lors de la désactivation de la double authentification", error);
     throw new Error("Erreur lors de la désactivation de la double authentification");
   }
 };
@@ -90,6 +126,7 @@ export const validateA2F = async (adminId: string, code: string) => {
     const response = await axiosInstance.post("/admin/auth/2fa/validate", { adminId, code });
     return response.data; 
   } catch (error) {
+    console.error("Erreur lors de la validation 2FA", error);
     throw new Error("Erreur lors de la validation 2FA");
   }
 };

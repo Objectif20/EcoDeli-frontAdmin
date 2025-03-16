@@ -7,7 +7,7 @@ import { login } from "@/redux/slices/authSlice";
 import auth1 from "@/assets/illustrations/auth1.svg";
 import otpSvg from "@/assets/illustrations/otp.svg";
 import logo from "@/assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   InputOTP,
@@ -28,6 +28,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string>("");
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +42,10 @@ export default function LoginPage() {
         setIs2faRequired(true);
       } else {
         dispatch(login({ accessToken: res.accessToken ?? null, twoFactorRequired: false }));
+        if (res.accessToken) {
+          navigate("/office/dashboard");
+          }
+
       }
     } catch (err) {
       setError("Erreur de connexion");
