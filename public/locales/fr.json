@@ -21,6 +21,51 @@
           "message" : "La page que vous cherchez n'existe pas.",
           "bouton" : "Revenir en arrière"
         }
+      },
+      "parametres" : {
+        "breadcrumb" : {
+          "accueil" : "Accueil",
+          "parametres" : "Paramètres"
+        },
+        "titre" : "Paramètres",
+        "sousTitre" : "Personnalisez votre expérience EcoDeli.",
+        "imageAlt" : "Image de profil",
+        "imageAction" : "Changer l'image",
+        "imageUpload" : "Télécharger une image",
+        "champNom" : "Nom",
+        "placeholderNom" : "Entrez votre nom",
+        "nomTailleMin" : "Le nom doit contenir au moins 2 caractères",
+        "nomTailleMax" : "Le nom doit contenir au maximum 255 caractères",
+        "champPrenom" : "Prénom",
+        "placeholderPrenom" : "Entrez votre prénom",
+        "prenomTailleMin" : "Le prénom doit contenir au moins 2 caractères",
+        "prenomTailleMax" : "Le prénom doit contenir au maximum 255 caractères",
+        "champEmail" : "Email",
+        "placeholderEmail" : "Entrez votre email",
+        "emailFormat" : "L'email doit être au format valide",
+        "chargement" : "Chargement...",
+        "sauvegarder" : "Sauvegarder",
+        "reinitialiser" : "Réinitialiser le mot de passe",
+        "reinitialiserMessage" : "Un email de réinitialisation de mot de passe vous sera envoyé.",
+        "valider" : "Valider",
+        "annuler" : "Annuler"
+        
+        
+
+      },
+      "ticket" : {
+        "colonnes" : {
+          "pending" : "En attente",
+          "inProgress" : "En cours",
+          "done" : "Terminé"
+        },
+        "priorite" : {
+          "haute" : "Haute",
+          "moyenne" : "Moyenne",
+          "basse" : "Basse"
+        },
+        "assigne" : "Assigné à :"
+        
       }
     },
     "sidebar" : {

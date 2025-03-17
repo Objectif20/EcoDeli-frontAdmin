@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthRoute from "./authRoutes";
 import NotFoundPage from "@/pages/error/404";
 import PrivateRoute from "@/components/privateRoutes";
@@ -11,10 +11,10 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/auth/*" element={<AuthRoute />} />
 
-        <Route path="/" element={<h1 className="mt-2 text-red">Hello</h1>} />
+        <Route path="/" element={<Navigate to="/auth/login" />} />
 
         <Route element={<PrivateRoute />}>
-            <Route path="/office/*" element={<OfficeRoute />} />
+          <Route path="/office/*" element={<OfficeRoute />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

@@ -97,8 +97,10 @@ export function NavUser({
                 {t("sidebar.main.menuUser.profil")}
               </DropdownMenuItem>
               <DropdownMenuItem>
+                <Link to="/office/settings" className="flex items-center gap-2">
                 <Settings />
                 {t("sidebar.main.menuUser.parametres")}
+              </Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleTheme} className="flex items-center gap-2">
               {theme === "dark" ? <Sun /> : <Moon />}
