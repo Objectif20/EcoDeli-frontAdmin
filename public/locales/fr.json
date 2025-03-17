@@ -22,5 +22,56 @@
           "bouton" : "Revenir en arrière"
         }
       }
+    },
+    "sidebar" : {
+      "header" : {
+        "titre" : "EcoDeli",
+        "role" : "Administrateur"
+      },
+      "main" : {
+        "titre" : "Gestion EcoDeli",
+        "mail" : "Mail",
+        "ticket" : "Ticket",
+        "signalement" : "Signalement",
+        "contrat" : {
+          "titre" : "Contrat",
+          "contratTransporteur" : "Transporteur",
+          "contratPrestataire" : "Prestataire",
+          "contratCommercant" : "Commerçant"
+        },
+        "general" : {
+          "titre" : "Gestion générale",
+          "langue" : "Langues",
+          "categorie" : "Catégories",
+          "compteAdmin" : "Administrateurs"
+        },
+        "finance" : {
+          "titre" : "Gestion financière",
+          "abonnement" : {
+            "titre" : "Abonnements",
+            "listeAbonne" : "Liste des abonnés",
+            "formuleAbonnement" : "Formules d'abonnement"
+          },
+          "transaction" : {
+            "titre" : "Transactions",
+            "historiqueTransaction" : "Historique",
+            "stripe" : "Gestion de Stripe"
+          }
+        },
+        "profil" : {
+          "titre" : "Gestion des profils",
+          "listeParticulier" : "Liste des particuliers",
+          "listeTransporteur" : "Liste des transporteurs",
+          "listePrestataire" : "Liste des prestataires",
+          "listeCommercant" : "Liste des commerçants"
+        },
+        "menuUser" : {
+          "profil" : "Profil",
+          "deconnexion" : "Déconnexion",
+          "parametres" : "Paramètres",
+          "light" : "Mode clair",
+          "dark" : "Mode sombre"
+        }
+      }
     }
 }

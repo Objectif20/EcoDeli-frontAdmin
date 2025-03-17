@@ -1,19 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Admin {
-  id: number;
-  firstName: string;
-  lastName: string;
+  admin_id: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  langue: string;
+  photo: string | null;
+  active: boolean;
+  super_admin: boolean;
+  language: string;  
+  iso_code: string; 
+  roles: string[];
 }
 
 export interface AdminState {
   admin: Admin | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: AdminState = {
   admin: null,
+  isLoading: false,
+  error: null,
 };
 
 const adminSlice = createSlice({
@@ -23,13 +32,19 @@ const adminSlice = createSlice({
     setAdmin: (state, action: PayloadAction<Admin | null>) => {
       state.admin = action.payload;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
     updateLang: (state, action: PayloadAction<string>) => {
       if (state.admin) {
-        state.admin.langue = action.payload;
+        state.admin.language = action.payload;
       }
     },
   },
 });
 
-export const { setAdmin, updateLang } = adminSlice.actions;
+export const { setAdmin, setLoading, setError, updateLang } = adminSlice.actions;
 export default adminSlice.reducer;
