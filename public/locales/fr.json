@@ -52,6 +52,20 @@
         
         
 
+      },
+      "ticket" : {
+        "colonnes" : {
+          "pending" : "En attente",
+          "inProgress" : "En cours",
+          "done" : "Terminé"
+        },
+        "priorite" : {
+          "haute" : "Haute",
+          "moyenne" : "Moyenne",
+          "basse" : "Basse"
+        },
+        "assigne" : "Assigné à :"
+        
       }
     },
     "sidebar" : {
