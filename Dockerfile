@@ -1,7 +1,7 @@
 # Étape 1 : Utiliser l'image Node 22 officielle
 FROM node:22
 
-# Étape 2 : Définir le répertoire de travail dans le conteneur
+# Étape 2 : Définir le répertoire de travail
 WORKDIR /app
 
 # Étape 3 : Installer npm 10 et serve
@@ -13,14 +13,20 @@ COPY package*.json ./
 # Étape 5 : Installer les dépendances
 RUN npm install
 
-# Étape 6 : Copier tout le reste du code source de l'application
-COPY . .
+# Étape 6 : Copier tout le code source
+COPY . . 
 
-# Étape 7 : Construire l'application React pour la production
+# Étape 7 : Récupérer les variables passées en argument du build
+ARG VITE_API_BASE_URL
+
+# Étape 8 : Définir ces variables dans l'environnement pour Vite
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
+# Étape 9 : Construire l'application React
 RUN npm run build
 
-# Étape 8 : Exposer le port 80 pour l'application
+# Étape 10 : Exposer le port 5173
 EXPOSE 5173
 
-# Étape 9 : Lancer un serveur statique pour servir l'application
+# Étape 11 : Lancer un serveur statique
 CMD ["serve", "-s", "dist", "-l", "5173"]
