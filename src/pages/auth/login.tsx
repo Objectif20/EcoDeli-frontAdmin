@@ -65,6 +65,7 @@ export default function LoginPage() {
       if (res && res.accessToken) {
         dispatch(login({ accessToken: res.accessToken, twoFactorRequired: false }));
         setIs2faRequired(false);
+        navigate("/office/dashboard");
       } else {
         throw new Error("Le token d'accès est manquant.");
       }
@@ -114,6 +115,12 @@ export default function LoginPage() {
                       <Label htmlFor="password">
                         {t("pages.connexion.motdepasse")}
                       </Label>
+                      <Link
+                          to="/auth/forgot-password"
+                          className="ml-auto text-sm underline-offset-4 hover:underline"
+                        >
+                          Mot de passe oublié ?
+                        </Link>
                     </div>
                     <Input
                       id="password"

@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Import de useNavigate
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { setBreadcrumb } from '@/redux/slices/breadcrumbSlice';
 import { TicketService } from '@/api/ticket.api';
 import { Badge } from '@/components/ui/badge';
 import * as Kanban from '@/components/ui/kanban';
 import { useTranslation } from 'react-i18next';
+import { RootState } from '@/redux/store';
+import { Button } from '@/components/ui/button';
 
 export interface Admin {
     last_name: string;
@@ -48,7 +50,7 @@ const useTickets = () => {
 const TicketBoard: React.FC = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const navigate = useNavigate(); // On initialise useNavigate
+    const navigate = useNavigate();
 
     const COLUMN_TITLES: Record<string, string> = {
         pending: t("pages.ticket.colonnes.pending"),
@@ -58,10 +60,14 @@ const TicketBoard: React.FC = () => {
 
     useEffect(() => {
         dispatch(setBreadcrumb({
-            segments: ['Accueil', "Ticket"],
+            segments: [t("pages.ticket.breadcrumb.accueil"), t("pages.ticket.breadcrumb.ticket")],
             links: ['/office/dashboard'],
         }));
     }, [dispatch]);
+
+    const admin = useSelector((state: RootState) => state.admin.admin);
+
+    const isTicketManager = admin?.roles.includes('TICKET');
 
     const { tickets, loading, error } = useTickets();
     const [columns, setColumns] = useState<Record<string, Ticket[]>>({
@@ -73,20 +79,67 @@ const TicketBoard: React.FC = () => {
     useEffect(() => {
         const categorizedTickets = {
             pending: tickets.filter(ticket => ticket.state === 'Pending'),
-            inProgress: tickets.filter(ticket => ticket.state === 'In Progress'),
+            inProgress: tickets.filter(ticket => ticket.state === 'Progress'),
             done: tickets.filter(ticket => ticket.state === 'Done'),
         };
         setColumns(categorizedTickets);
     }, [tickets]);
+
+    const handleColumnChange = async (newColumns: Record<string, Ticket[]>) => {
+        const movedTicket = findMovedTicket(columns, newColumns);
+
+        if (movedTicket) {
+            const newState = Object.keys(newColumns).find(column =>
+                newColumns[column].some(ticket => ticket.ticket_id === movedTicket.ticket_id)
+            ) as keyof typeof COLUMN_TITLES;
+
+            if (newState && newState !== movedTicket.state) {
+                const stateMapping: Record<keyof typeof COLUMN_TITLES, string> = {
+                    pending: 'Pending',
+                    inProgress: 'Progress',
+                    done: 'Done'
+                };
+
+                await TicketService.updateTicket(movedTicket.ticket_id!, { state: stateMapping[newState] });
+            }
+        }
+
+        setColumns(newColumns);
+    };
+
+    const findMovedTicket = (oldColumns: Record<string, Ticket[]>, newColumns: Record<string, Ticket[]>) => {
+        for (const column in oldColumns) {
+            const oldTickets = oldColumns[column];
+            const newTickets = newColumns[column];
+
+            const removedTicket = oldTickets.find(ticket =>
+                !newTickets.some(newTicket => newTicket.ticket_id === ticket.ticket_id)
+            );
+
+            if (removedTicket) {
+                return removedTicket;
+            }
+        }
+        return null;
+    };
 
     if (loading) return <p>Chargement...</p>;
     if (error) return <p>Erreur: {error}</p>;
 
     return (
         <div className="w-full">
+            <h1 className="text-2xl font-semibold mb-4">
+                {t("pages.ticket.titre")}
+            </h1>
+
+            {isTicketManager && (
+                <><Button onClick={() => navigate("/office/ticket/create")}>{t("pages.ticket.action")}</Button></>
+            )
+
+            }
             <Kanban.Root
                 value={columns}
-                onValueChange={setColumns}
+                onValueChange={handleColumnChange}
                 getItemValue={(item) => item.ticket_id || ''}
                 autoScroll={false}
             >
@@ -98,7 +151,7 @@ const TicketBoard: React.FC = () => {
                         >
                             <div className="flex items-center justify-between mb-2">
                                 <span className="font-semibold text-sm">
-                                    {COLUMN_TITLES[columnValue]}
+                                    {COLUMN_TITLES[columnValue as keyof typeof COLUMN_TITLES]}
                                 </span>
                                 <Badge variant="secondary" className="rounded-sm">
                                     {tickets.length}
@@ -142,7 +195,6 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket, navigate }) => {
         if (clickTimeoutRef.current) {
             clearTimeout(clickTimeoutRef.current);
             if (!isDragging) {
-                // Redirection rapide vers l'URL du ticket
                 if (ticket.ticket_id) {
                     navigate(`/office/ticket/${ticket.ticket_id}`);
                 }
@@ -169,7 +221,8 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket, navigate }) => {
                         }
                         className="h-5 rounded-sm px-1.5 text-[11px] capitalize"
                     >
-                        {ticket.priority}
+                        {ticket.priority === 'High' ? t("pages.ticket.priorite.haute") :
+                            ticket.priority === 'Medium' ? t("pages.ticket.priorite.moyenne") : t("pages.ticket.priorite.basse")}
                     </Badge>
                 </div>
                 {ticket.adminAttribute && (
@@ -177,9 +230,6 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket, navigate }) => {
                         {t("pages.ticket.assigne")} {ticket.adminAttribute.first_name} {ticket.adminAttribute.last_name}
                     </div>
                 )}
-                <div className="text-xs text-muted-foreground">
-                    {ticket.description}
-                </div>
             </div>
         </div>
     );

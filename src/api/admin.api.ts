@@ -2,6 +2,16 @@ import { AppDispatch } from "../redux/store";
 import { setAdmin, setLoading, setError, Admin } from "./../redux/slices/adminSlice";
 import axiosInstance from "./axiosInstance";  
 
+interface AdminData {
+  admin_id : string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  photo: string | null;
+  active: boolean;
+
+}
+
 
 export const getAdminData = () => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true)); 
@@ -54,6 +64,15 @@ export const updateAdminData = (data: Partial<Admin>, admin_id : string, file?: 
   }
 };
 
+export const getAllAdmins = async (): Promise<AdminData[] | null> => {
+  try {
+    const response = await axiosInstance.get(`/admin/profile`);
+    return response.data as AdminData[];
+  } catch (error) {
+    console.error("Erreur lors de la récupération des admins:", error);
+    return null;
+  }
+};
 
 export const newPassword = () => async () => {
   try {

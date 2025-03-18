@@ -130,3 +130,36 @@ export const validateA2F = async (adminId: string, code: string) => {
     throw new Error("Erreur lors de la validation 2FA");
   }
 };
+
+export const requestPasswordReset = async (email: string) => {
+  try {
+    const response = await axiosInstance.post("/admin/auth/forgotPassword", { email });
+    return response.data; 
+  } catch (error) {
+    console.error("Erreur lors de la demande de réinitialisation de mot de passe", error);
+    throw new Error("Erreur lors de la demande de réinitialisation de mot de passe");
+  }
+};
+
+
+export const newPassword = async (password: string, secretCode : string) => {
+
+  try {
+    const response = await axiosInstance.patch("/admin/auth/password", { password, secretCode });
+    return response.data; 
+  } catch (error) {
+    console.error("Erreur lors de la réinitialisation du mot de passe", error);
+    throw new Error("Erreur lors de la réinitialisation du mot de passe");
+  }
+}
+
+
+export const newPasswordA2F = async (password: string, code: string, secretCode: string) => {
+  try {
+    const response = await axiosInstance.patch("/admin/auth/2fa/password", { password, code, secretCode });
+    return response.data; 
+  } catch (error) {
+    console.error("Erreur lors de la réinitialisation du mot de passe avec 2FA", error);
+    throw new Error("Erreur lors de la réinitialisation du mot de passe avec 2FA");
+  }
+}
