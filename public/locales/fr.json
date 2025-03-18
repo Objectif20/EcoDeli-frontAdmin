@@ -1,122 +1,266 @@
 {
-    "pages" : {
-      "connexion" : {
-        "titre" : "Connexion",
-        "soustitre" : "Veuillez entre votre email ainsi que votre mot de passe pour vous connecter.",
-        "email" : "Email",
-        "placeholderEmail" : "Entrez votre email",
-        "motdepasse" : "Mot de passe",
-        "placeholderMotdepasse" : "Entrez votre mot de passe",
-        "connexion" : "Connexion",
-        "chargement" : "Chargement...",
-        "otp" : "Code de vérification",
-        "otpSousTitre" : "La double authentification est activée sur votre compte, veuillez saisir le code OTP présent dans votre authentificateur.",
-        "otpLabel" : "Code OTP",
-        "valider" : "Valider",
-        "erreurOtp" : "Votre code OTP est invalide"
-      },
-      "erreurs" : {
-        "404" : {
-          "titre" : "Erreur 404",
-          "message" : "La page que vous cherchez n'existe pas.",
-          "bouton" : "Revenir en arrière"
-        }
-      },
-      "parametres" : {
-        "breadcrumb" : {
-          "accueil" : "Accueil",
-          "parametres" : "Paramètres"
-        },
-        "titre" : "Paramètres",
-        "sousTitre" : "Personnalisez votre expérience EcoDeli.",
-        "imageAlt" : "Image de profil",
-        "imageAction" : "Changer l'image",
-        "imageUpload" : "Télécharger une image",
-        "champNom" : "Nom",
-        "placeholderNom" : "Entrez votre nom",
-        "nomTailleMin" : "Le nom doit contenir au moins 2 caractères",
-        "nomTailleMax" : "Le nom doit contenir au maximum 255 caractères",
-        "champPrenom" : "Prénom",
-        "placeholderPrenom" : "Entrez votre prénom",
-        "prenomTailleMin" : "Le prénom doit contenir au moins 2 caractères",
-        "prenomTailleMax" : "Le prénom doit contenir au maximum 255 caractères",
-        "champEmail" : "Email",
-        "placeholderEmail" : "Entrez votre email",
-        "emailFormat" : "L'email doit être au format valide",
-        "chargement" : "Chargement...",
-        "sauvegarder" : "Sauvegarder",
-        "reinitialiser" : "Réinitialiser le mot de passe",
-        "reinitialiserMessage" : "Un email de réinitialisation de mot de passe vous sera envoyé.",
-        "valider" : "Valider",
-        "annuler" : "Annuler"
-        
-        
-
-      },
-      "ticket" : {
-        "colonnes" : {
-          "pending" : "En attente",
-          "inProgress" : "En cours",
-          "done" : "Terminé"
-        },
-        "priorite" : {
-          "haute" : "Haute",
-          "moyenne" : "Moyenne",
-          "basse" : "Basse"
-        },
-        "assigne" : "Assigné à :"
-        
+  "pages": {
+    "connexion": {
+      "titre": "Connexion",
+      "soustitre": "Veuillez entre votre email ainsi que votre mot de passe pour vous connecter.",
+      "email": "Email",
+      "placeholderEmail": "Entrez votre email",
+      "motdepasse": "Mot de passe",
+      "placeholderMotdepasse": "Entrez votre mot de passe",
+      "connexion": "Connexion",
+      "chargement": "Chargement...",
+      "otp": "Code de vérification",
+      "otpSousTitre": "La double authentification est activée sur votre compte, veuillez saisir le code OTP présent dans votre authentificateur.",
+      "otpLabel": "Code OTP",
+      "valider": "Valider",
+      "erreurOtp": "Votre code OTP est invalide"
+    },
+    "erreurs": {
+      "404": {
+        "titre": "Erreur 404",
+        "message": "La page que vous cherchez n'existe pas.",
+        "bouton": "Revenir en arrière"
       }
     },
-    "sidebar" : {
-      "header" : {
-        "titre" : "EcoDeli",
-        "role" : "Administrateur"
+    "parametres": {
+      "breadcrumb": {
+        "accueil": "Accueil",
+        "parametres": "Paramètres"
       },
-      "main" : {
-        "titre" : "Gestion EcoDeli",
-        "mail" : "Mail",
-        "ticket" : "Ticket",
-        "signalement" : "Signalement",
-        "contrat" : {
-          "titre" : "Contrat",
-          "contratTransporteur" : "Transporteur",
-          "contratPrestataire" : "Prestataire",
-          "contratCommercant" : "Commerçant"
+      "titre": "Paramètres",
+      "sousTitre": "Personnalisez votre expérience EcoDeli.",
+      "imageAlt": "Image de profil",
+      "imageAction": "Changer l'image",
+      "imageUpload": "Télécharger une image",
+      "champNom": "Nom",
+      "placeholderNom": "Entrez votre nom",
+      "nomTailleMin": "Le nom doit contenir au moins 2 caractères",
+      "nomTailleMax": "Le nom doit contenir au maximum 255 caractères",
+      "champPrenom": "Prénom",
+      "placeholderPrenom": "Entrez votre prénom",
+      "prenomTailleMin": "Le prénom doit contenir au moins 2 caractères",
+      "prenomTailleMax": "Le prénom doit contenir au maximum 255 caractères",
+      "champEmail": "Email",
+      "placeholderEmail": "Entrez votre email",
+      "emailFormat": "L'email doit être au format valide",
+      "chargement": "Chargement...",
+      "sauvegarder": "Sauvegarder",
+      "reinitialiser": "Réinitialiser le mot de passe",
+      "reinitialiserMessage": "Un email de réinitialisation de mot de passe vous sera envoyé.",
+      "valider": "Valider",
+      "annuler": "Annuler",
+      "a2f": {
+        "titre": "Paramètres de l'administrateur",
+        "sousTitre": "Gérez vos informations personnelles et vos paramètres de sécurité.",
+        "otpActivated": "L'OTP est activé, tout est bon.",
+        "otpNotActivated": "L'OTP n'est pas activé. Voulez-vous l'activer pour plus de sécurité ?",
+        "activateOtp": "Activer l'OTP",
+        "disableOtp": "Désactiver l'OTP",
+        "enterOtp": "Entrez le code OTP pour désactiver l'authentification à deux facteurs.",
+        "scanQrCode": "Scannez le QR code avec votre application d'authentification et entrez le code généré ci-dessous."
+      }
+    },
+    "ticket": {
+      "titre": "Tickets",
+      "action" : "Créer un ticket",
+      "premierEcrit" : "Problème à résoudre...",
+      "titreLabel" : "Titre du ticket",
+      "breadcrumb": {
+        "accueil": "Accueil",
+        "ticket": "Tickets",
+        "creer" : "Créer un ticket"
+      },
+      "colonnes": {
+        "pending": "En attente",
+        "inProgress": "En cours",
+        "done": "Terminé"
+      },
+      "priorite": {
+        "haute": "Haute",
+        "moyenne": "Moyenne",
+        "basse": "Basse"
+      },
+      "assigne": "Assigné à :",
+      "details": {
+        "titre": "Détails du ticket",
+        "erreur" : "Le titre est obligatoire",
+        "wysiwyg": {
+          "titre": "Description",
+          "placeholder": "Entrez la description du ticket"
         },
-        "general" : {
-          "titre" : "Gestion générale",
-          "langue" : "Langues",
-          "categorie" : "Catégories",
-          "compteAdmin" : "Administrateurs"
-        },
-        "finance" : {
-          "titre" : "Gestion financière",
-          "abonnement" : {
-            "titre" : "Abonnements",
-            "listeAbonne" : "Liste des abonnés",
-            "formuleAbonnement" : "Formules d'abonnement"
+        "select" : {
+          "status" : {
+            "label" : "Statut",
+            "placeholder" : "Sélectionnez un statut",
+            "titre" : "Statut",
+            "open" : "Ouvert",
+            "closed" : "Fermé",
+            "erreur" : "Le statut est obligatoire"
+          }, 
+          "priorite" : {
+            "label" : "Priorité",
+            "placeholder" : "Sélectionnez une priorité",
+            "high" : "Haute",
+            "medium" : "Moyenne",
+            "low" : "Basse",
+            "erreur" : "La priorité est obligatoire"
           },
-          "transaction" : {
-            "titre" : "Transactions",
-            "historiqueTransaction" : "Historique",
-            "stripe" : "Gestion de Stripe"
+          "etat" : {
+            "label" : "État",
+            "placeholder" : "Sélectionnez un état",
+            "pending" : "En attente",
+            "progress" : "En cours",
+            "done" : "Terminé",
+            "erreur" : "L'état est obligatoire"
+          },
+          "assigne" : {
+            "label" : "Assigné à",
+            "placeholder" : "Sélectionnez un utilisateur",
+            "erreur" : "L'utilisateur est obligatoire"
           }
         },
-        "profil" : {
-          "titre" : "Gestion des profils",
-          "listeParticulier" : "Liste des particuliers",
-          "listeTransporteur" : "Liste des transporteurs",
-          "listePrestataire" : "Liste des prestataires",
-          "listeCommercant" : "Liste des commerçants"
-        },
-        "menuUser" : {
-          "profil" : "Profil",
-          "deconnexion" : "Déconnexion",
-          "parametres" : "Paramètres",
-          "light" : "Mode clair",
-          "dark" : "Mode sombre"
+        "bouton": {
+          "sauvegarder": "Sauvegarder",
+          "annuler": "Annuler"
         }
       }
     }
+  },
+  "sidebar": {
+    "header": {
+      "titre": "EcoDeli",
+      "role": "Administrateur"
+    },
+    "main": {
+      "titre": "Gestion EcoDeli",
+      "mail": "Mail",
+      "ticket": "Ticket",
+      "signalement": "Signalement",
+      "contrat": {
+        "titre": "Contrat",
+        "contratTransporteur": "Transporteur",
+        "contratPrestataire": "Prestataire",
+        "contratCommercant": "Commerçant"
+      },
+      "general": {
+        "titre": "Gestion générale",
+        "langue": "Langues",
+        "categorie": "Catégories",
+        "compteAdmin": "Administrateurs"
+      },
+      "finance": {
+        "titre": "Gestion financière",
+        "abonnement": {
+          "titre": "Abonnements",
+          "listeAbonne": "Liste des abonnés",
+          "formuleAbonnement": "Formules d'abonnement"
+        },
+        "transaction": {
+          "titre": "Transactions",
+          "historiqueTransaction": "Historique",
+          "stripe": "Gestion de Stripe"
+        }
+      },
+      "profil": {
+        "titre": "Gestion des profils",
+        "listeParticulier": "Liste des particuliers",
+        "listeTransporteur": "Liste des transporteurs",
+        "listePrestataire": "Liste des prestataires",
+        "listeCommercant": "Liste des commerçants"
+      },
+      "menuUser": {
+        "profil": "Profil",
+        "deconnexion": "Déconnexion",
+        "parametres": "Paramètres",
+        "light": "Mode clair",
+        "dark": "Mode sombre"
+      }
+    }
+  },
+  "wysiwyg": {
+    "color": {
+      "titre": "Couleur",
+      "palette1": {
+        "default": "Par défaut",
+        "boldBlue": "Bleu foncé",
+        "boldTeal": "Bleu-vert foncé",
+        "boldGreen": "Vert foncé",
+        "boldOrange": "Orange foncé",
+        "boldRed": "Rouge foncé",
+        "boldPurple": "Violet foncé"
+      },
+      "palette2": {
+        "gray": "Gris",
+        "blue": "Bleu",
+        "teal": "Bleu-vert",
+        "green": "Vert",
+        "orange": "Orange",
+        "red": "Rouge",
+        "purple": "Violet"
+      },
+      "palette3": {
+        "white": "Blanc",
+        "black": "Noir",
+        "blueSubtle": "Bleu subtil",
+        "tealSubtle": "Bleu-vert subtil",
+        "greenSubtle": "Vert subtil",
+        "yellowSubtle": "Jaune subtil",
+        "redSubtle": "Rouge subtil",
+        "purpleSubtle": "Violet subtil"
+      }
+    },
+    "link" : {
+      "titre": "Lien",
+      "ariaLabel": "Insérer un lien",
+      "url" : "URL",
+      "urlPlaceholder" : "Entrez l'URL",
+      "afficherTexte" : "Afficher le texte (optionnel)",
+      "afficherTextePlaceholder" : "Entrez le texte à afficher",
+      "ouvrirNouvelOnglet" : "Ouvrir dans un nouvel onglet",
+      "sauvegarder" : "Sauvegarder",
+      "copier" : "Copier",
+      "copie" : "Copié",
+      "editLink" : "Modifier le lien",
+      "openLinkInNewTab" : "Ouvrir le lien dans un nouvel onglet",
+      "removeLink" : "Supprimer le lien"
+    },
+    "image" : {
+      "titreLienImage" : "Ajouter une image par lien",
+      "ajouter" : "Ajouter ce lien",
+      "uploadFromComputer" : "Télécharger une image depuis votre ordinateur",
+      "titre" : "Image",
+      "choisir" : "Choisir une image",
+      "voir" : "Voir l'image",
+      "download" : "Télécharger l'image",
+      "copyImage" : "Copier l'image",
+      "copyLien" : "Copier le lien",
+      "ouvrirMenu" : "Ouvrir le menu"
+
+    },
+    "lists" : "Listes",
+    "insertElements" : "Insérer des éléments",
+    "format": {
+      "autoFormat": "Texte",
+      "normal": "Normal",
+      "heading1": "Titre 1",
+      "heading2": "Titre 2",
+      "heading3": "Titre 3",
+      "heading4": "Titre 4",
+      "heading5": "Titre 5",
+      "heading6": "Titre 6",
+      "bold": "Gras",
+      "italic": "Italique",
+      "underline": "Souligné",
+      "strikethrough": "Barré",
+      "code": "Code",
+      "clearFormatting": "Auto format",
+      "moreFormatting": "Plus de formatage",
+
+      "listeOrdonnee": "Liste ordonnée",
+      "listeAPuces": "Liste à puces",
+      "blocCode": "Bloc de code",
+      "blocCitation": "Citation",
+      "divider": "Diviseur"
+    }
+  }
 }

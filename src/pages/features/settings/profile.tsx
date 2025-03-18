@@ -20,7 +20,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { updateAdminData, newPassword, getAdminData } from "@/api/admin.api";
 import { useTranslation } from "react-i18next";
 import { logout } from "@/redux/slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 import { ImagePlus } from "lucide-react";
 import { TFunction } from "i18next";
@@ -130,8 +130,16 @@ const AdminSettings: React.FC = () => {
   }, [previewUrl]);
 
   return (
-    <div className="flex items-center justify-center px-4 py-0 md:px-10">
-      <div className="w-full max-w-2xl">
+    <div className="flex flex-col gap-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-2">
+        <h1 className="text-3xl font-semibold">Paramètres</h1>
+      </div>
+      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+        <nav className="grid gap-4 text-sm text-muted-foreground">
+          <Link to="/office/settings" className="font-semibold text-primary">Général</Link>
+          <Link to="/office/settings/a2f">Double authentification</Link>
+        </nav>
+        <div className="grid gap-6">
         <Card>
           <CardHeader>
             <CardTitle>{t('pages.parametres.titre')}</CardTitle>
@@ -141,7 +149,7 @@ const AdminSettings: React.FC = () => {
             <div className="relative h-32 mb-4 flex items-center justify-center">
               {previewUrl ? (
                 <img
-                  className="h-24 w-24 object-cover rounded-full"
+                  className="h-32 w-32 object-cover rounded-full"
                   src={previewUrl}
                   alt={t("pages.parametres.imageAlt")}
                 />
@@ -278,6 +286,7 @@ const AdminSettings: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+    </div>
     </div>
   );
 };

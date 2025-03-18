@@ -35,22 +35,24 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/admin/auth/refresh`, {
+        const { data } = await axios.post(`${API_BASE_URL}/admin/auth/refresh`, {}, {
           withCredentials: true,
         });
 
+        const newAccessToken = data.access_token;
+
         store.dispatch(login({
-          accessToken: data.accessToken,
+          accessToken: newAccessToken,
           twoFactorRequired: false
         }));
 
-        axiosInstance.defaults.headers.Authorization = `Bearer ${data.accessToken}`;
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         store.dispatch(logout());
-        window.location.href = "/auth/login";
+        //window.location.href = "/auth/login";
         return Promise.reject(refreshError);
       }
     }

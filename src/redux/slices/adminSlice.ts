@@ -11,6 +11,7 @@ export interface Admin {
   language: string;  
   iso_code: string; 
   roles: string[];
+  otp?:boolean | false;
 }
 
 export interface AdminState {

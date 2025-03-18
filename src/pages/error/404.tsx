@@ -13,7 +13,7 @@ const NotFoundPage: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen text-black text-center px-4">
+        <div className="flex flex-col items-center justify-center h-screen text-center px-4">
             <h1 className="text-8xl font-bold">{t("pages.erreurs.404.titre")}</h1>
             <img
                 src={auth1}
