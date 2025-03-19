@@ -100,7 +100,6 @@ const AdminSettings: React.FC = () => {
     try {
       setIsLoading(true);
       await disableA2F(admin.admin_id, otp);
-      console.log("OTP disabled successfully");
       setQrCode(null);
       setOtp("");
       setIsDisableMode(true);

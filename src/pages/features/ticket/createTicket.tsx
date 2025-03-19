@@ -261,6 +261,7 @@ export default function CreateTicket() {
                     autofocus
                     editable={canEdit}
                     editorClassName="focus:outline-none"
+                    
                   />
                 </div>
 
