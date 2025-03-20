@@ -54,37 +54,19 @@ export const schema = z.object({
   name: z.string(),
   company: z.string(),
   status: z.string(),
-  profile_picture: z.string(),
+  profile_picture: z.string().nullable(),
   service_number: z.number().optional(),
   rate: z.number().optional(),
   phone_number: z.string(),
 });
 
 export const columnLink = [
-  {
-    column_id: "name",
-    text: "Nom",
-  },
-  {
-    column_id: "company",
-    text: "Entreprise",
-  },
-  {
-    column_id: "status",
-    text: "Statut",
-  },
-  {
-    column_id: "service_number",
-    text: "Prestations",
-  },
-  {
-    column_id: "phone_number",
-    text: "Téléphone",
-  },
-  {
-    column_id: "rate",
-    text: "Note Globale",
-  },
+  { column_id: "name", text: "Nom" },
+  { column_id: "company", text: "Entreprise" },
+  { column_id: "status", text: "Statut" },
+  { column_id: "service_number", text: "Prestations" },
+  { column_id: "phone_number", text: "Téléphone" },
+  { column_id: "rate", text: "Note Globale" },
 ];
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
@@ -94,21 +76,21 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Prestataire",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <img
-          src={row.original.profile_picture}
-          alt={row.original.name}
-          className="w-10 h-10 rounded-full"
-        />
+        {row.original.profile_picture ? (
+          <img
+            src={row.original.profile_picture}
+            alt={row.original.name}
+            className="w-10 h-10 rounded-full"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+        )}
         <span>{row.original.name}</span>
       </div>
     ),
     enableHiding: false,
   },
-  {
-    accessorKey: "company",
-    header: "Entreprise",
-    cell: ({ row }) => row.original.company,
-  },
+  { accessorKey: "company", header: "Entreprise", cell: ({ row }) => row.original.company },
   {
     accessorKey: "status",
     header: "Statut",
@@ -119,19 +101,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       >
         {row.original.status === "wait" ? (
           <>
-            <span
-              className="size-1.5 rounded-full bg-amber-500"
-              aria-hidden="true"
-            ></span>
+            <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
             En attente
           </>
         ) : (
           <>
-            <CheckIcon
-              className="text-emerald-500"
-              size={12}
-              aria-hidden="true"
-            />
+            <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
             Validé
           </>
         )}
@@ -150,11 +125,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         </Badge>
       ),
   },
-  {
-    accessorKey: "phone_number",
-    header: "Téléphone",
-    cell: ({ row }) => row.original.phone_number,
-  },
+  { accessorKey: "phone_number", header: "Téléphone", cell: ({ row }) => row.original.phone_number },
   {
     accessorKey: "rate",
     header: "Note Globale",
@@ -188,10 +159,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => (
       <Sheet>
         <SheetTrigger asChild>
-          <Button
-            variant="link"
-            className="w-fit px-0 text-left text-foreground"
-          >
+          <Button variant="link" className="w-fit px-0 text-left text-foreground">
             Voir plus
           </Button>
         </SheetTrigger>
@@ -203,11 +171,15 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
             <div className="flex flex-col gap-3">
               <Label>Photo</Label>
-              <img
-                src={row.original.profile_picture}
-                alt={row.original.name}
-                className="w-20 h-20 rounded-full mx-auto"
-              />
+              {row.original.profile_picture ? (
+                <img
+                  src={row.original.profile_picture}
+                  alt={row.original.name}
+                  className="w-20 h-20 rounded-full mx-auto"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto"></div>
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <Label>Nom</Label>
@@ -230,19 +202,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
               >
                 {row.original.status === "wait" ? (
                   <>
-                    <span
-                      className="size-1.5 rounded-full bg-amber-500"
-                      aria-hidden="true"
-                    ></span>
+                    <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
                     En attente
                   </>
                 ) : (
                   <>
-                    <CheckIcon
-                      className="text-emerald-500"
-                      size={12}
-                      aria-hidden="true"
-                    />
+                    <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
                     Validé
                   </>
                 )}
@@ -250,8 +215,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
             </div>
             <div className="flex flex-col gap-3">
               <Label>Prestations</Label>
-              {row.original.service_number &&
-              row.original.service_number > 0 ? (
+              {row.original.service_number && row.original.service_number > 0 ? (
                 <p>{row.original.service_number}</p>
               ) : (
                 <Badge variant="outline" className="inline-block px-1.5">
@@ -301,13 +265,18 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 ];
 
 export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
-  const [data, _] = React.useState(() => initialData);
+
+  const [data, setData] = React.useState(initialData);
+
+  React.useEffect(() => {
+    if (initialData && initialData.length > 0) {
+      setData(initialData);
+    }
+  }, [initialData]);
+
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({

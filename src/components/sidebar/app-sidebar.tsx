@@ -80,9 +80,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "#",
         icon: Settings, 
         items: [
-          { title: t("sidebar.main.general.langue"), url: "#" },
-          { title: t("sidebar.main.general.categorie"), url: "#" },
-          { title: t("sidebar.main.general.compteAdmin"), url: "#" },
+          { title: t("sidebar.main.general.langue"), url: "/office/general/languages" },
+          { title: t("sidebar.main.general.categorie"), url: "/office/general/categories" },
+          { title: t("sidebar.main.general.compteAdmin"), url: "/office/general/admin" },
         ],
       },
     ],
@@ -109,22 +109,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     profil: [
       {
         title: t("sidebar.main.profil.listeParticulier"),
-        url: "#",
+        url: "/office/profile/users",
         icon: Users, 
       },
       {
         title: t("sidebar.main.profil.listeTransporteur"),
-        url: "#",
+        url: "/office/profile/deliverymen",
         icon: Truck, 
       },
       {
         title: t("sidebar.main.profil.listePrestataire"),
-        url: "#",
+        url: "/office/profile/providers",
         icon: HelpCircle, 
       },
       {
         title: t("sidebar.main.profil.listeCommercant"),
-        url: "#",
+        url: "/office/profile/merchants",
         icon: ShoppingCart, 
       },
     ],

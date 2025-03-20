@@ -23,18 +23,32 @@ export const ImageEditBlock: React.FC<ImageEditBlockProps> = ({ editor, close })
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files
       if (!files?.length) return
-
+  
       const insertImages = async () => {
         const contentBucket = []
         const filesArray = Array.from(files)
-
+  
         for (const file of filesArray) {
-          contentBucket.push({ src: file })
+          const src = URL.createObjectURL(file)
+  
+          // Charger l'image pour obtenir ses dimensions
+          const img = new Image()
+          img.src = src
+  
+          await new Promise((resolve) => {
+            img.onload = resolve
+          })
+  
+          // Vérification des dimensions
+          const width = !isNaN(img.width) && img.width > 0 ? img.width : 100
+          const height = !isNaN(img.height) && img.height > 0 ? img.height : 100
+  
+          contentBucket.push({ src, width, height })
         }
-
+  
         editor.commands.setImages(contentBucket)
       }
-
+  
       await insertImages()
       close()
     },

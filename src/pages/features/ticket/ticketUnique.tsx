@@ -161,7 +161,7 @@ export default function TicketUnique() {
   const stateOptions = ["Pending", "Progress", "Done"];
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
+    <div className="mx-auto">
       <Card>
         <CardHeader>
           <CardTitle>{ticket.title}</CardTitle>

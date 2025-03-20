@@ -126,221 +126,218 @@ export default function CreateTicket() {
   const stateOptions = ["Pending", "Progress", "Done"];
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("pages.ticket.action")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-6"
-            >
-              <div className="grid gap-4">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="title">{t("pages.ticket.titreLabel")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="title"
-                          {...field}
-                          className="w-full p-2 border rounded"
-                          disabled={!canEdit}
+<div className="mx-auto max-w-lg md:max-w-2xl lg:max-w-4xl">
+  <Card className="w-full">
+    <CardHeader>
+      <CardTitle>{t("pages.ticket.action")}</CardTitle>
+    </CardHeader>
+    <CardContent className="p-4 md:p-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <div className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="title">{t("pages.ticket.titreLabel")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="title"
+                      {...field}
+                      className="w-full p-2 border rounded"
+                      disabled={!canEdit}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="status">{t("pages.ticket.details.select.status.label")}</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={!canEdit}
+                    >
+                      <SelectTrigger id="status" className="h-auto ps-2">
+                        <SelectValue
+                          placeholder={t("pages.ticket.details.select.status.placeholder")}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {statusOptions.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {t(`pages.ticket.details.select.status.${status.toLowerCase()}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="status">{t("pages.ticket.details.select.status.label")}</FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          disabled={!canEdit}
-                        >
-                          <SelectTrigger id="status" className="h-auto ps-2">
-                            <SelectValue
-                              placeholder={t("pages.ticket.details.select.status.placeholder")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {statusOptions.map((status) => (
-                              <SelectItem key={status} value={status}>
-                                {t(`pages.ticket.details.select.status.${status.toLowerCase()}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <FormField
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="priorite">{t("pages.ticket.details.select.priorite.label")}</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={!canEdit}
+                    >
+                      <SelectTrigger id="priorite" className="h-auto ps-2">
+                        <SelectValue
+                          placeholder={t("pages.ticket.details.select.priorite.placeholder")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {priorityOptions.map((priority) => (
+                          <SelectItem key={priority} value={priority}>
+                            {t(`pages.ticket.details.select.priorite.${priority.toLowerCase()}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <FormField
-                  control={form.control}
-                  name="priority"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="priorite">{t("pages.ticket.details.select.priorite.label")}</FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          disabled={!canEdit}
-                        >
-                          <SelectTrigger id="priorite" className="h-auto ps-2">
-                            <SelectValue
-                              placeholder={t("pages.ticket.details.select.priorite.placeholder")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {priorityOptions.map((priority) => (
-                              <SelectItem key={priority} value={priority}>
-                                {t(`pages.ticket.details.select.priorite.${priority.toLowerCase()}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="etat">{t("pages.ticket.details.select.etat.label")}</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={!canEdit}
+                    >
+                      <SelectTrigger id="etat" className="h-auto ps-2">
+                        <SelectValue
+                          placeholder={t("pages.ticket.details.select.etat.placeholder")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {stateOptions.map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {t(`pages.ticket.details.select.etat.${state.toLowerCase()}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <FormField
-                  control={form.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="etat">{t("pages.ticket.details.select.etat.label")}</FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          disabled={!canEdit}
-                        >
-                          <SelectTrigger id="etat" className="h-auto ps-2">
-                            <SelectValue
-                              placeholder={t("pages.ticket.details.select.etat.placeholder")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {stateOptions.map((state) => (
-                              <SelectItem key={state} value={state}>
-                                {t(`pages.ticket.details.select.etat.${state.toLowerCase()}`)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <div>
+              <MinimalTiptapEditor
+                value={description}
+                onChange={(value) => setDescription(value?.toString() || "")}
+                className="w-full"
+                editorContentClassName="p-5"
+                output="html"
+                placeholder={t("pages.ticket.details.wysiwyg.placeholder")}
+                autofocus
+                editable={canEdit}
+                editorClassName="focus:outline-none"
+              />
+            </div>
 
-                <div>
-                  <MinimalTiptapEditor
-                    value={description}
-                    onChange={(value) => setDescription(value?.toString() || "")}
-                    className="w-full"
-                    editorContentClassName="p-5"
-                    output="html"
-                    placeholder={t("pages.ticket.details.wysiwyg.placeholder")}
-                    autofocus
-                    editable={canEdit}
-                    editorClassName="focus:outline-none"
-                    
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="admin_id_get"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="admin_id_get">
-                        {t("pages.ticket.details.select.assigne.label")}
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          disabled={!canEdit}
-                        >
-                          <SelectTrigger id="admin_id_get" className="h-auto ps-2 [&>span]:flex [&>span]:items-center [&>span]:gap-2">
-                            <SelectValue
-                              placeholder={t("pages.ticket.details.select.assigne.placeholder")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {admins.length > 0 ? (
-                              admins.map((admin) => (
-                                <SelectItem
-                                  key={admin.admin_id}
-                                  value={admin.admin_id}
-                                >
-                                  <span className="flex items-center gap-2">
-                                    {admin.photo ? (
-                                      <img
-                                        className="rounded-full w-8 h-8 object-cover"
-                                        src={admin.photo}
-                                        alt={admin.first_name}
-                                        onError={(e) => {
-                                          e.currentTarget.onerror = null;
-                                          e.currentTarget.src = "";
-                                        }}
-                                      />
-                                    ) : (
-                                      <div className="rounded-full w-8 h-8 flex items-center justify-center bg-secondary">
-                                        {getAdminInitials(admin)}
-                                      </div>
-                                    )}
-                                    <span>
-                                      <span className="block font-medium text-left">
-                                        {admin.first_name} {admin.last_name}
-                                      </span>
-                                      <span className="text-muted-foreground text-xs">
-                                        {admin.email}
-                                      </span>
-                                    </span>
+            <FormField
+              control={form.control}
+              name="admin_id_get"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="admin_id_get">
+                    {t("pages.ticket.details.select.assigne.label")}
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={!canEdit}
+                    >
+                      <SelectTrigger id="admin_id_get" className="h-auto ps-2 [&>span]:flex [&>span]:items-center [&>span]:gap-2">
+                        <SelectValue
+                          placeholder={t("pages.ticket.details.select.assigne.placeholder")}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {admins.length > 0 ? (
+                          admins.map((admin) => (
+                            <SelectItem
+                              key={admin.admin_id}
+                              value={admin.admin_id}
+                            >
+                              <span className="flex items-center gap-2">
+                                {admin.photo ? (
+                                  <img
+                                    className="rounded-full w-8 h-8 object-cover"
+                                    src={admin.photo}
+                                    alt={admin.first_name}
+                                    onError={(e) => {
+                                      e.currentTarget.onerror = null;
+                                      e.currentTarget.src = "";
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="rounded-full w-8 h-8 flex items-center justify-center bg-secondary">
+                                    {getAdminInitials(admin)}
+                                  </div>
+                                )}
+                                <span>
+                                  <span className="block font-medium text-left">
+                                    {admin.first_name} {admin.last_name}
                                   </span>
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <></>
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                                  <span className="text-muted-foreground text-xs">
+                                    {admin.email}
+                                  </span>
+                                </span>
+                              </span>
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <></>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                {canEdit && (
-                  <div className="flex justify-end mt-4">
-                    <Button type="submit">
-                      {t("pages.ticket.details.bouton.sauvegarder")}
-                    </Button>
-                  </div>
-                )}
+            {canEdit && (
+              <div className="flex justify-end mt-4">
+                <Button type="submit">
+                  {t("pages.ticket.details.bouton.sauvegarder")}
+                </Button>
               </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+            )}
+          </div>
+        </form>
+      </Form>
+    </CardContent>
+  </Card>
+</div>
+
   );
 }

@@ -1,23 +1,36 @@
-// Exemple de page
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setBreadcrumb } from '@/redux/slices/breadcrumbSlice';
+import React, { useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
+import { ChartAreaInteractive } from "@/components/features/dashboard/interactive-chart"
+import SubscriptionChart from "@/components/features/dashboard/subscription-chart"
+import PlanChart from "@/components/features/dashboard/plan-chart"
+import { ParcelsChart } from "@/components/features/dashboard/parcels-chart"
 
 const Dashboard: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(setBreadcrumb({
-      segments: ['Accueil'],
-      links: ['/office/dashboard'],
-    }));
-  }, [dispatch]);
+    dispatch(
+      setBreadcrumb({
+        segments: ["Accueil"],
+        links: ["/office/dashboard"],
+      })
+    )
+  }, [dispatch])
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  );
-};
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
 
-export default Dashboard;
+      <ChartAreaInteractive />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <SubscriptionChart />
+        <PlanChart />
+        <ParcelsChart />
+      </div>
+    </div>
+  )
+}
+
+export default Dashboard
