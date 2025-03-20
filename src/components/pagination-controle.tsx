@@ -35,7 +35,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   return (
     <div className="flex items-center justify-between px-4 mt-6">
       <div className="hidden flex-1 text-sm lg:flex">
-        {totalItems} ligne {totalItems > 1 ? "s" : ""} au total.
+        {totalItems} ligne{totalItems > 1 ? "s" : ""} au total.
       </div>
       <div className="flex w-full items-center gap-8 lg:w-fit">
         <div className="hidden items-center gap-2 lg:flex">

@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/input-otp";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 
 const AdminSettings: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,6 +45,18 @@ const AdminSettings: React.FC = () => {
   useEffect(() => {
     dispatch({ type: 'UPDATE_ADMIN', payload: { ...admin, otp: !isDisableMode } });
   }, [isDisableMode, dispatch, admin]);
+
+  
+
+    const url = useDispatch();
+      useEffect(() => {
+        url(
+          setBreadcrumb({
+            segments: ["Accueil", "Double authentification"],
+            links: ["/office/dashboard"],
+          })
+        );
+      }, [dispatch]);
 
   const handleActivateOTP = async () => {
     if (!admin?.admin_id) {
