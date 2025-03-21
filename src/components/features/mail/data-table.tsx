@@ -10,17 +10,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ColumnsIcon, ChevronDownIcon, CheckIcon, XIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, ColumnsIcon, XIcon } from "lucide-react";
 import { z } from "zod";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
@@ -41,6 +34,7 @@ import {
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditorReadOnly } from "@/components/minimal-tiptap";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // Nouveau schéma pour les emails
 export const emailSchema = z.object({
@@ -53,6 +47,14 @@ export const emailSchema = z.object({
   content: z.string(),
   isNewsletter: z.boolean(),
 });
+
+const PROFILE_LABELS: Record<string, string> = {
+  all: "Tout le monde",
+  deliveryman: "Transporteur",
+  merchant: "Commerçant",
+  client: "Expéditeur",
+  provider : "Prestataire",
+};
 
 export const columnLink = [
   {
@@ -90,7 +92,18 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
   {
     accessorKey: "sentDate",
     header: "Date d'envoi",
-    cell: ({ row }) => row.original.sentDate,
+    cell: ({ row }) => {
+      const formattedDate = new Intl.DateTimeFormat("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(new Date(row.original.sentDate));
+      
+      return formattedDate;
+    },
   },
   {
     accessorKey: "isSent",
@@ -102,18 +115,13 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
     ),
   },
   {
-    accessorKey: "author",
-    header: "Rédacteur",
-    cell: ({ row }) => row.original.author,
-  },
-  {
     accessorKey: "profiles",
     header: "Profils",
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-2">
         {row.original.profiles.map((profile, index) => (
           <Badge key={index} variant="outline">
-            {profile}
+            {PROFILE_LABELS[profile] || profile}
           </Badge>
         ))}
       </div>
@@ -152,23 +160,18 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
           </SheetHeader>
            
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
-            <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
               <Label>Date d'envoi</Label>
-              <p>{row.original.sentDate}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Rédacteur</Label>
-              <p>{row.original.author}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Profils</Label>
-              <div className="flex flex-wrap gap-2">
-                {row.original.profiles.map((profile, index) => (
-                  <Badge key={index} variant="outline">
-                    {profile}
-                  </Badge>
-                ))}
-              </div>
+              <p>
+                {new Intl.DateTimeFormat("fr-FR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                }).format(new Date(row.original.sentDate))}
+              </p>
             </div>
             <div className="flex flex-col gap-3">
               <Label>Contenu</Label>
@@ -199,13 +202,13 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
   },
 ];
 
-// Composant DataTable pour les emails
 export function EmailDataTable({
   data: initialData,
 }: {
   data: z.infer<typeof emailSchema>[];
 }) {
-  const [data, _] = React.useState(() => initialData);
+
+  const [data, setData] = React.useState(initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -213,6 +216,11 @@ export function EmailDataTable({
     []
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  React.useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+
 
   const table = useReactTable({
     data,
@@ -237,49 +245,49 @@ export function EmailDataTable({
   return (
     <>
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <div className="flex justify-end items-center gap-2 w-full my-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">Colonnes</span>
-                <span className="lg:hidden">Colonnes</span>
-                <ChevronDownIcon />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  const columnLinkItem = columnLink.find(
-                    (link) => link.column_id === column.id
-                  );
-                  const displayText = columnLinkItem
-                    ? columnLinkItem.text
-                    : column.id;
-
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {displayText}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+              <div className="flex justify-end items-center gap-2 w-full my-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <ColumnsIcon className="h-4 w-4 mr-2" />
+                      <span className="hidden lg:inline">Colonnes</span>
+                      <span className="lg:hidden">Colonnes</span>
+                      <ChevronDownIcon />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    {table
+                      .getAllColumns()
+                      .filter(
+                        (column) =>
+                          typeof column.accessorFn !== "undefined" &&
+                          column.getCanHide()
+                      )
+                      .map((column) => {
+                        const columnLinkItem = columnLink.find(
+                          (link) => link.column_id === column.id
+                        );
+                        const displayText = columnLinkItem
+                          ? columnLinkItem.text
+                          : column.id;
+      
+                        return (
+                          <DropdownMenuCheckboxItem
+                            key={column.id}
+                            className="capitalize"
+                            checked={column.getIsVisible()}
+                            onCheckedChange={(value) =>
+                              column.toggleVisibility(!!value)
+                            }
+                          >
+                            {displayText}
+                          </DropdownMenuCheckboxItem>
+                        );
+                      })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
       <div className="overflow-hidden rounded-lg border">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted">

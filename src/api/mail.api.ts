@@ -1,52 +1,119 @@
 import axiosInstance from "./axiosInstance";
 
-
-
-export interface Mail{
+export interface Mail {
     id: string;
-    subject : string;
-    sentDate : string;
-    isSent : boolean;
-    author : string;
-    profiles : string[];
-    content : string;
-    isNewsletter : boolean;
+    subject: string;
+    sentDate: string;
+    isSent: boolean;
+    author: string;
+    profiles: string[];
+    content: string;
+    isNewsletter: boolean;
 }
 
+export interface MailSchedule {
+    subject : string;
+    htmlContent : string;
+    day : string;
+    hour : string;
+    profiles : string[] | null;
+}
 
-export class Mail {
+export interface SendMail {
+    subject : string;
+    htmlContent : string;
+}
 
+export interface SendEmailToProfiles {
+    subject : string;
+    htmlContent : string;
+    profiles : string[];
+}
 
-    static async getAllMail(pageIndex : number, pageSize : number) : Promise<{data : Mail[], meta: { total: number, page: number, limit: number }, totalRows: number}> {
-
+export class MailService {
+    static async getAllMail(pageIndex: number, pageSize: number): Promise<{ data: Mail[], meta: { total: number, page: number, limit: number }, totalRows: number }> {
         const response = await axiosInstance.get("/admin/mails", {
             params: {
-              page: pageIndex + 1,
-              limit: pageSize,
+                page: pageIndex + 1,
+                limit: pageSize,
             },
-          });
-        return response.data;
+        });
+
+        return {
+            data: response.data.results.map((mail: any) => ({
+                id: mail._id,
+                subject: mail.subject,
+                sentDate: mail.date,
+                isSent: mail.send,
+                author: mail.admin_id,
+                profiles: mail.profile,
+                content: mail.message,
+                isNewsletter: mail.newsletter,
+            })),
+            meta: {
+                total: response.data.total,
+                page: pageIndex + 1,
+                limit: pageSize,
+            },
+            totalRows: response.data.total
+        };
     }
 
-    static async getMail(id: string) : Promise <Mail> {
-
+    static async getMail(id: string): Promise<Mail> {
         const response = await axiosInstance.get(`/admin/mails/${id}`);
-        return response.data;
-
+        return {
+            id: response.data._id,
+            subject: response.data.subject,
+            sentDate: response.data.date,
+            isSent: response.data.send,
+            author: response.data.admin_id,
+            profiles: response.data.profile,
+            content: response.data.message,
+            isNewsletter: response.data.newsletter,
+        };
     }
 
-    static async createMail(mail : Mail) : Promise<{message : string}> {
-
-        const response = await axiosInstance.post("/admin/mails", mail)
+    static async createScheduleMail(mailSchedule: MailSchedule): Promise<{message : string}> {
+        const response = await axiosInstance.post("/admin/mails/schedule", mailSchedule);
 
         if (response) {
-            return response.data;
+            return {
+                message: "Mail scheduled successfully"
+            };
         }
 
-        return { message: "Failed to create mail" };
+        return {
+            message: "Mail failed to schedule"
+        };
+    }
+
+    static async sendMail(sendMail: SendEmailToProfiles): Promise<{message : string}> {
+        const response = await axiosInstance.post("/admin/mails/profiles", sendMail);
+
+        if (response) {
+            return {
+                message: "Mail sent successfully"
+            };
+        }
+
+        return {
+            message: "Mail failed to send"
+        };
+    }
+
+    static async sendMailtoEveryone(sendMail: SendMail): Promise<{message : string}> {
+        const response = await axiosInstance.post("/admin/mails/", sendMail);
+
+        if (response) {
+            return {
+                message: "Mail sent successfully"
+            };
+        }
+
+        return {
+            message: "Mail failed to send"
+        };
     }
 
 
 }
-
-

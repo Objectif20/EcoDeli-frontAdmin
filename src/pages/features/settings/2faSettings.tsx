@@ -136,8 +136,8 @@ const AdminSettings: React.FC = () => {
       </div>
       <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
         <nav className="grid gap-4 text-sm text-muted-foreground">
-          <Link to="/office/settings">{t('pages.parametres.breadcrumb.accueil')}</Link>
-          <Link to="/office/settings/a2f" className="font-semibold text-primary">{t('pages.parametres.breadcrumb.parametres')}</Link>
+          <Link to="/office/settings">Général</Link>
+          <Link to="/office/settings/a2f" className="font-semibold text-primary">Double authentification</Link>
         </nav>
         <div className="grid gap-6">
           <Card>

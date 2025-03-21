@@ -7,9 +7,8 @@ interface AdminData {
   first_name: string;
   last_name: string;
   email: string;
-  photo: string | null;
+  photo: string | "";
   active: boolean;
-
 }
 
 

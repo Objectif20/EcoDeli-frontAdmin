@@ -126,34 +126,34 @@ export default function CreateTicket() {
   const stateOptions = ["Pending", "Progress", "Done"];
 
   return (
-<div className="mx-auto max-w-lg md:max-w-2xl lg:max-w-4xl">
-  <Card className="w-full">
-    <CardHeader>
-      <CardTitle>{t("pages.ticket.action")}</CardTitle>
-    </CardHeader>
-    <CardContent className="p-4 md:p-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+<div className="">
+  <Form {...form}>
+    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <Card className="mx-auto md:max-w-2xl">
+        <CardHeader>
+          <CardTitle>Nouveau ticket</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="grid gap-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="title">{t("pages.ticket.titreLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="title"
-                      {...field}
-                      className="w-full p-2 border rounded"
-                      disabled={!canEdit}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
+          <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="title">{t("pages.ticket.titreLabel")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="title"
+                          {...field}
+                          className="w-full p-2 border rounded"
+                          disabled={!canEdit}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             <FormField
               control={form.control}
               name="status"
@@ -166,12 +166,12 @@ export default function CreateTicket() {
                       onValueChange={field.onChange}
                       disabled={!canEdit}
                     >
-                      <SelectTrigger id="status" className="h-auto ps-2">
+                      <SelectTrigger id="status" className="h-auto ps-2 w-full">
                         <SelectValue
                           placeholder={t("pages.ticket.details.select.status.placeholder")}
                         />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-h-60">
                         {statusOptions.map((status) => (
                           <SelectItem key={status} value={status}>
                             {t(`pages.ticket.details.select.status.${status.toLowerCase()}`)}
@@ -197,12 +197,12 @@ export default function CreateTicket() {
                       onValueChange={field.onChange}
                       disabled={!canEdit}
                     >
-                      <SelectTrigger id="priorite" className="h-auto ps-2">
+                      <SelectTrigger id="priorite" className="h-auto ps-2 w-full">
                         <SelectValue
                           placeholder={t("pages.ticket.details.select.priorite.placeholder")}
                         />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-h-60">
                         {priorityOptions.map((priority) => (
                           <SelectItem key={priority} value={priority}>
                             {t(`pages.ticket.details.select.priorite.${priority.toLowerCase()}`)}
@@ -228,12 +228,12 @@ export default function CreateTicket() {
                       onValueChange={field.onChange}
                       disabled={!canEdit}
                     >
-                      <SelectTrigger id="etat" className="h-auto ps-2">
+                      <SelectTrigger id="etat" className="h-auto ps-2 w-full">
                         <SelectValue
                           placeholder={t("pages.ticket.details.select.etat.placeholder")}
                         />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-h-60">
                         {stateOptions.map((state) => (
                           <SelectItem key={state} value={state}>
                             {t(`pages.ticket.details.select.etat.${state.toLowerCase()}`)}
@@ -246,20 +246,6 @@ export default function CreateTicket() {
                 </FormItem>
               )}
             />
-
-            <div>
-              <MinimalTiptapEditor
-                value={description}
-                onChange={(value) => setDescription(value?.toString() || "")}
-                className="w-full"
-                editorContentClassName="p-5"
-                output="html"
-                placeholder={t("pages.ticket.details.wysiwyg.placeholder")}
-                autofocus
-                editable={canEdit}
-                editorClassName="focus:outline-none"
-              />
-            </div>
 
             <FormField
               control={form.control}
@@ -275,12 +261,12 @@ export default function CreateTicket() {
                       onValueChange={field.onChange}
                       disabled={!canEdit}
                     >
-                      <SelectTrigger id="admin_id_get" className="h-auto ps-2 [&>span]:flex [&>span]:items-center [&>span]:gap-2">
+                      <SelectTrigger id="admin_id_get" className="h-auto ps-2 w-full [&>span]:flex [&>span]:items-center [&>span]:gap-2">
                         <SelectValue
                           placeholder={t("pages.ticket.details.select.assigne.placeholder")}
                         />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="max-h-60">
                         {admins.length > 0 ? (
                           admins.map((admin) => (
                             <SelectItem
@@ -324,19 +310,35 @@ export default function CreateTicket() {
                 </FormItem>
               )}
             />
-
-            {canEdit && (
-              <div className="flex justify-end mt-4">
-                <Button type="submit">
-                  {t("pages.ticket.details.bouton.sauvegarder")}
-                </Button>
-              </div>
-            )}
           </div>
-        </form>
-      </Form>
-    </CardContent>
-  </Card>
+        </CardContent>
+      </Card>
+
+      <div className="md:w-3/4 lg:w-1/2 mx-auto mt-4">
+        <MinimalTiptapEditor
+          value={description}
+          onChange={(value) => setDescription(value?.toString() || "")}
+          className="w-full"
+          editorContentClassName="p-5"
+          output="html"
+          placeholder={t("pages.ticket.details.wysiwyg.placeholder")}
+          autofocus
+          editable={canEdit}
+          editorClassName="focus:outline-none"
+          bucket="email"
+        />
+      </div>
+
+      {/* Submit Button Below the Editor */}
+      {canEdit && (
+        <div className="flex justify-end mt-4">
+          <Button type="submit">
+            {t("pages.ticket.details.bouton.sauvegarder")}
+          </Button>
+        </div>
+      )}
+    </form>
+  </Form>
 </div>
 
   );

@@ -65,7 +65,7 @@ const TicketBoard: React.FC = () => {
         }));
     }, [dispatch]);
 
-    const admin = useSelector((state: RootState) => state.admin.admin);
+    const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
 
     const isTicketManager = admin?.roles.includes('TICKET');
 
@@ -133,7 +133,7 @@ const TicketBoard: React.FC = () => {
             </h1>
 
             {isTicketManager && (
-                <><Button onClick={() => navigate("/office/ticket/create")}>{t("pages.ticket.action")}</Button></>
+                <><Button onClick={() => navigate("/office/ticket/create")} className='mb-4'>{t("pages.ticket.action")}</Button></>
             )
 
             }
