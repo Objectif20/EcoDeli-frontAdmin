@@ -6,7 +6,8 @@ import ProfileRoutes from "./office/profileRoutes";
 import MailRoutes from "./office/mailRoutes";
 import TicketRoutes from "./office/ticketRoutes";
 import ReportRoutes from "./office/reportRoutes";
-import GeneralConfigRoutes from "./office/generalConfig";
+import GeneralConfigRoutes from "./office/generalRoutes";
+import FinanceRoutes from "./office/financeRoutes";
 
 const OfficeRoute: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const OfficeRoute: React.FC = () => {
       <Route path="/mail/*" element={<MailRoutes />} />
       <Route path="/reporting/*" element={<ReportRoutes />} />
       <Route path="/general/*" element={<GeneralConfigRoutes />} />
+      <Route path="/finance/*" element={<FinanceRoutes />} />
     </Routes>
   );
 };

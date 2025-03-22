@@ -48,6 +48,8 @@ export default function ProviderPage() {
 
   return (
     <>
+      <div className="w-full">
+      <h1 className="text-2xl font-semibold mb-4">Les prestataires sur EcoDeli</h1>
       <DataTable key={`${pageIndex}-${pageSize}`} data={providers} />
       <PaginationControls
         pageIndex={pageIndex}
@@ -59,6 +61,7 @@ export default function ProviderPage() {
           setPageIndex(0);
         }}
       />
+      </div>
     </>
   );
 }

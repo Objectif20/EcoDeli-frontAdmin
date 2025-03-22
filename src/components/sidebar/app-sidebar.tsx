@@ -7,12 +7,12 @@ import {
   Users,
   FileText,
   Settings,
-  DollarSign,
   File,
   GalleryVerticalEnd,
   Truck,
   ShoppingCart,
-  HelpCircle
+  HelpCircle,
+  EuroIcon
 } from "lucide-react"
 import { useSelector } from "react-redux"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -90,10 +90,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: t("sidebar.main.finance.abonnement.titre"),
         url: "#",
-        icon: DollarSign, 
+        icon: EuroIcon, 
         items: [
-          { title: t("sidebar.main.finance.abonnement.listeAbonne"), url: "#" },
-          { title: t("sidebar.main.finance.abonnement.formuleAbonnement"), url: "#" },
+          { title: t("sidebar.main.finance.abonnement.listeAbonne"), url: "/office/finance/subscribers" },
+          { title: t("sidebar.main.finance.abonnement.formuleAbonnement"), url: "/office/finance/plans" },
         ],
       },
       {

@@ -79,6 +79,8 @@ export default function AdminPage() {
 
   return (
     <>
+          <div className="w-full">
+          <h1 className="text-2xl font-semibold mb-4">Ensemble des administrateurs EcoDeli</h1>
       <AdminDataTable key={`${pageIndex}-${pageSize}`} data={paginatedData} isSuperAdmin={isSuperAdmin} />
       <PaginationControls
         pageIndex={pageIndex}
@@ -90,6 +92,7 @@ export default function AdminPage() {
           setPageIndex(0);
         }}
       />
+      </div>
     </>
   );
 }
