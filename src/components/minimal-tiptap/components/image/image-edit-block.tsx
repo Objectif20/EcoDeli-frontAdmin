@@ -40,8 +40,8 @@ export const ImageEditBlock: React.FC<ImageEditBlockProps> = ({ editor, close })
           })
   
           // Vérification des dimensions
-          const width = !isNaN(img.width) && img.width > 0 ? img.width : 100
-          const height = !isNaN(img.height) && img.height > 0 ? img.height : 100
+          const width =  img.width > 0 ? img.width : 100
+          const height = img.height > 0 ? img.height : 100
   
           contentBucket.push({ src, width, height })
         }

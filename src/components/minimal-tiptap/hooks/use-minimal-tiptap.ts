@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Editor } from '@tiptap/react';
+import type { Editor, Range } from '@tiptap/react';
 import type { Content, UseEditorOptions } from '@tiptap/react';
 import { StarterKit } from '@tiptap/starter-kit';
 import { useEditor } from '@tiptap/react';
@@ -54,7 +54,7 @@ const createExtensions = (placeholder: string, bucket?: string) => [
     maxFileSize: 2 * 1024 * 1024,
     allowBase64: true,
     uploadFn: (file) => uploadImage(file, bucket || "ticket"),
-    onToggle(editor, files, pos) {
+    onToggle(editor: Editor, files: File[], pos: number | Range) {
       editor.commands.insertContentAt(
         pos,
         files.map(image => {
@@ -73,6 +73,7 @@ const createExtensions = (placeholder: string, bucket?: string) => [
           };
         })
       );
+    
     },
     onImageRemoved({ id, src }) {
       console.log('Image removed', { id, src });
