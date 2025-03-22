@@ -28,15 +28,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -46,6 +43,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { updateLanguage } from "@/api/languages.api";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export const languageSchema = z.object({
   id: z.string(),
@@ -91,57 +92,116 @@ const languageColumns: ColumnDef<z.infer<typeof languageSchema>>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="link" className="w-fit px-0 text-left text-foreground">
-            Voir plus
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="flex flex-col">
-          <SheetHeader className="gap-1">
-            <SheetTitle>{row.original.name}</SheetTitle>
-            <SheetDescription>Détails de la langue</SheetDescription>
-          </SheetHeader>
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
-            <div className="flex flex-col gap-3">
-              <Label>Drapeau</Label>
-              <ReactCountryFlag
-                countryCode={row.original.iso_code}
-                svg
-                style={{
-                  width: '4em',
-                  height: '4em',
-                }}
-                title={row.original.name}
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Nom</Label>
-              <p>{row.original.name}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Code ISO</Label>
-              <p>{row.original.iso_code}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Disponible</Label>
-              <Badge variant={row.original.available ? "success" : "destructive"}>
-                {row.original.available ? "Oui" : "Non"}
-              </Badge>
-            </div>
-          </div>
-          <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
-            <Button className="w-full">En voir plus</Button>
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">
-                Fermer
-              </Button>
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    ),
+    cell: ({ row }) => {
+      const [open, setOpen] = React.useState(false);
+      const [updatedLanguage, setUpdatedLanguage] = React.useState({
+        language_name: row.original.name,
+        iso_code: row.original.iso_code,
+        active: row.original.available,
+        file: null as File | null,
+      });
+
+      const handleUpdate = async () => {
+        try {
+          await updateLanguage(row.original.id, {
+            language_name: updatedLanguage.language_name,
+            iso_code: updatedLanguage.iso_code,
+            active: updatedLanguage.active,
+          }, updatedLanguage.file || undefined);
+          setOpen(false);
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour de la langue", error);
+        }
+      };
+
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setUpdatedLanguage((prev) => ({
+          ...prev,
+          [name]: type === "checkbox" ? checked : value,
+        }));
+      };
+
+      const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setUpdatedLanguage((prev) => ({
+          ...prev,
+          file,
+        }));
+      };
+
+      return (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button variant="link" className="w-fit px-0 text-left text-foreground">
+              Mettre à jour
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Mettre à jour la langue</DialogTitle>
+              <DialogDescription>Mettez à jour les informations vis à vis de cette langue</DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdate();
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <Label htmlFor="name">Nom de la langue</Label>
+                <Input
+                  name="language_name"
+                  placeholder="Nom"
+                  value={updatedLanguage.language_name}
+                  onChange={handleChange}
+                  id="name"
+                />
+              </div>
+              <div>
+                <Label htmlFor="iso_code">Code ISO</Label>
+                <Input
+                  name="iso_code"
+                  placeholder="Code ISO"
+                  value={updatedLanguage.iso_code}
+                  onChange={handleChange}
+                  id="iso_code"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="active"
+                  name="active"
+                  checked={updatedLanguage.active}
+                  onCheckedChange={(checked) =>
+                    handleChange({
+                      target: { name: "active", value: checked },
+                    } as React.ChangeEvent<HTMLInputElement>)
+                  }
+                />
+                <Label htmlFor="active">Active</Label>
+              </div>
+              <div>
+                <Label htmlFor="file">Fichier de langue</Label>
+                <Input
+                  accept=".json"
+                  type="file"
+                  onChange={handleFileChange}
+                  id="file"
+                />
+              </div>
+              <div className="flex justify-end mt-4 mx-2">
+                <Button className="mr-4" type="button" onClick={() => setOpen(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit">Mettre à jour</Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      );
+    },
   },
 ];
 
