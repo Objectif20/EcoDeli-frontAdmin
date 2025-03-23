@@ -17,6 +17,7 @@ import {
   ChevronDownIcon,
   StarIcon,
   CheckIcon,
+  X,
 } from "lucide-react";
 import { z } from "zod";
 
@@ -29,16 +30,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
   Table,
   TableBody,
   TableCell,
@@ -46,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 
 export const schema = z.object({
   id: z.string(),
@@ -96,18 +87,29 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Statut",
     cell: ({ row }) => (
       <Badge
-        variant={row.original.status === "wait" ? "outline" : "success"}
+        variant={
+          row.original.status === "wait"
+        ? "outline"
+        : row.original.status === "okay"
+        ? "outline"
+        : "outline"
+        }
         className="gap-1"
       >
         {row.original.status === "wait" ? (
           <>
-            <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
-            En attente
+        <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
+        En attente
+          </>
+        ) : row.original.status === "okay" ? (
+          <>
+        <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
+        Validé
           </>
         ) : (
           <>
-            <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
-            Validé
+          <X className="text-red-500" size={12} aria-hidden="true" />
+        Refusé
           </>
         )}
       </Badge>
@@ -156,116 +158,22 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="link" className="w-fit px-0 text-left text-foreground">
-            Voir plus
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="flex flex-col">
-          <SheetHeader className="gap-1">
-            <SheetTitle>{row.original.name}</SheetTitle>
-            <SheetDescription>Détails de l'utilisateur</SheetDescription>
-          </SheetHeader>
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
-            <div className="flex flex-col gap-3">
-              <Label>Photo</Label>
-              {row.original.profile_picture ? (
-                <img
-                  src={row.original.profile_picture}
-                  alt={row.original.name}
-                  className="w-20 h-20 rounded-full mx-auto"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto"></div>
-              )}
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Nom</Label>
-              <p>{row.original.name}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Email</Label>
-              <p>{row.original.email}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Entreprise</Label>
-              <p>{row.original.company}</p>
-            </div>
-            <div>
-              <Label>Statut</Label>
-              <br />
-              <Badge
-                variant={row.original.status === "wait" ? "outline" : "success"}
-                className="gap-1"
-              >
-                {row.original.status === "wait" ? (
-                  <>
-                    <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
-                    En attente
-                  </>
-                ) : (
-                  <>
-                    <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
-                    Validé
-                  </>
-                )}
-              </Badge>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Prestations</Label>
-              {row.original.service_number && row.original.service_number > 0 ? (
-                <p>{row.original.service_number}</p>
-              ) : (
-                <Badge variant="outline" className="inline-block px-1.5">
-                  Aucune prestation
-                </Badge>
-              )}
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Note Globale</Label>
-              {row.original.rate !== undefined && row.original.rate > 0 ? (
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, index) => {
-                    const starValue = index + 1;
-                    return (
-                      <StarIcon
-                        key={index}
-                        className={`size-4 ${
-                          starValue <= (row.original.rate ?? 0)
-                            ? "text-yellow-500"
-                            : starValue - 0.5 <= (row.original.rate ?? 0)
-                            ? "text-yellow-500/50"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <Badge variant="outline" className="px-1.5 ">
-                  Aucune note
-                </Badge>
-              )}
-            </div>
-          </div>
-          <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
-            <Button className="w-full">En voir plus</Button>
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">
-                Fermer
-              </Button>
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    ),
+    cell: ({ row }) => {
+      const navigate = useNavigate();
+      return (
+        <Button
+          variant="link"
+          className="w-fit px-0 text-left text-foreground"
+          onClick={() => navigate(`/office/profile/providers/${row.original.id}`)}
+        >
+          Accéder au profil
+        </Button>
+      );
+    },
   },
 ];
 
 export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
-
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
