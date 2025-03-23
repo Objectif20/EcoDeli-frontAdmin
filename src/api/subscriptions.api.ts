@@ -69,7 +69,7 @@ export async function GetSubscriptionById(id: string): Promise<Subscriptions> {
 
 export async function updateSubscription(id: string, data: Subscriptions): Promise<Subscriptions | { message: string }> {
     try {
-        const response = await axiosInstance.put(`/admin/subscriptions/${id}`, data);
+        const response = await axiosInstance.patch(`/admin/subscriptions/${id}`, data);
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la modification de l'abonnement", error);
