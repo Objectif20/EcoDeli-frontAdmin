@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "@/components/features/report/data-table";
 import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
+import { Report, ReportApi } from "@/api/report.api";
 
 export default function ReportPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [reports, setReports] = useState<Report[]>([]);
 
     const dispatch = useDispatch();
       useEffect(() => {
@@ -18,34 +20,29 @@ export default function ReportPage() {
         );
       }, [dispatch]);
 
-  const exampleSignalements = [
-    {
-      id: "1",
-      user_id: "user123",
-      title: "Signalement de contenu inapproprié",
-      content: "Ce contenu contient des propos inappropriés...",
-      admin_id: "admin456",
-      status: "wait",
-      photo_url: "https://via.placeholder.com/150",
-      name: "Jean Dupont",
-    },
-    {
-      id: "2",
-      user_id: "user124",
-      title: "Problème technique",
-      content: "Le site ne fonctionne pas correctement...",
-      admin_id: "admin457",
-      status: "validated",
-      photo_url: "https://via.placeholder.com/150",
-      name: "Marie Martin",
-    },
-  ];
 
-  const paginatedData = useMemo(() => {
-    const startIndex = pageIndex * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, exampleSignalements.length);
-    return exampleSignalements.slice(startIndex, endIndex);
-  }, [pageIndex, pageSize, exampleSignalements]);
+      useEffect(() => {
+          const fetchReport = async () => {
+            try {
+      
+              const response = await ReportApi.getReports(pageIndex, pageSize)
+      
+              if (response) {
+                const data: Report[] = response.data.map(report => ({
+                  ...report,
+                }));
+          
+                setReports(data);
+                console.log(data)
+              }
+      
+            } catch (error) {
+              console.error("Erreur lors de la récupération des prestataires", error);
+            }
+          };
+      
+          fetchReport();
+        }, [pageIndex, pageSize]);
 
   useEffect(() => {
     setPageIndex(0);
@@ -53,11 +50,10 @@ export default function ReportPage() {
 
   return (
     <>
-      <DataTable key={`${pageIndex}-${pageSize}`} data={paginatedData} />
+      <DataTable key={`${pageIndex}-${pageSize}`} data={reports} />
       <PaginationControls
         pageIndex={pageIndex}
         pageSize={pageSize}
-        totalItems={exampleSignalements.length}
         onPageIndexChange={setPageIndex}
         onPageSizeChange={(size) => {
           setPageSize(size);

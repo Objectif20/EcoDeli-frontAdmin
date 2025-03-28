@@ -1,0 +1,60 @@
+import { useEffect, useState } from "react";
+import { DataTable } from "@/components/features/merchant/data-table";
+import type { Merchant } from "@/components/features/merchant/data-table";
+import { PaginationControls } from "@/components/pagination-controle";
+import { useDispatch } from "react-redux";
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
+import { MerchantAPI } from "@/api/merchant.api";
+
+export default function MerchantPage() {
+  const dispatch = useDispatch();
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+
+  useEffect(() => {
+    dispatch(
+      setBreadcrumb({
+        segments: ["Accueil", "Commerçants"],
+        links: ["/office/dashboard"],
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    const fetchMerchants = async () => {
+      try {
+        const response = await MerchantAPI.getAllMerchants(pageIndex, pageSize);
+
+        if (response) {
+          setMerchants(response.data);
+          setTotalItems(response.meta.total);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des commerçants", error);
+      }
+    };
+
+    fetchMerchants();
+  }, [pageIndex, pageSize]);
+
+  return (
+    <>
+      <div className="w-full">
+        <h1 className="text-2xl font-semibold mb-4">Les commerçants sur EcoDeli</h1>
+        <DataTable key={`${pageIndex}-${pageSize}`} data={merchants} />
+        <PaginationControls
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageIndexChange={setPageIndex}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPageIndex(0);
+          }}
+        />
+      </div>
+    </>
+  );
+}

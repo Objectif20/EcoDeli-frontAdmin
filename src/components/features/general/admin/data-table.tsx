@@ -71,6 +71,19 @@ const rolesOptions = [
   { value: "finance", label: "Finance" },
 ];
 
+const rolesMapping = {
+  "TICKET": "Ticket",
+  "MAIL": "Mail",
+  "PROVIDER": "Prestataire",
+  "MERCHANT": "Commerçant",
+  "DELIVERY": "Livreur",
+  "FINANCE": "Finance",
+};
+
+const getRoleLabel = (roleValue: keyof typeof rolesMapping) => {
+  return rolesMapping[roleValue] || roleValue;
+};
+
 const adminColumns = (isSuperAdmin: boolean): ColumnDef<z.infer<typeof adminSchema>>[] => [
   {
     id: "id",
@@ -280,10 +293,16 @@ export function AdminDataTable({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {cell.column.id === "roles"
+                        ? row.original.roles.map((role, index) => (
+                            <Badge key={index} variant="outline">
+                              {getRoleLabel(role as keyof typeof rolesMapping)}
+                            </Badge>
+                          ))
+                        : flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
                     </TableCell>
                   ))}
                 </TableRow>

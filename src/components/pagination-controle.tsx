@@ -18,7 +18,7 @@ import {
 interface PaginationControlsProps {
   pageIndex: number;
   pageSize: number;
-  totalItems: number;
+  totalItems?: number | 0;
   onPageIndexChange: (pageIndex: number) => void;
   onPageSizeChange: (pageSize: number) => void;
 }
@@ -30,13 +30,19 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   onPageIndexChange,
   onPageSizeChange,
 }) => {
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalPages = totalItems ? Math.ceil(totalItems / pageSize) : 0;
+  
 
   return (
     <div className="flex items-center justify-between px-4 mt-6">
+    {totalItems ? (
       <div className="hidden flex-1 text-sm lg:flex">
         {totalItems} ligne{totalItems > 1 ? "s" : ""} au total.
       </div>
+    ) : (
+      <div></div>
+    )}
+
       <div className="flex w-full items-center gap-8 lg:w-fit">
         <div className="hidden items-center gap-2 lg:flex">
           <Label htmlFor="rows-per-page" className="text-sm font-medium">
@@ -60,9 +66,13 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             </SelectContent>
           </Select>
         </div>
+        {totalItems && (
         <div className="flex w-fit items-center justify-center text-sm font-medium">
           Page {pageIndex + 1} sur {totalPages}
         </div>
+          
+          )}
+
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <Button
             variant="outline"
