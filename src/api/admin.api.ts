@@ -11,6 +11,13 @@ interface AdminData {
   active: boolean;
 }
 
+interface createAdminData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  roles: string[];
+}
+
 
 export const getAdminData = () => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true)); 
@@ -86,4 +93,16 @@ export const newPassword = () => async () => {
   catch (error) {
     console.error("Erreur lors de la déconnexion:", error);
   }
+}
+
+
+export const createAdmin = (data : createAdminData) => async () => {
+
+    console.log(data);
+    try {
+      await axiosInstance.post(`/admin/profile`, data);
+    } catch (error) {
+      console.error("Erreur lors de la création de l'admin:", error);
+    }
+
 }

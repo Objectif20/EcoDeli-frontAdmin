@@ -28,15 +28,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -46,54 +45,66 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getAllAdmins } from "@/api/admin.api";
+import { ReportApi } from "@/api/report.api";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
+// Schéma de validation
 export const schema = z.object({
-  id: z.string(),
-  user_id: z.string(),
-  title: z.string(),
-  content: z.string(),
-  admin_id: z.string().optional(),
+  report_id: z.string(),
   status: z.string(),
-  photo_url: z.string().optional(),
-  name: z.string(),
+  state: z.string(),
+  report_message: z.string(),
+  user: z.object({
+    user_id: z.string(),
+    email: z.string(),
+  }),
+  admin: z.array(z.object({
+    admin_id: z.string(),
+    email: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  })).nullable(),
 });
 
 export const columnLink = [
-  { column_id: "title", text: "Titre" },
-  { column_id: "content", text: "Contenu" },
+  { column_id: "report_message", text: "Message" },
+  { column_id: "user_email", text: "Email Utilisateur" },
+  { column_id: "admin_name", text: "Nom Admin" },
   { column_id: "status", text: "Statut" },
 ];
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
-    id: "id",
-    accessorKey: "name", // Utilisation de name comme clé d'accès
-    header: "Utilisateur",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        {row.original.photo_url ? (
-          <img
-            src={row.original.photo_url}
-            alt={row.original.name}
-            className="w-10 h-10 rounded-full"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-        )}
-        <span>{row.original.name}</span>
-      </div>
-    ),
-    enableHiding: false,
+    accessorKey: "report_message",
+    header: "Message",
+    cell: ({ row }) => {
+      const message = row.original.report_message;
+      return message.length > 50 ? message.substring(0, 50) + "..." : message;
+    },
   },
   {
-    accessorKey: "title",
-    header: "Titre",
-    cell: ({ row }) => row.original.title,
+    id: "user_email",
+    accessorKey: "user.email",
+    header: "Email Utilisateur",
+    cell: ({ row }) => <span>{row.original.user.email}</span>,
   },
   {
-    accessorKey: "content",
-    header: "Contenu",
-    cell: ({ row }) => row.original.content,
+    id: "admin_name",
+    accessorKey: "admin",
+    header: "Attribué à l'admin",
+    cell: ({ row }) => {
+      const admin = row.original.admin ? row.original.admin[0] : null;
+      return admin ? `${admin.first_name} ${admin.last_name}` : "N/A";
+    },
   },
   {
     accessorKey: "status",
@@ -120,73 +131,11 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "actions",
     cell: ({ row }) => (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="link" className="w-fit px-0 text-left text-foreground">
-            Voir plus
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="flex flex-col">
-          <SheetHeader className="gap-1">
-            <SheetTitle>{row.original.name}</SheetTitle>
-            <SheetDescription>Détails de l'utilisateur</SheetDescription>
-          </SheetHeader>
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
-            <div className="flex flex-col gap-3">
-              <Label>Photo</Label>
-              {row.original.photo_url ? (
-                <img
-                  src={row.original.photo_url}
-                  alt={row.original.name}
-                  className="w-20 h-20 rounded-full mx-auto"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto"></div>
-              )}
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Nom</Label>
-              <p>{row.original.name}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Titre</Label>
-              <p>{row.original.title}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Contenu</Label>
-              <p>{row.original.content}</p>
-            </div>
-            <div>
-              <Label>Statut</Label>
-              <br />
-              <Badge
-                variant={row.original.status === "wait" ? "outline" : "success"}
-                className="gap-1"
-              >
-                {row.original.status === "wait" ? (
-                  <>
-                    <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
-                    En attente
-                  </>
-                ) : (
-                  <>
-                    <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
-                    Validé
-                  </>
-                )}
-              </Badge>
-            </div>
-          </div>
-          <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
-            <Button className="w-full">En voir plus</Button>
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">
-                Fermer
-              </Button>
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+      <AssignAdminModal
+        reportId={row.original.report_id}
+        admin_id={row.original.admin && row.original.admin[0]?.admin_id || undefined}
+        message= {row.original.report_message}
+      />
     ),
   },
 ];
@@ -214,7 +163,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
       rowSelection,
       columnFilters,
     },
-    getRowId: (row) => row.id,
+    getRowId: (row) => row.report_id,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -323,4 +272,136 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
       </div>
     </>
   );
+}
+
+function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, admin_id?: string, message : string }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedAdminId, setSelectedAdminId] = React.useState<string | undefined>(admin_id);
+  const [admins, setAdmins] = React.useState<AdminData[]>([]);
+  const [comment, setComment] = React.useState<string>("");
+
+  const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
+
+  const isSuperAdmin = admin.super_admin || false;
+  const adminId = admin.admin_id;
+
+  React.useEffect(() => {
+    getAllAdmins().then((data) => {
+      if (data) {
+        setAdmins(data);
+      }
+    });
+  }, []);
+
+  const handleAssignAdmin = async () => {
+    if (selectedAdminId) {
+      await ReportApi.attributeReport(reportId, selectedAdminId);
+      setIsOpen(false);
+    }
+  };
+
+  const handleCommentSubmit = async () => {
+    await ReportApi.responseReport(reportId, comment);
+    setIsOpen(false);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="link" className="w-fit px-0 text-left text-foreground">
+          {adminId === admin_id ? "Gérer" : isSuperAdmin ? "Attribuer" : "Commenter"}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{adminId === admin_id ? "Gérer le Ticket" : isSuperAdmin ? "Attribuer à un Admin" : "Ajouter un Commentaire"}</DialogTitle>
+          <DialogDescription>
+            {adminId === admin_id
+              ? "Gérez ce signalement."
+              : isSuperAdmin
+              ? "Sélectionnez un administrateur pour attribuer ce signalement."
+              : "Ajoutez un commentaire pour ce signalement."}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          {isSuperAdmin && adminId !== admin_id ? (
+            <>
+              <Label htmlFor="admin_id_get">Sélectionnez un administrateur</Label>
+              <Select
+                value={selectedAdminId}
+                onValueChange={setSelectedAdminId}
+              >
+                <SelectTrigger id="admin_id_get" className="h-auto ps-2 w-full [&>span]:flex [&>span]:items-center [&>span]:gap-2">
+                  <SelectValue placeholder="Sélectionnez un admin" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {admins.length > 0 ? (
+                    admins.map((admin) => (
+                      <SelectItem key={admin.admin_id} value={admin.admin_id}>
+                        <span className="flex items-center gap-2">
+                          {admin.photo ? (
+                            <img
+                              className="rounded-full w-8 h-8 object-cover"
+                              src={admin.photo}
+                              alt={admin.first_name}
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = "";
+                              }}
+                            />
+                          ) : (
+                            <div className="rounded-full w-8 h-8 flex items-center justify-center bg-secondary">
+                              {getAdminInitials(admin)}
+                            </div>
+                          )}
+                          <span>
+                            <span className="block font-medium text-left">
+                              {admin.first_name} {admin.last_name}
+                            </span>
+                            <span className="text-muted-foreground text-xs">
+                              {admin.email}
+                            </span>
+                          </span>
+                        </span>
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </SelectContent>
+              </Select>
+            </>
+          ) : (
+            <>
+              <div>{message}</div>
+              <Label htmlFor="comment">Ajouter un commentaire</Label>
+              <textarea
+                id="comment"
+                className="w-full p-2 border rounded"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </>
+          )}
+        </div>
+        <DialogFooter>
+          <Button type="submit" onClick={isSuperAdmin && adminId !== admin_id ? handleAssignAdmin : handleCommentSubmit}>
+            {isSuperAdmin && adminId !== admin_id ? "Attribuer" : "Soumettre"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface AdminData {
+  admin_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  photo?: string;
+}
+
+function getAdminInitials(admin: AdminData) {
+  return `${admin.first_name.charAt(0)}${admin.last_name.charAt(0)}`;
 }
