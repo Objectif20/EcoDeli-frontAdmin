@@ -26,17 +26,17 @@ export default function EditPlanPage() {
 
   const formSchema = z.object({
     name: z.string().min(1, { message: "Le nom est requis." }),
-    price: z.number().min(0, { message: "Le prix doit être un nombre valide." }),
-    priority_shipping_percentage: z.number().min(0, { message: "Le pourcentage doit être un nombre valide." }),
-    priority_months_offered: z.number().min(0, { message: "Le nombre de mois doit être supérieur ou égal à 0." }),
-    max_insurance_coverage: z.number().min(0, { message: "La couverture d'assurance doit être un nombre valide." }),
-    extra_insurance_price: z.number().min(0, { message: "Le prix de l'assurance supplémentaire doit être un nombre valide." }),
-    shipping_discount: z.number().min(0, { message: "La réduction sur la livraison doit être un nombre valide." }),
-    permanent_discount: z.number().min(0, { message: "La réduction permanente doit être un nombre valide." }),
-    permanent_discount_percentage: z.number().min(0, { message: "Le pourcentage de réduction doit être un nombre valide." }).optional(),
-    small_package_permanent_discount: z.number().min(0, { message: "La réduction pour petits colis doit être un nombre valide." }),
+    price: z.string().refine((val) => !isNaN(Number(val)), { message: "Le prix doit être un nombre valide." }),
+    priority_shipping_percentage: z.string().refine((val) => !isNaN(Number(val)), { message: "Le pourcentage doit être un nombre valide." }),
+    priority_months_offered: z.string().refine((val) => !isNaN(Number(val)), { message: "Le nombre de mois doit être supérieur ou égal à 0." }),
+    max_insurance_coverage: z.string().refine((val) => !isNaN(Number(val)), { message: "La couverture d'assurance doit être un nombre valide." }),
+    extra_insurance_price: z.string().refine((val) => !isNaN(Number(val)), { message: "Le prix de l'assurance supplémentaire doit être un nombre valide." }),
+    shipping_discount: z.string().refine((val) => !isNaN(Number(val)), { message: "La réduction sur la livraison doit être un nombre valide." }),
+    permanent_discount: z.string().refine((val) => !isNaN(Number(val)), { message: "La réduction permanente doit être un nombre valide." }),
+    permanent_discount_percentage: z.string().refine((val) => !isNaN(Number(val)) || val === "", { message: "Le pourcentage de réduction doit être un nombre valide." }).optional(),
+    small_package_permanent_discount: z.string().refine((val) => !isNaN(Number(val)), { message: "La réduction pour petits colis doit être un nombre valide." }),
     first_shipping_free: z.boolean(),
-    first_shipping_free_threshold: z.number().min(0, { message: "Le seuil doit être un nombre valide." }),
+    first_shipping_free_threshold: z.string().refine((val) => !isNaN(Number(val)), { message: "Le seuil doit être un nombre valide." }),
     is_pro: z.boolean(),
   });
 
@@ -44,17 +44,17 @@ export default function EditPlanPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: planDetail?.name || "",
-      price: planDetail?.price ? Number(planDetail.price) : 0,
-      priority_shipping_percentage: planDetail?.priority_shipping_percentage ? Number(planDetail.priority_shipping_percentage) : 0,
-      priority_months_offered: planDetail?.priority_months_offered || 0,
-      max_insurance_coverage: planDetail?.max_insurance_coverage ? Number(planDetail.max_insurance_coverage) : 0,
-      extra_insurance_price: planDetail?.extra_insurance_price ? Number(planDetail.extra_insurance_price) : 0,
-      shipping_discount: planDetail?.shipping_discount ? Number(planDetail.shipping_discount) : 0,
-      permanent_discount: planDetail?.permanent_discount ? Number(planDetail.permanent_discount) : 0,
-      permanent_discount_percentage: planDetail?.permanent_discount_percentage ? Number(planDetail.permanent_discount_percentage) : undefined,
-      small_package_permanent_discount: planDetail?.small_package_permanent_discount ? Number(planDetail.small_package_permanent_discount) : 0,
+      price: planDetail?.price ? String(planDetail.price) : "",
+      priority_shipping_percentage: planDetail?.priority_shipping_percentage ? String(planDetail.priority_shipping_percentage) : "",
+      priority_months_offered: planDetail?.priority_months_offered ? String(planDetail.priority_months_offered) : "",
+      max_insurance_coverage: planDetail?.max_insurance_coverage ? String(planDetail.max_insurance_coverage) : "",
+      extra_insurance_price: planDetail?.extra_insurance_price ? String(planDetail.extra_insurance_price) : "",
+      shipping_discount: planDetail?.shipping_discount ? String(planDetail.shipping_discount) : "",
+      permanent_discount: planDetail?.permanent_discount ? String(planDetail.permanent_discount) : "",
+      permanent_discount_percentage: planDetail?.permanent_discount_percentage ? String(planDetail.permanent_discount_percentage) : "",
+      small_package_permanent_discount: planDetail?.small_package_permanent_discount ? String(planDetail.small_package_permanent_discount) : "",
       first_shipping_free: planDetail?.first_shipping_free || false,
-      first_shipping_free_threshold: planDetail?.first_shipping_free_threshold ? Number(planDetail.first_shipping_free_threshold) : 0,
+      first_shipping_free_threshold: planDetail?.first_shipping_free_threshold ? String(planDetail.first_shipping_free_threshold) : "",
       is_pro: planDetail?.is_pro || false,
     },
   });
@@ -64,23 +64,22 @@ export default function EditPlanPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     const fetchPlan = async () => {
       try {
         if (id) {
           const data = await GetSubscriptionById(id);
           setPlanDetail(data);
           setValue("name", data.name || "");
-          setValue("price", Number(data.price) || 0);
-          setValue("priority_shipping_percentage", Number(data.priority_shipping_percentage) || 0);
-          setValue("priority_months_offered", Number(data.priority_months_offered) || 0);
-          setValue("max_insurance_coverage", Number(data.max_insurance_coverage) || 0);
-          setValue("extra_insurance_price", Number(data.extra_insurance_price) || 0);
-          setValue("shipping_discount", Number(data.shipping_discount) || 0);
-          setValue("permanent_discount", Number(data.permanent_discount) || 0);
-          setValue("small_package_permanent_discount", Number(data.small_package_permanent_discount) || 0);
+          setValue("price", String(data.price) || "");
+          setValue("priority_shipping_percentage", String(data.priority_shipping_percentage) || "");
+          setValue("priority_months_offered", String(data.priority_months_offered) || "");
+          setValue("max_insurance_coverage", String(data.max_insurance_coverage) || "");
+          setValue("extra_insurance_price", String(data.extra_insurance_price) || "");
+          setValue("shipping_discount", String(data.shipping_discount) || "");
+          setValue("permanent_discount", String(data.permanent_discount) || "");
+          setValue("small_package_permanent_discount", String(data.small_package_permanent_discount) || "");
           setValue("first_shipping_free", data.first_shipping_free || false);
-          setValue("first_shipping_free_threshold", Number(data.first_shipping_free_threshold) || 0);
+          setValue("first_shipping_free_threshold", String(data.first_shipping_free_threshold) || "");
           setValue("is_pro", data.is_pro || false);
         } else {
           console.error('Error: id is undefined');
@@ -90,13 +89,8 @@ export default function EditPlanPage() {
       }
     };
 
-    
-
     fetchPlan();
-
-    
   }, [id, setValue]);
-
 
   useEffect(() => {
     dispatch(
@@ -111,20 +105,21 @@ export default function EditPlanPage() {
     if (data && id) {
       const apiData: Subscriptions = {
         ...data,
-        priority_shipping_percentage: String(data.priority_shipping_percentage),
-        max_insurance_coverage: String(data.max_insurance_coverage),
-        extra_insurance_price: String(data.extra_insurance_price),
-        shipping_discount: String(data.shipping_discount),
-        permanent_discount: String(data.permanent_discount),
-        permanent_discount_percentage: data.permanent_discount_percentage ? String(data.permanent_discount_percentage) : undefined,
-        small_package_permanent_discount: String(data.small_package_permanent_discount),
-        first_shipping_free_threshold: String(data.first_shipping_free_threshold),
+        price: Number(data.price),
+        priority_shipping_percentage: (data.priority_shipping_percentage),
+        priority_months_offered: Number(data.priority_months_offered),
+        max_insurance_coverage: (data.max_insurance_coverage),
+        extra_insurance_price: (data.extra_insurance_price),
+        shipping_discount: (data.shipping_discount),
+        permanent_discount: (data.permanent_discount),
+        permanent_discount_percentage: data.permanent_discount_percentage ? (data.permanent_discount_percentage) : undefined,
+        small_package_permanent_discount: (data.small_package_permanent_discount),
+        first_shipping_free_threshold: (data.first_shipping_free_threshold),
       };
-  
+
       await updateSubscription(id, apiData);
 
       navigate("/office/finance/plans");
-      
     }
     console.log(data);
   }
@@ -160,7 +155,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Prix</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Prix de la formule en euros</FormDescription>
                   <FormMessage />
@@ -174,7 +169,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Livraison prioritaire (%)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Pourcentage de livraison prioritaire</FormDescription>
                   <FormMessage />
@@ -188,7 +183,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Mois de priorité offerts</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Nombre de mois de priorité offerts</FormDescription>
                   <FormMessage />
@@ -202,7 +197,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Couverture d'assurance maximale (€)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Couverture d'assurance maximale en euros</FormDescription>
                   <FormMessage />
@@ -216,7 +211,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Prix de l'assurance supplémentaire (€)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Prix de l'assurance supplémentaire en euros</FormDescription>
                   <FormMessage />
@@ -230,7 +225,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Réduction sur la livraison (€)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Réduction sur la livraison en euros</FormDescription>
                   <FormMessage />
@@ -244,7 +239,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Réduction permanente (€)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Réduction permanente en euros</FormDescription>
                   <FormMessage />
@@ -258,7 +253,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Réduction permanente pour petits colis (€)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Réduction permanente pour petits colis en euros</FormDescription>
                   <FormMessage />
@@ -290,7 +285,7 @@ export default function EditPlanPage() {
                 <FormItem>
                   <FormLabel>Seuil pour la première livraison gratuite (€)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} type="text" />
                   </FormControl>
                   <FormDescription>Seuil en euros pour la première livraison gratuite</FormDescription>
                   <FormMessage />
