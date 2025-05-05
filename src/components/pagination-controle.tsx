@@ -14,11 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 interface PaginationControlsProps {
   pageIndex: number;
   pageSize: number;
-  totalItems?: number | 0;
+  totalItems: number;
   onPageIndexChange: (pageIndex: number) => void;
   onPageSizeChange: (pageSize: number) => void;
 }
@@ -30,23 +31,21 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   onPageIndexChange,
   onPageSizeChange,
 }) => {
-  const totalPages = totalItems ? Math.ceil(totalItems / pageSize) : 0;
-  
+  const { t } = useTranslation();
+  const totalPages = Math.ceil(totalItems / pageSize);
 
   return (
     <div className="flex items-center justify-between px-4 mt-6">
-    {totalItems ? (
       <div className="hidden flex-1 text-sm lg:flex">
-        {totalItems} ligne{totalItems > 1 ? "s" : ""} au total.
+       {totalItems > 1
+         ? t("client.components.pagination.totalRowsWithS", { count: totalItems })
+         : t("client.components.pagination.totalRowsWithoutS", { count: totalItems })}
+        
       </div>
-    ) : (
-      <div></div>
-    )}
-
       <div className="flex w-full items-center gap-8 lg:w-fit">
         <div className="hidden items-center gap-2 lg:flex">
           <Label htmlFor="rows-per-page" className="text-sm font-medium">
-            Ligne par page
+            {t("client.components.pagination.rowsPerPage")}
           </Label>
           <Select
             value={`${pageSize}`}
@@ -58,7 +57,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
               <SelectValue placeholder={pageSize.toString()} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[1,10, 20, 30, 40, 50].map((size) => (
+              {[1, 10, 20, 30, 40, 50].map((size) => (
                 <SelectItem key={size} value={`${size}`}>
                   {size}
                 </SelectItem>
@@ -66,13 +65,9 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             </SelectContent>
           </Select>
         </div>
-        {totalItems && (
         <div className="flex w-fit items-center justify-center text-sm font-medium">
-          Page {pageIndex + 1} sur {totalPages}
+          {t("client.components.pagination.pageCount", { current: pageIndex + 1, total: totalPages })}
         </div>
-          
-          )}
-
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <Button
             variant="outline"
@@ -80,7 +75,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             onClick={() => onPageIndexChange(0)}
             disabled={pageIndex === 0}
           >
-            <span className="sr-only">Première page</span>
+            <span className="sr-only">{t("client.components.pagination.firstPage")}</span>
             <ChevronsLeftIcon className="h-4 w-4" />
           </Button>
           <Button
@@ -90,7 +85,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             onClick={() => onPageIndexChange(pageIndex - 1)}
             disabled={pageIndex === 0}
           >
-            <span className="sr-only">Page précédente</span>
+            <span className="sr-only">{t("client.components.pagination.previousPage")}</span>
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <Button
@@ -100,7 +95,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             onClick={() => onPageIndexChange(pageIndex + 1)}
             disabled={pageIndex >= totalPages - 1}
           >
-            <span className="sr-only">Page suivante</span>
+            <span className="sr-only">{t("client.components.pagination.nextPage")}</span>
             <ChevronRightIcon className="h-4 w-4" />
           </Button>
           <Button
@@ -110,7 +105,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             onClick={() => onPageIndexChange(totalPages - 1)}
             disabled={pageIndex >= totalPages - 1}
           >
-            <span className="sr-only">Dernière page</span>
+            <span className="sr-only">{t("client.components.paginationlastPage")}</span>
             <ChevronsRightIcon className="h-4 w-4" />
           </Button>
         </div>

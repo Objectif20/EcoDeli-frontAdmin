@@ -14,8 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 export default function EditPlanPage() {
+  const { t } = useTranslation();
   const [planDetail, setPlanDetail] = useState<Subscriptions | null>(null);
   const { id } = useParams<{ id: string }>();
 
@@ -25,18 +27,18 @@ export default function EditPlanPage() {
   }
 
   const formSchema = z.object({
-    name: z.string().min(1, { message: "Le nom est requis." }),
-    price: z.string().refine((val) => !isNaN(Number(val)), { message: "Le prix doit être un nombre valide." }),
-    priority_shipping_percentage: z.string().refine((val) => !isNaN(Number(val)), { message: "Le pourcentage doit être un nombre valide." }),
-    priority_months_offered: z.string().refine((val) => !isNaN(Number(val)), { message: "Le nombre de mois doit être supérieur ou égal à 0." }),
-    max_insurance_coverage: z.string().refine((val) => !isNaN(Number(val)), { message: "La couverture d'assurance doit être un nombre valide." }),
-    extra_insurance_price: z.string().refine((val) => !isNaN(Number(val)), { message: "Le prix de l'assurance supplémentaire doit être un nombre valide." }),
-    shipping_discount: z.string().refine((val) => !isNaN(Number(val)), { message: "La réduction sur la livraison doit être un nombre valide." }),
-    permanent_discount: z.string().refine((val) => !isNaN(Number(val)), { message: "La réduction permanente doit être un nombre valide." }),
-    permanent_discount_percentage: z.string().refine((val) => !isNaN(Number(val)) || val === "", { message: "Le pourcentage de réduction doit être un nombre valide." }).optional(),
-    small_package_permanent_discount: z.string().refine((val) => !isNaN(Number(val)), { message: "La réduction pour petits colis doit être un nombre valide." }),
+    name: z.string().min(1, { message: t("pages.subscription.update.page.errors.required") }),
+    price: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
+    priority_shipping_percentage: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
+    priority_months_offered: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.non_negative") }),
+    max_insurance_coverage: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
+    extra_insurance_price: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
+    shipping_discount: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
+    permanent_discount: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
+    permanent_discount_percentage: z.string().refine((val) => !isNaN(Number(val)) || val === "", { message: t("pages.subscription.update.page.errors.valid_number") }).optional(),
+    small_package_permanent_discount: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
     first_shipping_free: z.boolean(),
-    first_shipping_free_threshold: z.string().refine((val) => !isNaN(Number(val)), { message: "Le seuil doit être un nombre valide." }),
+    first_shipping_free_threshold: z.string().refine((val) => !isNaN(Number(val)), { message: t("pages.subscription.update.page.errors.valid_number") }),
     is_pro: z.boolean(),
   });
 
@@ -95,11 +97,15 @@ export default function EditPlanPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Abonnements", planDetail?.name || ""],
+        segments: [
+          t("pages.subscription.update.breadcrumb.home"),
+          t("pages.subscription.update.breadcrumb.subscriptions"),
+          planDetail?.name || ""
+        ],
         links: ["/office/dashboard", 'office/finance/plans'],
       })
     );
-  }, [planDetail, dispatch]);
+  }, [planDetail, dispatch, t]);
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     if (data && id) {
@@ -130,7 +136,9 @@ export default function EditPlanPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">Modifier la Formule d'Abonnement</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">
+        {t("pages.subscription.update.page.title")}
+      </h1>
       <Card className="p-6 border rounded-lg shadow-md">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -139,11 +147,11 @@ export default function EditPlanPage() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.name")}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormDescription>Nom de la formule</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.name_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -153,11 +161,11 @@ export default function EditPlanPage() {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prix</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.price")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Prix de la formule en euros</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.price_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -167,11 +175,11 @@ export default function EditPlanPage() {
               name="priority_shipping_percentage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Livraison prioritaire (%)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.priority_shipping")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Pourcentage de livraison prioritaire</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.priority_shipping_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -181,11 +189,11 @@ export default function EditPlanPage() {
               name="priority_months_offered"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mois de priorité offerts</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.priority_months_offered")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Nombre de mois de priorité offerts</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.priority_months_offered_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -195,11 +203,11 @@ export default function EditPlanPage() {
               name="max_insurance_coverage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Couverture d'assurance maximale (€)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.max_insurance_coverage")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Couverture d'assurance maximale en euros</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.max_insurance_coverage_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -209,11 +217,11 @@ export default function EditPlanPage() {
               name="extra_insurance_price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prix de l'assurance supplémentaire (€)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.extra_insurance_price")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Prix de l'assurance supplémentaire en euros</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.extra_insurance_price_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -223,11 +231,11 @@ export default function EditPlanPage() {
               name="shipping_discount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Réduction sur la livraison (€)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.shipping_discount")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Réduction sur la livraison en euros</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.shipping_discount_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -237,11 +245,11 @@ export default function EditPlanPage() {
               name="permanent_discount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Réduction permanente (€)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.permanent_discount")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Réduction permanente en euros</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.permanent_discount_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -251,11 +259,11 @@ export default function EditPlanPage() {
               name="small_package_permanent_discount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Réduction permanente pour petits colis (€)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.small_package_permanent_discount")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Réduction permanente pour petits colis en euros</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.small_package_permanent_discount_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -272,8 +280,8 @@ export default function EditPlanPage() {
                       className="mr-2"
                     />
                   </FormControl>
-                  <FormLabel>Première livraison gratuite</FormLabel>
-                  <FormDescription>La première livraison est-elle gratuite ?</FormDescription>
+                  <FormLabel>{t("pages.subscription.update.page.form.first_shipping_free")}</FormLabel>
+                  <FormDescription>{t("pages.subscription.update.page.form.first_shipping_free_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -283,11 +291,11 @@ export default function EditPlanPage() {
               name="first_shipping_free_threshold"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Seuil pour la première livraison gratuite (€)</FormLabel>
+                  <FormLabel>{t("pages.subscription.update.page.form.first_shipping_free_threshold")}</FormLabel>
                   <FormControl>
                     <Input {...field} type="text" />
                   </FormControl>
-                  <FormDescription>Seuil en euros pour la première livraison gratuite</FormDescription>
+                  <FormDescription>{t("pages.subscription.update.page.form.first_shipping_free_threshold_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -304,15 +312,15 @@ export default function EditPlanPage() {
                       className="mr-2"
                     />
                   </FormControl>
-                  <FormLabel>Formule professionnelle</FormLabel>
-                  <FormDescription>Est-ce une formule professionnelle ?</FormDescription>
+                  <FormLabel>{t("pages.subscription.update.page.form.is_pro")}</FormLabel>
+                  <FormDescription>{t("pages.subscription.update.page.form.is_pro_description")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <CardFooter className="flex justify-center mt-4">
               <Button type="submit" className="btn btn-primary">
-                Mettre à jour
+                {t("pages.subscription.update.page.form.update_button")}
               </Button>
             </CardFooter>
           </form>

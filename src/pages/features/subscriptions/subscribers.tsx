@@ -4,7 +4,8 @@ import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { GetSubscribersList } from "@/api/subscriptions.api";
 import { z } from "zod";
-import { SubscriberDataTable } from "@/components/features/subscriptions/suscribers/data-table";
+import SubscriberDataTable from "@/components/features/subscriptions/suscribers/data-table";
+import { useTranslation } from "react-i18next";
 
 export const subscriberSchema = z.object({
   subscription_id: z.string(),
@@ -18,17 +19,20 @@ export const subscriberSchema = z.object({
 });
 
 export default function SubscriberPage() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [subscriberData, setSubscriberData] = useState<z.infer<typeof subscriberSchema>[]>([]);
+  const [subscriberData, setSubscriberData] = useState<Array<z.infer<typeof subscriberSchema>>>([]);
   const [totalItems, setTotalItems] = useState(0);
-
 
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Abonnés"],
+        segments: [
+          t("pages.subscription.list.breadcrumb.home"),
+          t("pages.subscription.list.breadcrumb.subscribers"),
+        ],
         links: ["/office/dashboard"],
       })
     );
@@ -47,7 +51,7 @@ export default function SubscriberPage() {
     };
 
     fetchSubscriberData();
-  }, [dispatch, pageIndex, pageSize]);
+  }, [dispatch, pageIndex, pageSize, t]);
 
   const paginatedData = useMemo(() => {
     return subscriberData;
@@ -60,20 +64,21 @@ export default function SubscriberPage() {
   return (
     <>
       <div className="w-full">
-        <h1 className="text-2xl font-semibold mb-4">Ensemble des abonnés EcoDeli</h1>
-      <SubscriberDataTable key={`${pageIndex}-${pageSize}`} data={paginatedData} />
-      <PaginationControls
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        totalItems={totalItems}
-        onPageIndexChange={setPageIndex}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-          setPageIndex(0);
-        }}
-      />
-          </div>
+        <h1 className="text-2xl font-semibold mb-4">
+          {t("pages.subscription.list.page.title")}
+        </h1>
+        <SubscriberDataTable key={`${pageIndex}-${pageSize}`} data={paginatedData} />
+        <PaginationControls
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageIndexChange={setPageIndex}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPageIndex(0);
+          }}
+        />
+      </div>
     </>
-
   );
 }

@@ -42,6 +42,7 @@
       "prenomTailleMax": "Le prénom doit contenir au maximum 255 caractères",
       "champEmail": "Email",
       "placeholderEmail": "Entrez votre email",
+      "forgotPassword": "Mot de passe oublié ?",
       "emailFormat": "L'email doit être au format valide",
       "chargement": "Chargement...",
       "sauvegarder": "Sauvegarder",
@@ -62,13 +63,13 @@
     },
     "ticket": {
       "titre": "Tickets",
-      "action" : "Créer un ticket",
-      "premierEcrit" : "Problème à résoudre...",
-      "titreLabel" : "Titre du ticket",
+      "action": "Créer un ticket",
+      "premierEcrit": "Problème à résoudre...",
+      "titreLabel": "Titre du ticket",
       "breadcrumb": {
         "accueil": "Accueil",
         "ticket": "Tickets",
-        "creer" : "Créer un ticket"
+        "creer": "Créer un ticket"
       },
       "colonnes": {
         "pending": "En attente",
@@ -83,45 +84,424 @@
       "assigne": "Assigné à :",
       "details": {
         "titre": "Détails du ticket",
-        "erreur" : "Le titre est obligatoire",
+        "erreur": "Le titre est obligatoire",
         "wysiwyg": {
           "titre": "Description",
           "placeholder": "Entrez la description du ticket"
         },
-        "select" : {
-          "status" : {
-            "label" : "Statut",
-            "placeholder" : "Sélectionnez un statut",
-            "titre" : "Statut",
-            "open" : "Ouvert",
-            "closed" : "Fermé",
-            "erreur" : "Le statut est obligatoire"
-          }, 
-          "priorite" : {
-            "label" : "Priorité",
-            "placeholder" : "Sélectionnez une priorité",
-            "high" : "Haute",
-            "medium" : "Moyenne",
-            "low" : "Basse",
-            "erreur" : "La priorité est obligatoire"
+        "select": {
+          "status": {
+            "label": "Statut",
+            "placeholder": "Sélectionnez un statut",
+            "titre": "Statut",
+            "open": "Ouvert",
+            "closed": "Fermé",
+            "erreur": "Le statut est obligatoire"
           },
-          "etat" : {
-            "label" : "État",
-            "placeholder" : "Sélectionnez un état",
-            "pending" : "En attente",
-            "progress" : "En cours",
-            "done" : "Terminé",
-            "erreur" : "L'état est obligatoire"
+          "priorite": {
+            "label": "Priorité",
+            "placeholder": "Sélectionnez une priorité",
+            "high": "Haute",
+            "medium": "Moyenne",
+            "low": "Basse",
+            "erreur": "La priorité est obligatoire"
           },
-          "assigne" : {
-            "label" : "Assigné à",
-            "placeholder" : "Sélectionnez un utilisateur",
-            "erreur" : "L'utilisateur est obligatoire"
+          "etat": {
+            "label": "État",
+            "placeholder": "Sélectionnez un état",
+            "pending": "En attente",
+            "progress": "En cours",
+            "done": "Terminé",
+            "erreur": "L'état est obligatoire"
+          },
+          "assigne": {
+            "label": "Assigné à",
+            "placeholder": "Sélectionnez un utilisateur",
+            "erreur": "L'utilisateur est obligatoire"
           }
         },
         "bouton": {
           "sauvegarder": "Sauvegarder",
           "annuler": "Annuler"
+        }
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "breadcrumb": {
+        "home": "Accueil"
+      },
+      "chartAreaInteractive": {
+        "title": "Total de livraisons / prestations",
+        "description": "Total pour les 3 derniers mois",
+        "descriptionShort": "Les 3 derniers",
+        "toggleGroup": {
+          "3months": "3 derniers mois",
+          "1month": "Dernier mois",
+          "1week": "La dernière semaine"
+        },
+        "select": {
+          "placeholder": "3 derniers mois",
+          "options": {
+            "3months": "Les 3 derniers mois",
+            "1month": "Dernier mois",
+            "1week": "La dernière semaine"
+          }
+        }
+      },
+      "subscriptionChart": {
+        "title": "Répartition des nouveaux abonnements",
+        "description": "Les nouveaux abonnements sur les 6 derniers mois",
+        "footer": {
+          "increase": "Hausse de 5,2 %",
+          "period": "Janvier - Juin 2024"
+        }
+      },
+      "planChart": {
+        "title": "Répartition des abonnements",
+        "description": "Répartition des abonnements en fonction des plans",
+        "footer": {
+          "increase": "Augmentation de 7.8% ce mois-ci",
+          "totalParcels": "Affichage du nombre total de colis expédiés"
+        },
+        "labels": {
+          "free": "Free",
+          "starter": "Starter",
+          "premium": "Premium"
+        }
+      },
+      "parcelsChart": {
+        "title": "Nombre de colis expédiés",
+        "description": "Période : 6 derniers mois",
+        "footer": {
+          "increase": "Augmentation de 7.8% ce mois-ci",
+          "totalParcels": "Affichage du nombre total de colis expédiés"
+        },
+        "labels": {
+          "small": "Petit colis (S)",
+          "medium": "Moyen colis (M)",
+          "large": "Grand colis (L)",
+          "xlarge": "Très grand colis (XL)"
+        }
+      }
+    },
+    "mail": {
+      "title": "Mail",
+      "breadcrumb": {
+        "home": "Accueil",
+        "mails": "Mails"
+      },
+      "button": {
+        "create": "Rédiger un mail"
+      },
+      "createTicket": {
+        "title": "Rédiger un nouveau mail",
+        "breadcrumb": {
+          "home": "Accueil",
+          "mails": "Mails",
+          "create": "Créer un mail"
+        },
+        "form": {
+          "subject": "Objet du mail",
+          "profiles": "Choix du profil",
+          "dateTime": "Date et heure",
+          "description": "Choisissez une date et une heure",
+          "placeholder": {
+            "subject": "Objet du mail",
+            "profiles": "Choisissez des profils"
+          },
+          "button": {
+            "save": "Sauvegarder"
+          }
+        },
+        "editor": {
+          "placeholder": "Écrivez votre contenu ici..."
+        },
+        "error": {
+          "required": "Ce champ est requis."
+        },
+        "firstWrite": "Écrivez votre premier mail ici..."
+      },
+      "table": {
+        "columns": {
+          "subject": "Objet",
+          "sentDate": "Date d'envoi",
+          "isSent": "Envoyé",
+          "author": "Auteur",
+          "profiles": "Profils concernés",
+          "isNewsletter": "Newsletter",
+          "actions": "Actions"
+        },
+        "profileLabels": {
+          "all": "Tout le monde",
+          "deliveryman": "Transporteur",
+          "merchant": "Commerçant",
+          "client": "Expéditeur",
+          "provider": "Prestataire"
+        },
+        "status": {
+          "sent": "Envoyé",
+          "notSent": "Non envoyé"
+        },
+        "details": {
+          "title": "Détails de l'email",
+          "sentDate": "Date d'envoi",
+          "content": "Contenu",
+          "close": "Fermer"
+        },
+        "columnVisibility": {
+          "button": "Colonnes",
+          "menu": {
+            "subject": "Objet",
+            "sentDate": "Date d'envoi",
+            "isSent": "Envoyé",
+            "author": "Auteur",
+            "profiles": "Profils concernés",
+            "isNewsletter": "Newsletter"
+          }
+        }
+      }
+    },
+    "report": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "reports": "Signalements"
+      },
+      "table": {
+        "columns": {
+          "report_message": "Message",
+          "user_email": "Email Utilisateur",
+          "admin_name": "Attribué à l'admin",
+          "status": "Statut",
+          "actions": "Actions"
+        },
+        "status": {
+          "waiting": "En attente",
+          "validated": "Validé"
+        },
+        "columnVisibility": {
+          "button": "Colonnes"
+        },
+        "dialog": {
+          "title": {
+            "manage": "Gérer le Ticket",
+            "assign": "Attribuer à un Admin",
+            "comment": "Ajouter un Commentaire"
+          },
+          "description": {
+            "manage": "Gérez ce signalement.",
+            "assign": "Sélectionnez un administrateur pour attribuer ce signalement.",
+            "comment": "Ajoutez un commentaire pour ce signalement."
+          },
+          "labels": {
+            "selectAdmin": "Sélectionnez un administrateur",
+            "addComment": "Ajouter un commentaire"
+          },
+          "buttons": {
+            "assign": "Attribuer",
+            "submit": "Soumettre",
+            "manage": "Gérer",
+            "assignAdmin": "Attribuer",
+            "comment": "Commenter"
+          }
+        }
+      }
+    },
+    "languages": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "languages": "Langues",
+        "addLanguage": "Ajouter une langue",
+        "updateLanguage": "Modifier une langue"
+      },
+      "languagePage": {
+        "title": "Langues",
+        "importButton": "Importer une nouvelle langue",
+        "table": {
+          "flag": "Drapeau",
+          "name": "Nom",
+          "isoCode": "Code ISO",
+          "available": "Disponible",
+          "actions": "Actions",
+          "update": "Mettre à jour",
+          "noResults": "Aucun résultat."
+        },
+        "pagination": {
+          "columns": "Colonnes",
+          "showColumns": "Afficher les colonnes",
+          "hideColumns": "Masquer les colonnes"
+        }
+      },
+      "addLanguage": {
+        "title": "Ajouter une nouvelle langue",
+        "form": {
+          "languageName": "Nom de la langue",
+          "isoCode": "Code ISO",
+          "active": "Active",
+          "jsonEditor": "Éditeur JSON",
+          "uploadFile": "Fichier de langue (JSON)",
+          "uploadDescription": "Téléchargez un fichier JSON contenant les traductions pour cette langue.",
+          "search": "Rechercher",
+          "searchPlaceholder": "Rechercher une clé ou une valeur...",
+          "submitButton": "Ajouter la langue",
+          "importButton": "Importer"
+        },
+        "tabs": {
+          "editor": "Éditer directement",
+          "file": "Importer un fichier",
+          "visual": "Édition visuelle"
+        }
+      },
+      "updateLanguage": {
+        "title": "Mettre à jour la langue",
+        "form": {
+          "languageName": "Nom de la langue",
+          "isoCode": "Code ISO",
+          "active": "Active",
+          "jsonEditor": "Éditeur JSON",
+          "uploadFile": "Fichier de langue (JSON)",
+          "uploadDescription": "Téléchargez un fichier JSON contenant les traductions pour cette langue.",
+          "submitButton": "Télécharger le JSON",
+          "updateButton": "Mettre à jour"
+        },
+        "tabs": {
+          "editor": "Éditer directement",
+          "file": "Importer un fichier",
+          "visual": "Édition visuelle"
+        }
+      }
+    },
+    "subscription": {
+      "list": {
+        "breadcrumb": {
+          "home": "Accueil",
+          "subscribers": "Abonnés"
+        },
+        "table": {
+          "columns": {
+            "email": "Email",
+            "is_merchant": "Commerçant",
+            "plan_name": "Nom du Plan",
+            "start_date": "Date de Début",
+            "end_date": "Date de Fin"
+          },
+          "no_results": "Aucun résultat.",
+          "columns_button": "Colonnes"
+        },
+        "page": {
+          "title": "Ensemble des abonnés EcoDeli"
+        }
+      }, 
+      "plan" : {
+        "breadcrumb": {
+          "home": "Accueil",
+          "subscriptions": "Abonnements"
+        },
+        "page": {
+          "title": "Formules d'Abonnement",
+          "free": "Gratuit",
+          "price": "{{price}} €",
+          "priority_shipping": "Livraison prioritaire : {{percentage}} %",
+          "priority_months_offered": "Mois de priorité offerts : {{months}}",
+          "max_insurance_coverage": "Couverture d'assurance maximale : {{coverage}} €",
+          "extra_insurance_price": "Prix de l'assurance supplémentaire : {{price}} €",
+          "shipping_discount": "Réduction sur la livraison : {{discount}} €",
+          "permanent_discount": "Réduction permanente : {{discount}} €",
+          "small_package_permanent_discount": "Réduction permanente pour petits colis : {{discount}} €",
+          "first_shipping_free": "Première livraison gratuite : {{free}}",
+          "first_shipping_free_threshold": "Seuil pour la première livraison gratuite : {{threshold}} €",
+          "is_pro": "Formule professionnelle : {{isPro}}"
+        },
+        "buttons": {
+          "edit": "Modifier"
+        }
+      },
+      "update" : {
+        "breadcrumb": {
+          "home": "Accueil",
+          "subscriptions": "Abonnements"
+        },
+        "page": {
+          "title": "Modifier la Formule d'Abonnement",
+          "form": {
+            "name": "Nom",
+            "name_description": "Nom de la formule",
+            "price": "Prix",
+            "price_description": "Prix de la formule en euros",
+            "priority_shipping": "Livraison prioritaire (%)",
+            "priority_shipping_description": "Pourcentage de livraison prioritaire",
+            "priority_months_offered": "Mois de priorité offerts",
+            "priority_months_offered_description": "Nombre de mois de priorité offerts",
+            "max_insurance_coverage": "Couverture d'assurance maximale (€)",
+            "max_insurance_coverage_description": "Couverture d'assurance maximale en euros",
+            "extra_insurance_price": "Prix de l'assurance supplémentaire (€)",
+            "extra_insurance_price_description": "Prix de l'assurance supplémentaire en euros",
+            "shipping_discount": "Réduction sur la livraison (€)",
+            "shipping_discount_description": "Réduction sur la livraison en euros",
+            "permanent_discount": "Réduction permanente (€)",
+            "permanent_discount_description": "Réduction permanente en euros",
+            "small_package_permanent_discount": "Réduction permanente pour petits colis (€)",
+            "small_package_permanent_discount_description": "Réduction permanente pour petits colis en euros",
+            "first_shipping_free": "Première livraison gratuite",
+            "first_shipping_free_description": "La première livraison est-elle gratuite ?",
+            "first_shipping_free_threshold": "Seuil pour la première livraison gratuite (€)",
+            "first_shipping_free_threshold_description": "Seuil en euros pour la première livraison gratuite",
+            "is_pro": "Formule professionnelle",
+            "is_pro_description": "Est-ce une formule professionnelle ?",
+            "update_button": "Mettre à jour"
+          },
+          "errors": {
+            "required": "Le champ est requis.",
+            "valid_number": "Doit être un nombre valide.",
+            "non_negative": "Doit être supérieur ou égal à 0."
+          }
+        }
+      }
+    }, 
+    "admin": {
+      "list": {
+        "breadcrumb_home": "Accueil",
+        "breadcrumb_admins": "Administrateurs",
+        "title": "Ensemble des administrateurs EcoDeli",
+        "columns": {
+          "admin": "Admin",
+          "name": "Nom",
+          "email": "Email",
+          "roles": "Rôles",
+          "columns": "Colonnes"
+        },
+        "actions": {
+          "modify": "Modifier",
+          "modify_roles_title": "Modifier les rôles",
+          "modify_roles_description": "Sélectionnez les rôles pour {{name}}.",
+          "save": "Enregistrer",
+          "add_user": "Ajouter un utilisateur",
+          "create_admin_title": "Création d'un compte administrateur",
+          "create_admin_description": "Créer un profil administrateur",
+          "last_name": "Nom",
+          "last_name_placeholder": "Nom de famille",
+          "last_name_description": "Saisissez le nom",
+          "first_name": "Prénom",
+          "first_name_placeholder": "Prénom",
+          "first_name_description": "Saisissez le prénom",
+          "email": "Email",
+          "email_placeholder": "Email",
+          "email_description": "Saisissez le mail",
+          "roles": "Rôles",
+          "select_roles": "Sélectionnez les rôles",
+          "roles_description": "Sélectionnez les rôles",
+          "create_admin": "Créer l'administrateur"
+        },
+        "no_results": "Aucun résultat."
+      },
+      "create": {
+        "roles_options": {
+          "ticket": "Ticket",
+          "mail": "Mail",
+          "provider": "Prestataire",
+          "merchant": "Commerçant",
+          "delivery": "Livreur",
+          "finance": "Finance"
         }
       }
     }
@@ -169,7 +549,7 @@
         "listeCommercant": "Liste des commerçants"
       },
       "menuUser": {
-        "profil": "Profil",
+        "back": "Revenir à l'accueil",
         "deconnexion": "Déconnexion",
         "parametres": "Paramètres",
         "light": "Mode clair",
@@ -209,36 +589,35 @@
         "purpleSubtle": "Violet subtil"
       }
     },
-    "link" : {
+    "link": {
       "titre": "Lien",
       "ariaLabel": "Insérer un lien",
-      "url" : "URL",
-      "urlPlaceholder" : "Entrez l'URL",
-      "afficherTexte" : "Afficher le texte (optionnel)",
-      "afficherTextePlaceholder" : "Entrez le texte à afficher",
-      "ouvrirNouvelOnglet" : "Ouvrir dans un nouvel onglet",
-      "sauvegarder" : "Sauvegarder",
-      "copier" : "Copier",
-      "copie" : "Copié",
-      "editLink" : "Modifier le lien",
-      "openLinkInNewTab" : "Ouvrir le lien dans un nouvel onglet",
-      "removeLink" : "Supprimer le lien"
+      "url": "URL",
+      "urlPlaceholder": "Entrez l'URL",
+      "afficherTexte": "Afficher le texte (optionnel)",
+      "afficherTextePlaceholder": "Entrez le texte à afficher",
+      "ouvrirNouvelOnglet": "Ouvrir dans un nouvel onglet",
+      "sauvegarder": "Sauvegarder",
+      "copier": "Copier",
+      "copie": "Copié",
+      "editLink": "Modifier le lien",
+      "openLinkInNewTab": "Ouvrir le lien dans un nouvel onglet",
+      "removeLink": "Supprimer le lien"
     },
-    "image" : {
-      "titreLienImage" : "Ajouter une image par lien",
-      "ajouter" : "Ajouter ce lien",
-      "uploadFromComputer" : "Télécharger une image depuis votre ordinateur",
-      "titre" : "Image",
-      "choisir" : "Choisir une image",
-      "voir" : "Voir l'image",
-      "download" : "Télécharger l'image",
-      "copyImage" : "Copier l'image",
-      "copyLien" : "Copier le lien",
-      "ouvrirMenu" : "Ouvrir le menu"
-
+    "image": {
+      "titreLienImage": "Ajouter une image par lien",
+      "ajouter": "Ajouter ce lien",
+      "uploadFromComputer": "Télécharger une image depuis votre ordinateur",
+      "titre": "Image",
+      "choisir": "Choisir une image",
+      "voir": "Voir l'image",
+      "download": "Télécharger l'image",
+      "copyImage": "Copier l'image",
+      "copyLien": "Copier le lien",
+      "ouvrirMenu": "Ouvrir le menu"
     },
-    "lists" : "Listes",
-    "insertElements" : "Insérer des éléments",
+    "lists": "Listes",
+    "insertElements": "Insérer des éléments",
     "format": {
       "autoFormat": "Texte",
       "normal": "Normal",
@@ -261,6 +640,1284 @@
       "blocCode": "Bloc de code",
       "blocCitation": "Citation",
       "divider": "Diviseur"
+    }
+  },
+  "client": {
+    "pages": {
+      "public": {
+        "landing": {
+          "titre": "Faites de vos déplacements une opportunité !",
+          "description": "Recherchez. Trouvez. Et livrez.",
+          "bouton-action": "Chercher un colis sur ma route",
+          "testimonials": {
+            "titre": "Ce que pense nos clients de EcoDeli",
+            "description": "Avis laissés volontairement par nos clients.",
+            "avis": {
+              "message1": "EcoDeli a changé ma façon de livrer. Je peux maintenant livrer des colis tout en me déplaçant.",
+              "message2": "J'adore utiliser EcoDeli. C'est rapide, facile et écologique !",
+              "message3": "La plateforme est intuitive et j'ai trouvé des livraisons près de chez moi en un rien de temps."
+            }
+          },
+          "tuto": {
+            "titre": "Livrer votre colis n’aura jamais\n été aussi facile.",
+            "titre1": "Déposez une annonce de livraison.",
+            "titre2": "Discuter avec un livreur des conditions.",
+            "titre3": "Confier votre colis au livreur de confiance."
+          },
+          "FAQ": {
+            "titre": "Questions fréquentes",
+            "description": "Vous avez des questions ? Nous avons les réponses.",
+            "bouton": "Voir toutes les questions",
+            "questions": {
+              "question1": {
+                "question": "Comment fonctionne EcoDeli ?",
+                "reponse": "EcoDeli est une plateforme de livraison qui connecte les particuliers, les commerçants et les prestataires de services de livraison. Vous pouvez rechercher des livraisons près de chez vous et commencer à livrer des colis."
+              },
+              "question2": {
+                "question": "Comment puis-je devenir livreur ?",
+                "reponse": "Pour devenir livreur, il vous suffit de vous inscrire sur notre plateforme et de créer un profil. Vous pourrez ensuite rechercher des livraisons près de chez vous."
+              },
+              "question3": {
+                "question": "Quels types de livraisons puis-je effectuer ?",
+                "reponse": "Vous pouvez livrer des colis, des courses, des documents et bien plus encore. Il vous suffit de rechercher les livraisons disponibles sur notre plateforme."
+              },
+              "question4": {
+                "question": "Comment puis-je contacter le service client ?",
+                "reponse": "Il vos suffit de vous rendre sur la page Contact et de remplir le formulaire. Nous vous répondrons dans les plus brefs délais."
+              },
+              "question5": {
+                "question": "Comment puis-je suivre ma livraison ?",
+                "reponse": "Une fois que vous avez confié votre colis à un livreur, vous recevrez un lien de suivi par email. Vous pourrez suivre l'acheminement de votre colis en temps réel."
+              }
+            }
+          }
+        },
+        "legalNotices": {
+          "title": "Mentions Légales",
+          "intro": "Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l'économie numérique, il est précisé aux utilisateurs du Site l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi.",
+          "editor": {
+            "title": "Editeur du site",
+            "description": "Le site ecodeli.remythibaut.fr est édité par la société EcoDeli SAS au capital de 12345.67 euros, immatriculée au Registre de Commerce et des Sociétés de Paris sous le numéro 111 222 333 et ayant son siège social au 16 rue de l'Hôpital, 21000 Dijon."
+          },
+          "host": {
+            "title": "Hébergeur",
+            "description": "Le site ecodeli.remythibaut.fr est hébergé par la société OVH, 2 rue Kellermann - 59100 Roubaix - France. Le stockage des données personnelles des utilisateurs est exclusivement réalisé sur le serveur OVH.",
+            "images": "Les images du site ecodeli.remythibaut.fr sont hébergées sur un serveur hébergé en France, à Gravelines 59820 par OVH."
+          },
+          "privacyPolicy": "Lire la charte de confidentialité"
+        },
+        "accessibility": {
+          "title": "Déclaration d'accessibilité",
+          "commitment": "Le Service Public Régional de Bruxelles s'engage à rendre le présent site internet accessible, conformément à l’ordonnance du 4 octobre 2018 relative à l’accessibilité des sites internet et des applications mobiles des organismes publics régionaux et des communes.",
+          "applicability": "La présente déclaration sur l'accessibilité s'applique au site [address-du-site.brussels].",
+          "complianceStatus": "État de conformité",
+          "wcagDescription": "Les Web Content Accessibility Guidelines (WCAG) rassemblent les normes applicables en matière d’exigences d’accessibilité pour les personnes souffrant d’un handicap. Ces règles sont réparties en trois niveaux : niveau A, niveau AA et niveau AAA.",
+          "partialCompliance": "Le présent site internet est en conformité partielle avec l’ordonnance du 4 octobre 2018 relative à l’accessibilité des sites internet et des applications mobiles des organismes publics régionaux et des communes, en raison de la non-conformité/des non-conformités énumérée(s) ci-dessous.",
+          "inaccessibleContent": "Contenu non accessible",
+          "nonComplianceReason": "Le contenu visé ci-après n'est pas accessible pour la/les raison(s) suivante(s) :",
+          "nonComplianceDetails": "Non-conformité avec l'ordonnance régionale :\n- Certaines images n'ont pas de texte alternatif.\n- Les contrastes de couleurs ne sont pas suffisants sur certaines pages.\n- Les vidéos ne disposent pas toutes de sous-titres.\n\nMesures prises pour remédier au problème :\n- Ajout de textes alternatifs pour toutes les images d'ici fin 2025.\n- Amélioration des contrastes de couleurs d'ici le premier trimestre 2026.\n- Ajout de sous-titres pour toutes les vidéos d'ici mi-2026.",
+          "preparation": "Préparation de la présente déclaration sur l'accessibilité",
+          "preparationDate": "La présente déclaration a été préparée le 15 octobre 2023.",
+          "complianceMethod": "La conformité de ce site aux normes Web Content Accessibility Guidelines 2.1 niveau AA a été établie par AnySurfer ([lien vers la page de statut AnySurfer / approbation officielle]).\nOU : La méthode utilisée pour préparer cette déclaration : une évaluation réalisée par ExempleOrg. Le dernier réexamen de la déclaration a eu lieu le 1er octobre 2023.",
+          "feedback": "Retour d'information et coordonnées de contact",
+          "contactInfo": "Pour toute demande d’information relative au contenu du présent site internet, pour signaler une absence de conformité ou simplement pour nous faire part de vos avis ou suggestions, contactez :\nService public régional de Bruxelles\nBoulevard du Jardin Botanique, 20\n1035 Bruxelles\nTel. : + 32 2 204 21 11\ninfo@sprb.brussels",
+          "enforcementProcedure": "Procédure permettant d'assurer le respect des dispositions",
+          "enforcementDetails": "À déterminer.\nOU [Fournir une description de la procédure, ainsi qu'un lien vers cette dernière, à suivre en cas de réponse non satisfaisante à une notification ou demande envoyée conformément à l'article 7, paragraphe 1, point b), de la directive].\n[Indiquer les coordonnées pour contacter l'organisme de contrôle compétent].\n\nTaux de conformité actuel : 85%"
+        },
+        "faq": {
+          "titre": "Besoin d’aide ?",
+          "tabs": {
+            "delivery": {
+              "title": "Livraison",
+              "q1": {
+                "title": "Quels sont les délais de livraison ?",
+                "content": "Les délais de livraison varient selon votre localisation. En général, il faut compter entre 3 et 5 jours ouvrables."
+              },
+              "q2": {
+                "title": "Puis-je suivre ma commande ?",
+                "content": "Oui, vous recevrez un lien de suivi par email une fois votre commande expédiée."
+              },
+              "q3": {
+                "title": "Livrez-vous à l'international ?",
+                "content": "Oui, nous livrons dans plusieurs pays. Consultez notre page de livraison pour plus de détails."
+              },
+              "q4": {
+                "title": "Que faire si je ne suis pas chez moi au moment de la livraison ?",
+                "content": "Vous pouvez choisir une adresse alternative ou demander à ce que votre colis soit laissé dans un endroit sûr."
+              },
+              "q5": {
+                "title": "Puis-je retourner un produit livré ?",
+                "content": "Oui, vous avez 14 jours pour retourner un produit. Consultez notre politique de retour pour plus d'informations."
+              }
+            },
+            "service": {
+              "title": "Prestation",
+              "q1": {
+                "title": "Quels services proposez-vous ?",
+                "content": "Nous proposons une large gamme de services, de la consultation à la mise en œuvre de solutions."
+              },
+              "q2": {
+                "title": "Comment puis-je obtenir un devis ?",
+                "content": "Vous pouvez demander un devis en remplissant notre formulaire de contact."
+              },
+              "q3": {
+                "title": "Quels sont vos tarifs ?",
+                "content": "Nos tarifs varient selon le service demandé. Contactez-nous pour un devis personnalisé."
+              },
+              "q4": {
+                "title": "Proposez-vous des services personnalisés ?",
+                "content": "Oui, nous adaptons nos services à vos besoins spécifiques."
+              },
+              "q5": {
+                "title": "Quels sont vos délais de réalisation ?",
+                "content": "Les délais dépendent de la nature du projet. Nous vous fournirons une estimation précise lors de notre premier échange."
+              }
+            },
+            "subscription": {
+              "title": "Abonnements",
+              "q1": {
+                "title": "Comment fonctionnent vos abonnements ?",
+                "content": "Nos abonnements sont mensuels ou annuels et vous donnent accès à des fonctionnalités exclusives."
+              },
+              "q2": {
+                "title": "Puis-je annuler mon abonnement à tout moment ?",
+                "content": "Oui, vous pouvez annuler votre abonnement à tout moment depuis votre espace client."
+              },
+              "q3": {
+                "title": "Quels sont les avantages d'un abonnement annuel ?",
+                "content": "Un abonnement annuel vous permet de bénéficier d'une réduction par rapport à un abonnement mensuel."
+              },
+              "q4": {
+                "title": "Puis-je changer de formule d'abonnement ?",
+                "content": "Oui, vous pouvez changer de formule à tout moment depuis votre espace client."
+              },
+              "q5": {
+                "title": "Quels moyens de paiement acceptez-vous ?",
+                "content": "Nous acceptons les paiements par carte bancaire, PayPal et virement bancaire."
+              }
+            },
+            "security": {
+              "title": "Sécurité",
+              "q1": {
+                "title": "Comment protégez-vous mes données personnelles ?",
+                "content": "Nous utilisons des protocoles de sécurité avancés pour protéger vos données personnelles."
+              },
+              "q2": {
+                "title": "Vos services sont-ils conformes au RGPD ?",
+                "content": "Oui, nous respectons les exigences du RGPD pour la protection des données."
+              },
+              "q3": {
+                "title": "Comment puis-je signaler un problème de sécurité ?",
+                "content": "Vous pouvez nous contacter via notre formulaire de contact pour signaler tout problème de sécurité."
+              },
+              "q4": {
+                "title": "Utilisez-vous des cookies ?",
+                "content": "Oui, nous utilisons des cookies pour améliorer votre expérience utilisateur. Vous pouvez consulter notre politique de cookies pour plus d'informations."
+              },
+              "q5": {
+                "title": "Comment sécurisez-vous les paiements en ligne ?",
+                "content": "Nous utilisons des passerelles de paiement sécurisées pour garantir la sécurité de vos transactions."
+              }
+            }
+          }
+        },
+        "teams": {
+          "title": "Qui sommes-nous ?",
+          "remy_thibaut": "Rémy THIBAUT",
+          "damien_vaurette": "Damien VAURETTE",
+          "quentin_delneuf": "Quentin Delneuf",
+          "frederic_sananes": "Fréderic SANANES",
+          "kevin_trancho": "Kevin TRANCHO",
+          "christophe_delon": "Christophe DELON",
+          "maxime_antoine": "Maxime ANTOINE",
+          "john_doe": "John Doe",
+          "gregoire_petit": "Gréroire Petit",
+          "alice_bob": "Alice Bob",
+          "developer": "Développeur Fullstack",
+          "network_manager": "Directeur de l’équipe réseau",
+          "database_manager": "Responsable des bases de données",
+          "pedagogical_director": "Directeur Pédagogique",
+          "accounting_expert": "Expert comptabilité",
+          "mobile_specialist": "Spécialiste application mobile",
+          "api_referent": "Référent APIs",
+          "sales": "Commercial",
+          "communication_manager": "Gérant communication / forum",
+          "app_tester": "Testeuse de l’application"
+        },
+        "contact": {
+          "title": "Contactez-nous",
+          "description": "Que vous ayez une question, une remarque ou bien un problème avec un autre utilisateur, EcoDeli est toujours avec vous pour vous aider.",
+          "sections": {
+            "faq": {
+              "title": "Comment utiliser EcoDeli ?",
+              "description": "Ne vous inquiétez pas, vous pouvez retrouver sur notre page FAQ les réponses aux questions les plus souvent posées par les utilisateurs.",
+              "button": "Accéder à la FAQ"
+            },
+            "userIssue": {
+              "title": "Problème avec un autre utilisateur ?",
+              "description": "Cela arrive, même au meilleur. Heureusement, nous avons toujours une solution. N’hésitez pas à contacter notre support afin qu’il puisse vous aider à résoudre ce problème."
+            },
+            "bugReport": {
+              "title": "Signaler un bug",
+              "description": "Un bug sur un site fonctionne comme la météo, on ne sait ni quand ni comment il pourrait arriver. Mais grâce à vous, nous allons enfin pouvoir le corriger.",
+              "email": "contact.ecodeli@gmail.com"
+            }
+          }
+        },
+        "deliveries": {
+          "findPackage": "Trouver un colis sur ma route",
+          "around": "Autour de",
+          "onRoute": "Sur ma route pour commencer",
+          "radius": "Rayon (km)",
+          "applyFilters": "Appliquer les filtres",
+          "noDataFound": "Aucune donnée trouvée.",
+          "resetFilters": "Réinitialiser les filtres",
+          "moreFilters": "Plus de filtres",
+          "filters": "Filtres",
+          "useThisSpace": "Utilisez cet espace pour ajouter des filtres à vos livraisons.",
+          "price": "Prix",
+          "weight": "Poids",
+          "deliveryType": "Type de livraison",
+          "all": "Tous",
+          "urgent": "Urgent",
+          "nonUrgent": "Non urgent",
+          "apply": "Appliquer",
+          "more": "Plus",
+          "departure": "Départ",
+          "arrival": "Arrivée",
+          "description": "Description",
+          "totalPrice": "Prix total",
+          "cityToCity": "{{departureCity}} - {{arrivalCity}}",
+          "weightKg": "{{weight}} Kg",
+          "urgency": "{{urgency}}"
+        },
+        "services": {
+          "title": "Découvrez {{count}} prestations",
+          "searchPlaceholder": "Recherchez une prestation...",
+          "locationPlaceholder": "Ville, département, région...",
+          "searchButton": "Rechercher",
+          "filterBy": "Filtrer par:",
+          "recent": "Les plus récents",
+          "serviceDetails": "Détails du service",
+          "proposedBy": "Prestation proposée par {{name}}",
+          "description": "Description",
+          "price": "Prix",
+          "customerReviews": "Avis des clients",
+          "appointmentButton": "Prendre un rendez-vous",
+          "closeButton": "Fermer",
+          "selectService": "Sélectionnez une prestation pour voir les détails.",
+          "selectServiceDescription": "Vous pouvez cliquer sur une des prestations à gauche pour afficher ses informations.",
+          "viewDetails": "Voir les détails"
+        },
+        "register": {
+          "firstProfileChoice": {
+            "title": "Quel est votre profil ?",
+            "individual": "Particulier",
+            "individualDescription": "Vous utilisez l'application pour vous-même et pour faire de chouettes rencontres",
+            "professional": "Professionnel",
+            "professionalDescription": "Vous êtes ici pour mettre en avant votre activité tout en profitant des services les plus fiables.",
+            "signUp": "S'inscrire",
+            "existingAccount": "Vous possédez déjà un compte ?",
+            "login": "Connectez-vous"
+          },
+          "secondProfileChoice": {
+            "title": "Quel type de professionnel êtes-vous ?",
+            "merchant": "Commerçant",
+            "merchantDescription": "Vous souhaitez utiliser EcoDeli afin de mettre en avant votre commerce et vos produits.",
+            "serviceProvider": "Prestataire",
+            "serviceProviderDescription": "Vous avez pour ambition de rendre le monde meilleur en proposant des services à la personne.",
+            "signUp": "S'inscrire",
+            "existingAccount": "Vous possédez déjà un compte ?",
+            "login": "Connectez-vous"
+          },
+          "clientProfile": {
+            "completeProfile": "Compléter votre profil",
+            "profileDescription": "Quel est votre profil ?",
+            "lastName": "Nom *",
+            "firstName": "Prénom *",
+            "language": "Langue *",
+            "selectLanguage": "Sélectionnez votre langue",
+            "email": "Email *",
+            "emailPlaceholder": "exemple@email.com",
+            "password": "Mot de passe *",
+            "confirmPassword": "Confirmer le mot de passe *",
+            "newsletter": "S'inscrire à la newsletter",
+            "acceptTerms": "J'accepte les conditions générales du site EcoDeli, disponibles ",
+            "termsLink": "ici",
+            "continue": "Continuer",
+            "validation": {
+              "email": "Veuillez entrer une adresse email valide.",
+              "passwordLength": "Le mot de passe doit contenir au moins 12 caractères.",
+              "passwordFormat": "Le mot de passe doit contenir des lettres, des chiffres et au moins un caractère spécial (@$!%*?&).",
+              "firstNameRequired": "Le prénom est requis.",
+              "lastNameRequired": "Le nom est requis.",
+              "languageRequired": "L'identifiant de langue est requis.",
+              "passwordMatch": "Les mots de passe ne correspondent pas.",
+              "acceptTerms": "Vous devez accepter les conditions générales."
+            }
+          },
+          "subscription": {
+            "chooseSubscription": "Choisissez votre abonnement",
+            "mostPopular": "La plus populaire",
+            "free": "Gratuit",
+            "perMonth": "mois",
+            "freeDescription": "Tout ce dont vous avez besoin pour faire vos demandes de livraisons.",
+            "premiumDescription": "Si la perfection était un abonnement, ce serait celui-ci.",
+            "defaultDescription": "Tout ce dont vous avez besoin pour faire vos demandes de livraisons.",
+            "deliveryRequests": "Demandes de livraisons",
+            "priorityShipping": "Envoi prioritaire à {{percentage}}%",
+            "insuranceCoverage": "Assurance jusqu'à {{amount}}€",
+            "shippingDiscount": "Réduction sur l'envoi de {{percentage}}%",
+            "permanentDiscount": "Réduction permanente de {{percentage}}% sur petits colis",
+            "priorityMonthsOffered": "{{months}} envois prioritaire offerts",
+            "discover": "Découvrir"
+          },
+          "stripe": {
+            "completeRegistration": "Finalisez votre inscription",
+            "cardNumber": "Numéro de la carte",
+            "expiration": "Expiration",
+            "cvc": "CVC",
+            "country": "Pays",
+            "postalCode": "Code Postal",
+            "postalCodePlaceholder": "Code postal",
+            "cardDetailsUnavailable": "Les détails de la carte ne sont pas disponibles.",
+            "unknownError": "Une erreur inconnue s'est produite.",
+            "paymentProcessingError": "Une erreur s'est produite lors du traitement du paiement.",
+            "processing": "Traitement en cours...",
+            "finish": "Terminer",
+            "securePayment": "Paiement sécurisé par",
+            "paymentIllustration": "Illustration de paiement"
+          },
+          "providerProfile": {
+            "completeProfile": "Compléter votre profil prestataire",
+            "fillInfo": "Remplissez les informations ci-dessous pour créer votre profil prestataire",
+            "lastName": "Nom *",
+            "firstName": "Prénom *",
+            "email": "Email *",
+            "password": "Mot de passe *",
+            "confirmPassword": "Confirmer le mot de passe *",
+            "companyName": "Nom de l'entreprise *",
+            "siretNumber": "Numéro de Siret *",
+            "activitySector": "Secteur d'activité *",
+            "address": "Adresse *",
+            "postalCode": "Code postal *",
+            "city": "Ville *",
+            "country": "Pays *",
+            "phone": "Téléphone *",
+            "language": "Langue *",
+            "description": "Description",
+            "subscribeNewsletter": "S'inscrire à la newsletter",
+            "acceptTerms": "J'accepte les conditions générales du site EcoDeli",
+            "continue": "Continuer",
+            "selectActivitySector": "Sélectionnez votre secteur d'activité",
+            "selectLanguage": "Sélectionnez votre langue",
+            "termsLink": "les conditions générales",
+            "validation": {
+              "firstNameMin": "Le prénom doit contenir au moins 2 caractères",
+              "lastNameMin": "Le nom doit contenir au moins 2 caractères",
+              "invalidEmail": "Email invalide",
+              "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+              "passwordMismatch": "Les mots de passe ne correspondent pas",
+              "companyNameMin": "Le nom de l'entreprise est requis",
+              "siretLength": "Le numéro SIRET doit contenir 14 chiffres",
+              "acceptTerms": "Vous devez accepter les conditions générales",
+              "addressRequired": "L'adresse est requise",
+              "postalCodeRequired": "Le code postal est requis",
+              "cityRequired": "La ville est requise",
+              "countryRequired": "Le pays est requis",
+              "phoneRequired": "Le téléphone est requis",
+              "descriptionRequired": "La description est requise",
+              "languageRequired": "La langue est requise"
+            }
+          },
+          "providerDocument": {
+            "title": "Justifier votre profil",
+            "description": "Votre profil prestataire sera examiné par EcoDeli. EcoDeli se réserve le droit de refuser votre demande d'inscription sans avoir à fournir de justification. De plus, EcoDeli se réserve la possibilité de vous contacter. Vous devrez fournir les documents justificatifs nécessaires à la validation de votre inscription.",
+            "dragDropText": "Faites glisser ou ajouter un nouveau document",
+            "acceptedFiles": "Seuls les documents pdf, doc, docx et les images jpg, png or jpeg sont acceptés.",
+            "browseFiles": "Parcourir les fichiers",
+            "documentName": "Nom du document",
+            "documentNamePlaceholder": "Vous devez fournir le nom du document",
+            "addDocument": "Ajouter le document",
+            "uploadedDocuments": "Documents téléchargés",
+            "signatureLabel": "Ajouter votre signature",
+            "signatureDescription": "Veuillez signer le formulaire pour valider votre inscription.",
+            "nextButton": "Suivant",
+            "signatureError": "Veuillez signer le formulaire"
+          },
+          "merchantProfile": {
+            "title": "Compléter votre profil commerçant",
+            "firstNameError": "Le prénom doit contenir au moins 2 caractères.",
+            "lastNameError": "Le nom doit contenir au moins 2 caractères.",
+            "emailError": "Veuillez entrer une adresse email valide.",
+            "passwordError": "Le mot de passe doit contenir au moins 8 caractères.",
+            "passwordMismatch": "Les mots de passe ne correspondent pas.",
+            "companyNameError": "Le nom de l'entreprise doit contenir au moins 2 caractères.",
+            "siretError": "Le numéro SIRET doit contenir 14 chiffres.",
+            "addressError": "L'adresse doit contenir au moins 5 caractères.",
+            "postalCodeError": "Le code postal doit contenir 5 chiffres.",
+            "cityError": "La ville doit contenir au moins 2 caractères.",
+            "countryError": "Le pays doit contenir au moins 2 caractères.",
+            "phoneError": "Veuillez entrer un numéro de téléphone valide.",
+            "termsError": "Vous devez accepter les conditions générales.",
+            "newsletterLabel": "S'inscrire à la newsletter",
+            "termsLabel": "J'accepte les conditions générales du site EcoDeli",
+            "continueButton": "Continuer",
+            "lastName": "Nom",
+            "firstName": "Prénom",
+            "email": "Email",
+            "password": "Mot de passe",
+            "confirmPassword": "Confirmer le mot de passe",
+            "companyName": "Nom de l'entreprise",
+            "siret": "Numéro de Siret",
+            "address": "Adresse",
+            "postalCode": "Code postal",
+            "city": "Ville",
+            "country": "Pays",
+            "phone": "Téléphone",
+            "language": "Langue",
+            "description": "Description"
+          },
+          "deliverymanProfile": {
+            "title": "Inscription Livreur",
+            "description": "Remplissez ce formulaire afin que votre profil transporteur puisse être étudié par un administrateur.",
+            "license": "Numéro de licence",
+            "licenseError": "Le numéro de licence est requis",
+            "status": "Statut",
+            "statusError": "Le statut est requis",
+            "email": "Email professionnel",
+            "emailError": "Adresse email invalide",
+            "phone": "Numéro de téléphone",
+            "phoneError": "Numéro de téléphone invalide",
+            "country": "Pays",
+            "countryError": "Le pays est requis",
+            "city": "Ville",
+            "cityError": "La ville est requise",
+            "address": "Adresse",
+            "addressError": "L'adresse est requise",
+            "postalCode": "Code postal",
+            "postalCodeError": "Code postal invalide",
+            "language": "Langue",
+            "userId": "ID utilisateur",
+            "userIdError": "ID utilisateur invalide",
+            "categoryId": "ID de catégorie",
+            "categoryIdError": "L'ID de catégorie est requis",
+            "signature": "Signature",
+            "continueButton": "Continuer",
+            "breadcrumb": {
+              "home": "Accueil",
+              "deliverymanProfile": "Devenir transporteur"
+            }
+          },
+          "success": {
+            "title": "Félicitations",
+            "alt": "Illustration",
+            "message": "Vous avez bien été enregistré. Vous pouvez maintenant vous connecter à votre compte.",
+            "button": "Me connecter"
+          }
+        },
+        "security": {
+          "title": "Sécurité chez EcoDeli",
+          "intro": "Chez EcoDeli, la sécurité de vos données et de vos échanges est notre priorité absolue.",
+          "dataProtection": {
+            "title": "Protection des données",
+            "description": "Nous mettons en œuvre des mesures de sécurité avancées pour protéger toutes les données personnelles que vous nous confiez. Toutes les informations sont stockées sur des serveurs sécurisés et sont chiffrées pour garantir leur confidentialité."
+          },
+          "userSecurity": {
+            "title": "Sécurité des utilisateurs",
+            "description": "Nous nous engageons à vérifier l'identité de nos utilisateurs et à offrir des outils de communication sûrs. Vos paiements sont sécurisés via des prestataires certifiés et fiables."
+          },
+          "learnMore": "En savoir plus sur notre politique de sécurité"
+        },
+        "ecology": {
+          "title": "Notre engagement écologique",
+          "intro": "Chez EcoDeli, nous croyons qu’il est possible de livrer des colis tout en respectant la planète.",
+          "ourImpact": {
+            "title": "Réduction de l'empreinte carbone",
+            "description": "Grâce à notre modèle de livraison collaborative, les transporteurs prennent en charge des colis déjà sur leur trajet, réduisant ainsi considérablement les émissions de CO₂ liées au transport traditionnel."
+          },
+          "ourCommitment": {
+            "title": "Notre engagement pour demain",
+            "description": "EcoDeli s'engage à promouvoir des solutions de transport responsables et à sensibiliser sa communauté à l'importance de gestes simples pour un futur plus durable."
+          },
+          "learnMore": "Découvrir nos actions écologiques"
+        },
+        "confidentiality": {
+          "title": "Confidentialité",
+          "intro": "EcoDeli est engagé dans la protection des données de ses utilisateurs. Vous pouvez retrouver ci-dessous 4 points sur la confidentialité de notre application.",
+          "points": {
+            "notForSale": {
+              "title": "1. Vous n'êtes pas à vendre",
+              "description": "Contrairement aux géants américains, vos données ne nous intéressent pas. Nous pensons sincèrement que vous devez être le seul maître de vos données."
+            },
+            "encryptedDocuments": {
+              "title": "2. Vos documents sont chiffrés",
+              "description1": "EcoDeli peut avoir besoin de certains documents pour valider votre profil (permis de conduire, assurance...) ou générer des factures pour votre activité.",
+              "description2": "Ces données sensibles ne devraient pas être à notre disposition, ni à celle de quiconque autre que vous. Ainsi, nous nous engageons à chiffrer l'ensemble de vos documents."
+            },
+            "noBankData": {
+              "title": "3. Nous ne possédons pas vos coordonnées bancaires",
+              "description1": "Pour vous prouver notre engagement, nous ne collectons aucune de vos coordonnées bancaires.",
+              "description2": "Nous laissons notre partenaire Stripe, certifié PCI-DSS, gérer l'ensemble de vos coordonnées bancaires de manière totalement sécurisée."
+            },
+            "dataInFrance": {
+              "title": "4. Cocorico, vos données stockées en France",
+              "description1": "Déjà que nous n'exploitons aucune de vos données ailleurs que pour EcoDeli, que pourrions-nous faire de plus pour vous prouver notre engagement ?",
+              "description2": "C'est très simple, l'ensemble de nos serveurs sont hébergés en France métropolitaine, assurant que les données ne seront jamais collectées par nos hébergeurs."
+            }
+          }
+        },
+        "becomeProvider": {
+          "title": "Devenir Prestataire",
+          "intro": "Rejoignez notre réseau de prestataires qualifiés et développez votre activité avec EcoDeli. Découvrez ci-dessous les étapes pour commencer votre parcours avec nous.",
+          "steps": {
+            "step1": {
+              "title": "1. Inscription et justificatifs",
+              "description1": "Pour commencer votre parcours en tant que prestataire, vous devez créer un compte sur notre plateforme et fournir les documents nécessaires pour valider votre profil professionnel.",
+              "description2": "Ces documents incluent une pièce d'identité, un justificatif d'assurance professionnelle, ainsi que tout diplôme ou certification pertinent à votre domaine d'expertise."
+            },
+            "step2": {
+              "title": "2. Analyse de votre profil",
+              "description1": "Une fois votre dossier complet soumis, un administrateur EcoDeli procédera à l'analyse détaillée de votre profil dans un délai de 48 à 72 heures ouvrées.",
+              "description2": "Cette étape est essentielle pour maintenir la qualité de notre réseau. Nous vérifions l'authenticité des documents fournis et évaluons votre adéquation avec notre plateforme."
+            },
+            "step3": {
+              "title": "3. Création de prestations",
+              "description1": "Une fois votre profil validé, vous pourrez créer et personnaliser vos offres de prestations directement depuis votre tableau de bord prestataire.",
+              "description2": "Définissez vos tarifs, vos disponibilités, la zone géographique que vous couvrez, ainsi que la description détaillée de vos services."
+            },
+            "step4": {
+              "title": "4. Accès à votre planning",
+              "description1": "Gérez efficacement votre activité grâce à notre planning intégré qui centralise toutes vos prestations et les informations de vos clients.",
+              "description2": "Notre calendrier intelligent vous permet de visualiser vos rendez-vous, d'éviter les chevauchements, et d'optimiser vos déplacements."
+            }
+          },
+          "ready": {
+            "title": "Prêt à nous rejoindre ?",
+            "button": "S'inscrire maintenant"
+          }
+        },
+        "becomeDeliveryman": {
+          "title": "Devenir Transporteur",
+          "intro": "Vous souhaitez devenir transporteur sur EcoDeli ? Voici les étapes pour commencer votre aventure avec nous.",
+          "steps": {
+            "step1": {
+              "title": "1. Créez votre compte",
+              "description": "Inscrivez-vous sur notre plateforme en créant un compte en tant que particulier."
+            },
+            "step2": {
+              "title": "2. Faites une demande Transporteur",
+              "description": "Depuis votre espace personnel, effectuez une demande pour activer votre profil transporteur."
+            },
+            "step3": {
+              "title": "3. Analyse de votre demande",
+              "description": "Un administrateur EcoDeli analysera votre demande sous 48 à 72 heures ouvrées."
+            },
+            "step4": {
+              "title": "4. Ajoutez vos véhicules et trajets",
+              "description": "Ajoutez vos véhicules, définissez vos trajets favoris et commencez à chercher les demandes de livraisons qui vous intéressent."
+            }
+          },
+          "ready": {
+            "title": "Prêt à démarrer ?",
+            "button": "Créer mon compte"
+          }
+        },
+        "auth": {
+          "forgotPassword": {
+            "title": "Mot de passe oublié",
+            "description": "Entrez votre adresse email pour réinitialiser votre mot de passe.",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Entrez votre email",
+            "error": "Erreur lors de l'envoi de l'email",
+            "successMessage": "Un email de réinitialisation a été envoyé.",
+            "sending": "Envoi en cours...",
+            "send": "Envoyer",
+            "logoAlt": "Logo",
+            "illustrationAlt": "Illustration"
+          },
+          "newPassword": {
+            "title": "Nouveau mot de passe",
+            "description": "Veuillez entrer votre nouveau mot de passe.",
+            "newPasswordLabel": "Nouveau mot de passe",
+            "newPasswordPlaceholder": "Entrez votre nouveau mot de passe",
+            "confirmPasswordLabel": "Confirmez le mot de passe",
+            "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
+            "passwordMismatch": "Les mots de passe ne correspondent pas.",
+            "passwordValidationError": "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre et un caractère spécial.",
+            "error": "Erreur lors de la modification du mot de passe",
+            "changing": "Changement en cours...",
+            "change": "Changer le mot de passe",
+            "2FATitle": "Validation 2FA",
+            "2FADescription": "Veuillez entrer le code 2FA envoyé à votre adresse email.",
+            "otpLabel": "Code 2FA",
+            "error2FA": "Erreur lors de la validation 2FA: {{error}}",
+            "validating": "Validation en cours...",
+            "validate": "Valider",
+            "logoAlt": "Logo",
+            "illustrationAlt": "Illustration"
+          },
+          "newPasswordSend": {
+            "title": "Un email vous a été envoyé",
+            "alt": "Illustration",
+            "message": "Veuillez vérifier votre boîte de réception pour réinitialiser votre mot de passe."
+          }
+        }
+      },
+      "office": {
+        "myDocuments": {
+          "home": "Accueil",
+          "myDocuments": "Mes documents",
+          "error": "Erreur lors du téléchargement du PDF :",
+          "noDocumentSelected": "Aucun document sélectionné",
+          "selectDocument": "Veuillez sélectionner un document pour l'afficher."
+        },
+        "myProofs": {
+          "title": "Liste des Documents",
+          "addProof": "Ajouter un justificatif",
+          "allDocuments": "Accéder à tous mes documents",
+          "dialog": {
+            "title": "Ajouter un justificatif",
+            "description": "Veuillez sélectionner un fichier, donner un nom et une description.",
+            "documentName": "Nom du document",
+            "documentDescription": "Description",
+            "submit": "Envoyer",
+            "download": "Télécharger le document"
+          },
+          "uploadedOn": "Uploadé le"
+        },
+        "chat": {
+          "home": "Accueil",
+          "messaging": "Messagerie",
+          "discussions": "Discussions",
+          "searchPlaceholder": "Rechercher des discussions...",
+          "online": "En ligne",
+          "offline": "Hors ligne",
+          "typeMessage": "Tapez votre message ici...",
+          "selectContact": "Sélectionnez un contact pour commencer à discuter."
+        },
+        "settings": {
+          "general": {
+            "home": "Accueil",
+            "settings": "Paramètres",
+            "generalSettings": "Paramètres généraux",
+            "profile": "Profil",
+            "privacy": "Confidentialité",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "modifyInfo": "Modifier vos informations personnelles",
+            "lastName": "Nom",
+            "yourLastName": "Votre nom",
+            "firstName": "Prénom",
+            "yourFirstName": "Votre prénom",
+            "email": "Email",
+            "nameRequired": "Le nom est requis",
+            "firstNameRequired": "Le prénom est requis",
+            "invalidEmail": "Email invalide",
+            "acceptNewsletter": "J'accepte la Newsletter",
+            "newsletterDescription": "J'accepte de recevoir de la part de EcoDeli des emails concernant des publicités, des offres commerciales ou tout autre type de mails.",
+            "updateInfo": "Mettre à jour mes informations"
+          },
+          "profile": {
+            "home": "Accueil",
+            "settings": "Paramètres",
+            "profile": "Profil",
+            "generalSettings": "Paramètres généraux",
+            "privacy": "Confidentialité",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "modifyProfile": "Modifier votre profil",
+            "profilePicture": "Photo de profil",
+            "blockedUsers": "Liste des utilisateurs que vous avez bloqués",
+            "options": "Options",
+            "unblockUser": "Débloquer l'utilisateur",
+            "noBlockedUsers": "Vous n'avez bloqué aucun utilisateur."
+          },
+          "confidentiality": {
+            "home": "Accueil",
+            "settings": "Paramètres",
+            "privacy": "Confidentialité",
+            "generalSettings": "Paramètres généraux",
+            "profile": "Profil",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "modifyPrivacy": "Modifier votre configuration de confidentialité",
+            "updatePassword": "Mise à jour de votre mot de passe",
+            "updatePasswordDescription": "Pour mettre à jour votre mot de passe, nous pouvons vous envoyer un email afin de le réinitialiser. Si vous avez activé la double authentification, elle vous sera demandée avant la modification.",
+            "changePassword": "Modifier mon mot de passe",
+            "downloadData": "Télécharger mes données",
+            "downloadDataDescription": "En conformité avec l'article 20 du RGPD, EcoDeli se doit de vous mettre à disposition un document recensant l'ensemble des informations personnelles que EcoDeli possède.",
+            "downloadDocument": "Télécharger ce document",
+            "enable2FA": "Activer la double authentification",
+            "enable2FADescription": "Afin d'améliorer la sécurité de votre compte, EcoDeli vous recommande d'activer cette double authentification. Pour cela, vous avez besoin d'une application d'authentification (Authy...)",
+            "activate2FA": "Activer la double authentification",
+            "whatIs2FA": "Qu'est-ce que l'A2F ? Retrouvez l'explication juste",
+            "here": "ici",
+            "accessPrivacyPolicy": "Accéder à la",
+            "privacyPolicy": "politique de confidentialité de EcoDeli"
+          },
+          "billing": {
+            "title": "Facturations",
+            "breadcrumbHome": "Accueil",
+            "breadcrumbSettings": "Paramètres",
+            "breadcrumbBilling": "Facturations",
+            "generalSettings": "Paramètres généraux",
+            "profile": "Profil",
+            "privacy": "Confidentialité",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "yourBalance": "Votre solde",
+            "currentBalance": "Solde actuel",
+            "requestTransfer": "Demander un virement immédiat",
+            "connectedStripeAccount": "Vous êtes bien connecté avec un compte Stripe",
+            "updateBankDetails": "Mettre à jour vos coordonnées bancaires",
+            "updateStripeAccount": "Mettre à jour mon compte pour virement",
+            "ibanLabel": "IBAN",
+            "saveIban": "Enregistrer mon IBAN",
+            "stripeAccountCreated": "Votre compte Stripe a été créé avec succès."
+          },
+          "contactDetails": {
+            "title": "Coordonnées",
+            "breadcrumbHome": "Accueil",
+            "breadcrumbSettings": "Paramètres",
+            "breadcrumbContactDetails": "Coordonnées",
+            "generalSettings": "Paramètres généraux",
+            "profile": "Profil",
+            "privacy": "Confidentialité",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "contactInfo": "Informations de contact",
+            "manageContact": "Gérez vos coordonnées et disponibilités.",
+            "mySchedule": "Mon planning",
+            "addDay": "Ajouter un jour",
+            "selectDay": "Sélectionnez un jour",
+            "day": "Jours",
+            "days": {
+              "0": "Lundi",
+              "1": "Mardi",
+              "2": "Mercredi",
+              "3": "Jeudi",
+              "4": "Vendredi",
+              "5": "Samedi",
+              "6": "Dimanche"
+            },
+            "periods": {
+              "morning": "Matin",
+              "afternoon": "Après-midi",
+              "evening": "Soir"
+            },
+            "allDaysSelected": "Tous les jours de la semaine sont déjà sélectionnés.",
+            "availabilityUpdated": "Disponibilités mises à jour !",
+            "save": "Enregistrer"
+          },
+          "reports": {
+            "title": "Signalements",
+            "breadcrumbHome": "Accueil",
+            "breadcrumbSettings": "Paramètres",
+            "breadcrumbReports": "Signalements",
+            "generalSettings": "Paramètres généraux",
+            "profile": "Profil",
+            "privacy": "Confidentialité",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "reportsTitle": "Signalements",
+            "reportsDescription": "Faites un signalement",
+            "placeholder": "Faites un rapport",
+            "sendReport": "Envoyer le signalement",
+            "success": "Signalement envoyé avec succès !"
+          },
+          "subscriptions": {
+            "title": "Abonnements",
+            "breadcrumbHome": "Accueil",
+            "breadcrumbSettings": "Paramètres",
+            "breadcrumbSubscriptions": "Abonnements",
+            "generalSettings": "Paramètres généraux",
+            "profile": "Profil",
+            "privacy": "Confidentialité",
+            "contactDetails": "Coordonnées",
+            "subscriptions": "Abonnements",
+            "billing": "Facturations",
+            "reports": "Signalements",
+            "yourSubscription": "Votre abonnement",
+            "currentSubscription": "Votre abonnement actuel",
+            "discountOnShipping": "Réduction à l'envoi de colis",
+            "priorityShipping": "Envoi prioritaire des 5%",
+            "permanentDiscount": "Réduction permanente de",
+            "whatToDo": "Que souhaitez-vous faire ?",
+            "discoverPlans": "Découvrir les autres formules d'abonnements",
+            "changePlan": "Changer de formule",
+            "cancelSubscription": "Stopper votre abonnement"
+          }
+        },
+        "planning": {
+          "EventCalendar": {
+            "today": "Aujourd'hui",
+            "previous": "Précédent",
+            "next": "Suivant",
+            "month": "Mois",
+            "week": "Semaine",
+            "day": "Jour",
+            "agenda": "Agenda"
+          }
+        },
+        "delivery": {
+          "deliveryDetails": {
+            "accueil": "Accueil",
+            "deliveryTitle": "Livraisons",
+            "deliveryName": "Package Delivery",
+            "reference": "Référence N°{id}",
+            "scheduledDelivery": "Livraison prévue le {date}",
+            "departure": "Départ",
+            "collectionDate": "Collecte le {date}",
+            "arrival": "Arrivée",
+            "progress": "Progression",
+            "totalPrice": "Prix total",
+            "initialPrice": "Prix initial: {price} €",
+            "viewInvoice": "Voir la facture",
+            "trackDelivery": "Suivre la livraison",
+            "overview": "Aperçu",
+            "packages": "Colis ({count})",
+            "steps": "Étapes ({count})",
+            "additionalInfo": "Informations complémentaires",
+            "lastUpdate": "Dernière mise à jour",
+            "packageOverview": "Aperçu des colis",
+            "packageDetails": "Détails des colis",
+            "packageCount": "{count} colis pour cette livraison",
+            "deliverySteps": "Étapes de livraison",
+            "trackingDelivery": "Suivi du parcours de votre livraison",
+            "weight": "Poids",
+            "volume": "Volume",
+            "fragile": "Fragile",
+            "deliveryDate": "{date} • {name}",
+            "deliverer": "Livreur"
+          },
+          "deliveryHistory": {
+            "title": "Historique des livraisons",
+            "breadcrumb": {
+              "home": "Accueil",
+              "deliveries": "Livraisons",
+              "deliveryHistory": "Historique des livraisons"
+            },
+            "table": {
+              "deliveryman": "Livreur",
+              "departureDate": "Date de départ",
+              "arrivalDate": "Date d'arrivée",
+              "departureCity": "Ville de départ",
+              "arrivalCity": "Ville d'arrivée",
+              "announcementName": "Nom de l'annonce",
+              "feedback": "Avis",
+              "actions": "Actions",
+              "viewDetails": "Voir le détail",
+              "alreadyGiven": "Déjà donné",
+              "columns": "Colonnes"
+            }
+          },
+          "deliveriesLocation": {
+            "breadcrumb": {
+              "home": "Accueil",
+              "deliveries": "Livraisons",
+              "location": "Localisation"
+            },
+            "accessDetails": "Accéder aux détails",
+            "deliveryman": "Livreur",
+            "email": "Email"
+          },
+          "reviews": {
+            "breadcrumb": {
+              "home": "Accueil",
+              "deliveries": "Livraisons",
+              "myReviews": "Mes avis"
+            },
+            "title": "Mes avis",
+            "table": {
+              "columns": "Colonnes",
+              "deliveryman": "Livreur",
+              "email": "Email",
+              "message": "Message",
+              "service": "Service",
+              "rate": "Note",
+              "date": "Date",
+              "noResults": "Aucun résultat."
+            }
+          },
+          "vehicles": {
+            "addVehicle": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "vehicles": "Véhicules",
+                "addVehicle": "Ajouter un Véhicule"
+              },
+              "title": "Ajouter un Véhicule",
+              "form": {
+                "uploadImage": {
+                  "clickToSelect": "Cliquez pour sélectionner",
+                  "dragDrop": "ou glissez-déposez une image"
+                },
+                "document": "Document",
+                "documentDescription": "Description du Document",
+                "category": "Catégorie",
+                "selectCategory": "Sélectionnez une catégorie",
+                "matricule": "Matricule",
+                "model": "Modèle",
+                "electric": "Électrique",
+                "electricDescription": "Cochez si le véhicule est électrique.",
+                "co2Consumption": "Consommation de CO2",
+                "submit": "Soumettre",
+                "errors": {
+                  "documentRequired": "Le document est requis",
+                  "descriptionRequired": "La description est requise",
+                  "modelRequired": "Le modèle est requis",
+                  "categoryRequired": "La catégorie est requise",
+                  "matriculeRequired": "Le matricule est requis",
+                  "co2ConsumptionRequired": "La consommation de CO2 doit être renseignée"
+                }
+              }
+            },
+            "myVehicles": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "vehicles": "Véhicules"
+              },
+              "title": "Liste des Véhicules",
+              "addVehicleButton": "Ajouter un nouveau véhicule",
+              "pagination": {
+                "totalItems": "ligne au total.",
+                "totalItemsPlural": "lignes au total.",
+                "rowsPerPage": "Ligne par page",
+                "pageInfo": "Page {currentPage} sur {totalPages}",
+                "firstPage": "Première page",
+                "previousPage": "Page précédente",
+                "nextPage": "Page suivante",
+                "lastPage": "Dernière page"
+              },
+              "table": {
+                "columns": "Colonnes",
+                "name": "Nom",
+                "matricule": "Matricule",
+                "co2": "CO2",
+                "allow": "Autorisé",
+                "actions": "Actions",
+                "details": "Détails",
+                "close": "Fermer",
+                "downloadJustification": "Télécharger le justificatif"
+              }
+            }
+          },
+          "myRoute": {
+            "route_management": "Gestion des Trajets",
+            "add_route": "Ajouter un trajet",
+            "error_fetching_routes": "Erreur lors de la récupération des trajets:",
+            "error_adding_route": "Erreur lors de l'ajout du trajet:",
+            "active_and_permanent_routes": "Trajets actifs et permanents",
+            "no_active_or_permanent_routes": "Aucun trajet actif ou permanent",
+            "past_routes": "Trajets passés",
+            "departure": "Départ:",
+            "arrival": "Arrivée:",
+            "coordinates": "Coordonnées:",
+            "day": "Jour:",
+            "date": "Date:",
+            "tolerance_radius": "Rayon de tolérance:",
+            "return": "Retour:",
+            "same_day": "Le même jour",
+            "next_day": "Le lendemain",
+            "type": "Type:",
+            "permanent": "Permanent",
+            "one_time": "Ponctuel",
+            "monday": "Lundi",
+            "tuesday": "Mardi",
+            "wednesday": "Mercredi",
+            "thursday": "Jeudi",
+            "friday": "Vendredi",
+            "saturday": "Samedi",
+            "sunday": "Dimanche",
+            "departure_required": "Le lieu de départ est requis",
+            "arrival_required": "Le lieu d'arrivée est requis",
+            "positive_radius": "Le rayon doit être positif",
+            "weekday_or_date_required": "Un jour de la semaine est requis pour les trajets permanents, une date pour les trajets ponctuels"
+          },
+          "deliveryman": {
+            "deliveryDetails": {
+              "title": "Livraison - Vue Transporteur",
+              "tabs": {
+                "route": "Trajet",
+                "packages": "Colis"
+              },
+              "deliveryInfo": {
+                "title": "Infos Livraison",
+                "departure": "Départ",
+                "arrival": "Arrivée",
+                "departureDate": "Date de départ",
+                "arrivalDate": "Date d'arrivée",
+                "status": "Statut"
+              },
+              "packageDetails": {
+                "price": "Prix",
+                "weight": "Poids",
+                "volume": "Volume",
+                "fragile": "Fragile",
+                "yes": "Oui",
+                "no": "Non"
+              },
+              "breadcrumb": {
+                "home": "Accueil",
+                "deliveries": "Mes livraisons",
+                "deliverymanView": "Vue transporteur"
+              },
+              "months": {
+                "0": "janvier",
+                "1": "février",
+                "2": "mars",
+                "3": "avril",
+                "4": "mai",
+                "5": "juin",
+                "6": "juillet",
+                "7": "août",
+                "8": "septembre",
+                "9": "octobre",
+                "10": "novembre",
+                "11": "décembre"
+              }
+            },
+            "history": {
+              "title": "Historique des livraisons",
+              "breadcrumb": {
+                "home": "Accueil",
+                "deliveries": "Livraisons",
+                "history": "Historique des livraisons"
+              },
+              "table": {
+                "columns": "Colonnes",
+                "client": "Client",
+                "departure_city": "Ville de départ",
+                "arrival_city": "Ville d'arrivée",
+                "price": "Prix",
+                "status": "Statut",
+                "actions": "Actions",
+                "details": "Détails",
+                "no_results": "Aucun résultat.",
+                "column_links": {
+                  "departure_city": "Ville de départ",
+                  "arrival_city": "Ville d'arrivée",
+                  "price": "Prix",
+                  "status": "Statut"
+                }
+              }
+            },
+            "reviews": {
+              "author": "Auteur",
+              "message": "Message",
+              "delivery": "Livraison",
+              "rate": "Note",
+              "date": "Date",
+              "details": "Détails",
+              "viewDelivery": "Voir la livraison",
+              "replyPlaceholder": "Répondre à cet avis...",
+              "send": "Envoyer",
+              "close": "Fermer",
+              "columns": "Colonnes",
+              "noResults": "No results.",
+              "title": "Les avis sur EcoDeli",
+              "deliveryName": "Nom de la livraison"
+            }
+          }
+        },
+        "deliveryman": {
+          "addRoute": {
+            "title": "Ajouter un nouveau trajet",
+            "description": "Remplissez les informations pour créer un nouveau trajet.",
+            "from": "Départ",
+            "fromPlaceholder": "Ville de départ",
+            "to": "Arrivée",
+            "toPlaceholder": "Ville d'arrivée",
+            "permanent": "Trajet permanent",
+            "permanentDescription": "Cochez cette case si ce trajet est récurrent (ex: tous les lundis).",
+            "weekday": "Jour de la semaine",
+            "selectWeekday": "Sélectionnez un jour",
+            "date": "Date du trajet",
+            "chooseDate": "Choisissez une date",
+            "tolerateRadius": "Rayon de tolérance (km)",
+            "tolerateRadiusDescription": "Distance maximale acceptable par rapport au point de départ/arrivée.",
+            "return": "Retour",
+            "returnToday": "Retour le même jour",
+            "returnTomorrow": "Retour le lendemain",
+            "returnLater": "Retour plus tard",
+            "addRoute": "Ajouter le trajet",
+            "fromRequired": "Le lieu de départ est requis",
+            "toRequired": "Le lieu d'arrivée est requis",
+            "radiusPositive": "Le rayon doit être positif",
+            "weekdayOrDateRequired": "Un jour de la semaine est requis pour les trajets permanents, une date pour les trajets ponctuels"
+          },
+          "ongoingDeliveries": {
+            "title": "Mes livraisons en cours",
+            "noDeliveries": "Aucune livraison en cours",
+            "noDeliveriesDescription": "Vous n'avez pas de livraison en cours.",
+            "deliveryId": "Livraison {{id}}",
+            "departure": "Départ :",
+            "arrival": "Arrivée :",
+            "currentPosition": "Position actuelle",
+            "packageTransmitted": "Colis transmis",
+            "estimatedArrivalDate": "Date d'arrivée estimée :"
+          }
+        },
+        "services": {
+          "client": {
+            "history": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "services": "Prestations",
+                "history": "Historique"
+              },
+              "table": {
+                "title": "Historique des services",
+                "columns": {
+                  "provider": "Prestataire",
+                  "service_name": "Service",
+                  "rate": "Note",
+                  "price": "Prix (€)",
+                  "date": "Date",
+                  "feedback": "Avis",
+                  "actions": "Action",
+                  "alreadyGiven": "Déjà donné",
+                  "view": "Voir"
+                },
+                "columnLinks": {
+                  "provider": "Prestataire",
+                  "service_name": "Service",
+                  "rate": "Note",
+                  "price": "Prix (€)",
+                  "date": "Date"
+                },
+                "noResults": "Aucun résultat."
+              },
+              "dropdown": {
+                "columns": "Colonnes"
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "footer": {
+        "ecodeli": "EcoDeli",
+        "description": "EcoDeli est une plateforme de livraison écologique qui connecte les particuliers, les commerçants et les prestataires de services de livraison.",
+        "a_propos": "A propos",
+        "faq": "FAQ",
+        "suivre_mon_colis": "Suivre mon colis",
+        "mentions_legales": "Mentions légales",
+        "notre_equipe": "Notre équipe",
+        "securite": "Sécurité",
+        "accessibilite": "Accessibilité",
+        "livraisons": "Livraisons",
+        "devenir_livreur": "Devenir livreur",
+        "trouver_des_livraisons": "Trouver des livraisons",
+        "faire_une_demande": "Faire une demande",
+        "solution_ecologique": "Solution écologique",
+        "prestations": "Prestations",
+        "devenir_prestataire": "Devenir prestataire",
+        "les_decouvrir": "Les découvrir",
+        "nous_contacter": "Nous contacter",
+        "email": "Email",
+        "telephone": "(+33) 12 34 56 78 90",
+        "adresse": "242 Rue du Faubourg\n Saint-Antoine, \n75012 Paris",
+        "tous_droits_reserves": "Tous droits réservés"
+      },
+      "navbar": {
+        "titre": "EcoDeli",
+        "livraison": {
+          "titre": "Livraison",
+          "devenirLivreur": "Devenir livreur",
+          "devenirLivreurDescription": "Rejoignez notre équipe de livreurs et livrez des colis de manière écologique.",
+          "trouverLivraison": "Trouver des livraisons",
+          "trouverLivraisonDescription": "Trouvez des livraisons près de chez vous et commencez à gagner de l'argent.",
+          "ecologie": "Écologie",
+          "ecologieDescription": "Découvrez comment nous contribuons à la protection de l'environnement grâce à nos livraisons écologiques."
+        },
+        "prestation": {
+          "titre": "Prestations",
+          "devenirPrestataire": "Devenir prestataire",
+          "devenirPrestataireDescription": "Devenez prestataire de services de livraison et rejoignez notre équipe.",
+          "trouverPrestations": "Trouver des prestations",
+          "trouverPrestationsDescription": "Trouvez des prestations sur la plateforme et commencez à travailler."
+        },
+        "qui_sommes_nous": "Qui sommes-nous ?",
+        "register": "S'inscrire",
+        "login": "Se connecter",
+        "goToDashboard": "Accéder à mon espace"
+      },
+      "sidebar": {
+        "becomeDeliveryman": "Devenir Transporteur ?",
+        "createDeliveryRequest": "Nouvelle demande de livraison",
+        "activeShipments": "Annonces actives",
+        "createService": "Nouvelle prestation",
+        "becomeDeliverymanDescription": "Devenez transporteur et livrez vos colis en toute sécurité avec EcoDeli. Inscrivez-vous dès maintenant pour profiter de nos offres exclusives.",
+        "close": "Fermer",
+        "learnMore": "En savoir plus ?",
+        "merchantSpace": "Espace Commerçant",
+        "myAds": "Mes annonces",
+        "activeAds": "Livraisons actives",
+        "history": "Historique des livraisons",
+        "shipmentsHistory": "Historique des demandes",
+        "insurance": "Assurances",
+        "reviews": "Avis",
+        "location": "Localisation",
+        "billing": "Facturation",
+        "planning": "Planning",
+        "general": "Général",
+        "settings": "Paramètres",
+        "profile": "Profil",
+        "privacy": "Confidentialité",
+        "contactDetails": "Coordonnées",
+        "subscriptions": "Abonnements",
+        "billingSettings": "Facturation",
+        "reports": "Signalements",
+        "messaging": "Messagerie",
+        "deliverySpace": "Espace Transporteur",
+        "planningAndRoute": "Mes trajets",
+        "deliveries": "Livraisons",
+        "upcomingDeliveries": "Livraisons en cours",
+        "deliveryHistory": "Historique",
+        "proofs": "Justificatifs",
+        "myVehicles": "Mes véhicules",
+        "myInvoices": "Mes factures",
+        "individualSpace": "Espace Particulier",
+        "serviceSpace": "Espace Prestation",
+        "documentPage": "Mes documents",
+        "deliveryReviews": "Avis sur mes livraisons",
+        "providerProfileUnderReview": "Profil Prestataire en cours d'analyse",
+        "providerProfileUnderReviewDescription": "Votre profil Prestataire est en cours d'analyse. Vous serez informé dès que le processus sera terminé.",
+        "deliverymanProfileUnderReview": "Profil Transporteur en cours d'analyse",
+        "deliverymanProfileUnderReviewDescription": "Votre profil Transporteur est en cours d'analyse. Vous serez informé dès que le processus sera terminé."
+      },
+      "disclosure": {
+        "completed": "(complété)",
+        "previous": "Précédent",
+        "next": "Suivant",
+        "done": "Terminé",
+        "featureTour": "Visite guidée des fonctionnalités"
+      },
+      "pagination": {
+        "totalRowsWithoutS": "{{count}} ligne au total.",
+        "totalRowsWithS": "{{count}} lignes au total.",
+        "rowsPerPage": "Ligne par page",
+        "pageCount": "Page {{current}} sur {{total}}",
+        "firstPage": "Première page",
+        "previousPage": "Page précédente",
+        "nextPage": "Page suivante",
+        "lastPage": "Dernière page"
+      }
     }
   }
 }

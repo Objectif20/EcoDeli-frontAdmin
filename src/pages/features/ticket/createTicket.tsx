@@ -329,7 +329,6 @@ export default function CreateTicket() {
         />
       </div>
 
-      {/* Submit Button Below the Editor */}
       {canEdit && (
         <div className="flex justify-end mt-4">
           <Button type="submit">

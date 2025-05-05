@@ -45,8 +45,7 @@ import {
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multiselect";
-
-
+import { useTranslation } from "react-i18next";
 
 export const adminSchema = z.object({
   id: z.string(),
@@ -57,126 +56,135 @@ export const adminSchema = z.object({
 });
 
 export const adminColumnLink = [
-  { column_id: "name", text: "Nom" },
-  { column_id: "email", text: "Email" },
-  { column_id: "roles", text: "Rôles" },
+  { column_id: "name", text: "pages.admin.list.columns.name" },
+  { column_id: "email", text: "pages.admin.list.columns.email" },
+  { column_id: "roles", text: "pages.admin.list.columns.roles" },
 ];
 
-const rolesOptions = [
-  { value: "ticket", label: "Ticket" },
-  { value: "mail", label: "Mail" },
-  { value: "prestataire", label: "Prestataire" },
-  { value: "commerçant", label: "Commerçant" },
-  { value: "livreur", label: "Livreur" },
-  { value: "finance", label: "Finance" },
-];
 
 const rolesMapping = {
-  "TICKET": "Ticket",
-  "MAIL": "Mail",
-  "PROVIDER": "Prestataire",
-  "MERCHANT": "Commerçant",
-  "DELIVERY": "Livreur",
-  "FINANCE": "Finance",
+  "TICKET": "pages.admin.create.roles_options.ticket",
+  "MAIL": "pages.admin.create.roles_options.mail",
+  "PROVIDER": "pages.admin.create.roles_options.provider",
+  "MERCHANT": "pages.admin.create.roles_options.merchant",
+  "DELIVERY": "pages.admin.create.roles_options.delivery",
+  "FINANCE": "pages.admin.create.roles_options.finance",
 };
 
-const getRoleLabel = (roleValue: keyof typeof rolesMapping) => {
-  return rolesMapping[roleValue] || roleValue;
+const getRoleLabel = (roleValue: keyof typeof rolesMapping, t: any) => {
+  return t(rolesMapping[roleValue]) || roleValue;
 };
 
-const adminColumns = (isSuperAdmin: boolean): ColumnDef<z.infer<typeof adminSchema>>[] => [
-  {
-    id: "id",
-    accessorKey: "photo_url",
-    header: "Admin",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        {row.original.photo_url ? (
-          <img
-            src={row.original.photo_url}
-            alt={row.original.name}
-            className="w-10 h-10 rounded-full"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-        )}
-        <span>{row.original.name}</span>
-      </div>
-    ),
-    enableHiding: false,
-  },
-  { accessorKey: "email", header: "Email", cell: ({ row }) => row.original.email },
-  {
-    accessorKey: "roles",
-    header: "Rôles",
-    cell: ({ row }) => (
-      <div className="flex flex-wrap gap-2">
-        {row.original.roles.map((role, index) => (
-          <Badge key={index} variant="outline">
-            {role}
-          </Badge>
-        ))}
-      </div>
-    ),
-  },
-  ...(isSuperAdmin
-    ? [
-        {
-          id: "actions",
-          cell: ({ row }: { row: any }) => {
-            const [open, setOpen] = React.useState(false);
-            const [selectedRoles, setSelectedRoles] = React.useState(
-                row.original.roles.map((role: any) => ({ value: role, label: role }))
+const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof adminSchema>>[] => {
+  const rolesOptions = [
+    { value: "ticket", label: t("pages.admin.create.roles_options.ticket") },
+    { value: "mail", label: t("pages.admin.create.roles_options.mail") },
+    { value: "provider", label: t("pages.admin.create.roles_options.provider") },
+    { value: "merchant", label: t("pages.admin.create.roles_options.merchant") },
+    { value: "delivery", label: t("pages.admin.create.roles_options.delivery") },
+    { value: "finance", label: t("pages.admin.create.roles_options.finance") },
+  ];
+
+  return [
+    {
+      id: "id",
+      accessorKey: "photo_url",
+      header: t("pages.admin.list.columns.admin"),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          {row.original.photo_url ? (
+            <img
+              src={row.original.photo_url}
+              alt={row.original.name}
+              className="w-10 h-10 rounded-full"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+          )}
+          <span>{row.original.name}</span>
+        </div>
+      ),
+      enableHiding: false,
+    },
+    { accessorKey: "email", header: t("pages.admin.list.columns.email"), cell: ({ row }) => row.original.email },
+    {
+      accessorKey: "roles",
+      header: t("pages.admin.list.columns.roles"),
+      cell: ({ row }) => (
+        <div className="flex flex-wrap gap-2">
+          {row.original.roles.map((role, index) => (
+            <Badge key={index} variant="outline">
+              {getRoleLabel(role as keyof typeof rolesMapping, t)}
+            </Badge>
+          ))}
+        </div>
+      ),
+    },
+    ...(isSuperAdmin
+      ? [
+          {
+            id: "actions",
+            cell: ({ row }: { row: any }) => {
+              const [open, setOpen] = React.useState(false);
+              const [selectedRoles, setSelectedRoles] = React.useState(
+                row.original.roles.map((role: any) => ({
+                  value: role,
+                  label: getRoleLabel(role as keyof typeof rolesMapping, t),
+                }))
               );
 
-            const updateRoles = () => {
-              setOpen(false);
-            };
+              const updateRoles = () => {
+                setOpen(false);
+              };
 
-            return (
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="link" className="w-fit px-0 text-left text-foreground">
-                    Modifier
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Modifier les rôles</DialogTitle>
-                    <DialogDescription>
-                      Sélectionnez les rôles pour {row.original.name}.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div>
-                      <Label htmlFor="roles" className="text-right">
-                        Rôles
-                      </Label>
-                      <MultiSelect
-                                options={rolesOptions}
-                                onValueChange={(newRoles) =>
-                                    setSelectedRoles(newRoles.map((role) => ({ value: role, label: role })))
-                                  }
-                                defaultValue={selectedRoles}
-                                placeholder="Sélectionnez les rôles"
-                                variant="inverted"
-                                animation={2}
-                            />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit" onClick={updateRoles}>
-                      Enregistrer
+              return (
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="link" className="w-fit px-0 text-left text-foreground">
+                      {t("pages.admin.list.actions.modify")}
                     </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            );
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{t("pages.admin.list.actions.modify_roles_title")}</DialogTitle>
+                      <DialogDescription>
+                        {t("pages.admin.list.actions.modify_roles_description", { name: row.original.name })}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div>
+                        <Label htmlFor="roles" className="text-right">
+                          {t("pages.admin.list.columns.roles")}
+                        </Label>
+                        <MultiSelect
+                          options={rolesOptions}
+                          onValueChange={(newRoles) =>
+                            setSelectedRoles(newRoles.map((role) => ({
+                              value: role,
+                              label: getRoleLabel(role as keyof typeof rolesMapping, t),
+                            })))
+                          }
+                          defaultValue={selectedRoles}
+                          placeholder={t("pages.admin.list.actions.select_roles")}
+                          variant="inverted"
+                          animation={2}
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit" onClick={updateRoles}>
+                        {t("pages.admin.list.actions.save")}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              );
+            },
           },
-        },
-      ]
-    : []),
-];
+        ]
+      : []),
+  ];
+};
 
 export function AdminDataTable({
   data: initialData,
@@ -185,6 +193,7 @@ export function AdminDataTable({
   data: z.infer<typeof adminSchema>[];
   isSuperAdmin: boolean;
 }) {
+  const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
@@ -200,7 +209,7 @@ export function AdminDataTable({
 
   const table = useReactTable({
     data,
-    columns: adminColumns(isSuperAdmin),
+    columns: adminColumns(isSuperAdmin, t),
     state: {
       sorting,
       columnVisibility,
@@ -226,8 +235,8 @@ export function AdminDataTable({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">Colonnes</span>
-                <span className="lg:hidden">Colonnes</span>
+                <span className="hidden lg:inline">{t("pages.admin.list.columns.columns")}</span>
+                <span className="lg:hidden">{t("pages.admin.list.columns.columns")}</span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -244,7 +253,7 @@ export function AdminDataTable({
                     (link) => link.column_id === column.id
                   );
                   const displayText = columnLinkItem
-                    ? columnLinkItem.text
+                    ? t(columnLinkItem.text)
                     : column.id;
 
                   return (
@@ -296,7 +305,7 @@ export function AdminDataTable({
                       {cell.column.id === "roles"
                         ? row.original.roles.map((role, index) => (
                             <Badge key={index} variant="outline">
-                              {getRoleLabel(role as keyof typeof rolesMapping)}
+                              {getRoleLabel(role as keyof typeof rolesMapping, t)}
                             </Badge>
                           ))
                         : flexRender(
@@ -310,10 +319,10 @@ export function AdminDataTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={adminColumns(isSuperAdmin).length}
+                  colSpan={adminColumns(isSuperAdmin, t).length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("pages.admin.list.no_results")}
                 </TableCell>
               </TableRow>
             )}

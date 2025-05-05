@@ -18,7 +18,6 @@ import {
   CheckIcon,
 } from "lucide-react";
 import { z } from "zod";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +55,7 @@ import { getAllAdmins } from "@/api/admin.api";
 import { ReportApi } from "@/api/report.api";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useTranslation } from "react-i18next";
 
 // Schéma de validation
 export const schema = z.object({
@@ -82,7 +82,7 @@ export const columnLink = [
   { column_id: "status", text: "Statut" },
 ];
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[] => [
   {
     accessorKey: "report_message",
     header: "Message",
@@ -117,12 +117,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         {row.original.status === "wait" ? (
           <>
             <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
-            En attente
+            {t("pages.report.table.status.waiting")}
           </>
         ) : (
           <>
             <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
-            Validé
+            {t("pages.report.table.status.validated")}
           </>
         )}
       </Badge>
@@ -134,13 +134,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       <AssignAdminModal
         reportId={row.original.report_id}
         admin_id={row.original.admin && row.original.admin[0]?.admin_id || undefined}
-        message= {row.original.report_message}
+        message={row.original.report_message}
       />
     ),
   },
 ];
 
 export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
+  const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
@@ -156,7 +157,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
 
   const table = useReactTable({
     data,
-    columns,
+    columns: columns(t),
     state: {
       sorting,
       columnVisibility,
@@ -182,7 +183,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">Colonnes</span>
+                <span className="hidden lg:inline">{t("pages.report.table.columnVisibility.button")}</span>
                 <span className="lg:hidden">Colonnes</span>
                 <ChevronDownIcon />
               </Button>
@@ -196,13 +197,6 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
                     column.getCanHide()
                 )
                 .map((column) => {
-                  const columnLinkItem = columnLink.find(
-                    (link) => link.column_id === column.id
-                  );
-                  const displayText = columnLinkItem
-                    ? columnLinkItem.text
-                    : column.id;
-
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
@@ -212,7 +206,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {displayText}
+                      {t(`pages.report.table.columns.${column.id}`)}
                     </DropdownMenuCheckboxItem>
                   );
                 })}
@@ -274,7 +268,8 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
   );
 }
 
-function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, admin_id?: string, message : string }) {
+function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, admin_id?: string, message: string }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectedAdminId, setSelectedAdminId] = React.useState<string | undefined>(admin_id);
   const [admins, setAdmins] = React.useState<AdminData[]>([]);
@@ -309,30 +304,36 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="link" className="w-fit px-0 text-left text-foreground">
-          {adminId === admin_id ? "Gérer" : isSuperAdmin ? "Attribuer" : "Commenter"}
+          {adminId === admin_id ? t("pages.report.table.dialog.buttons.manage") : isSuperAdmin ? t("pages.report.table.dialog.buttons.assignAdmin") : t("pages.report.table.dialog.buttons.comment")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{adminId === admin_id ? "Gérer le Ticket" : isSuperAdmin ? "Attribuer à un Admin" : "Ajouter un Commentaire"}</DialogTitle>
+          <DialogTitle>
+            {adminId === admin_id
+              ? t("pages.report.table.dialog.title.manage")
+              : isSuperAdmin
+              ? t("pages.report.table.dialog.title.assign")
+              : t("pages.report.table.dialog.title.comment")}
+          </DialogTitle>
           <DialogDescription>
             {adminId === admin_id
-              ? "Gérez ce signalement."
+              ? t("pages.report.table.dialog.description.manage")
               : isSuperAdmin
-              ? "Sélectionnez un administrateur pour attribuer ce signalement."
-              : "Ajoutez un commentaire pour ce signalement."}
+              ? t("pages.report.table.dialog.description.assign")
+              : t("pages.report.table.dialog.description.comment")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           {isSuperAdmin && adminId !== admin_id ? (
             <>
-              <Label htmlFor="admin_id_get">Sélectionnez un administrateur</Label>
+              <Label htmlFor="admin_id_get">{t("pages.report.table.dialog.labels.selectAdmin")}</Label>
               <Select
                 value={selectedAdminId}
                 onValueChange={setSelectedAdminId}
               >
                 <SelectTrigger id="admin_id_get" className="h-auto ps-2 w-full [&>span]:flex [&>span]:items-center [&>span]:gap-2">
-                  <SelectValue placeholder="Sélectionnez un admin" />
+                  <SelectValue placeholder={t("pages.report.table.dialog.labels.selectAdmin")} />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
                   {admins.length > 0 ? (
@@ -374,7 +375,7 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
           ) : (
             <>
               <div>{message}</div>
-              <Label htmlFor="comment">Ajouter un commentaire</Label>
+              <Label htmlFor="comment">{t("pages.report.table.dialog.labels.addComment")}</Label>
               <textarea
                 id="comment"
                 className="w-full p-2 border rounded"
@@ -386,7 +387,7 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
         </div>
         <DialogFooter>
           <Button type="submit" onClick={isSuperAdmin && adminId !== admin_id ? handleAssignAdmin : handleCommentSubmit}>
-            {isSuperAdmin && adminId !== admin_id ? "Attribuer" : "Soumettre"}
+            {isSuperAdmin && adminId !== admin_id ? t("pages.report.table.dialog.buttons.assign") : t("pages.report.table.dialog.buttons.submit")}
           </Button>
         </DialogFooter>
       </DialogContent>

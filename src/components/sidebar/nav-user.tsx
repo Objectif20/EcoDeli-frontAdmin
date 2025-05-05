@@ -6,7 +6,6 @@ import {
   Moon,
   Settings,
   Sun,
-  User,
 } from "lucide-react"
 
 import {
@@ -92,10 +91,6 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User />
-                {t("sidebar.main.menuUser.profil")}
-              </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link to="/office/settings" className="flex items-center gap-2">
                 <Settings />

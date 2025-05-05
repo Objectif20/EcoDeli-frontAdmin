@@ -35,6 +35,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditorReadOnly } from "@/components/minimal-tiptap";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
 
 // Nouveau schéma pour les emails
 export const emailSchema = z.object({
@@ -48,14 +49,6 @@ export const emailSchema = z.object({
   isNewsletter: z.boolean(),
 });
 
-const PROFILE_LABELS: Record<string, string> = {
-  all: "Tout le monde",
-  deliveryman: "Transporteur",
-  merchant: "Commerçant",
-  client: "Expéditeur",
-  provider : "Prestataire",
-};
-
 export const columnLink = [
   {
     column_id: "subject",
@@ -63,11 +56,11 @@ export const columnLink = [
   },
   {
     column_id: "sentDate",
-    text: "date d'envoi",
+    text: "Date d'envoi",
   },
   {
     column_id: "isSent",
-    text: "Est envoyé",
+    text: "Envoyé",
   },
   {
     column_id: "author",
@@ -82,6 +75,14 @@ export const columnLink = [
     text: "Newsletter",
   },
 ];
+
+const PROFILE_LABELS: Record<string, string> = {
+  all: "Tout le monde",
+  deliveryman: "Transporteur",
+  merchant: "Commerçant",
+  client: "Expéditeur",
+  provider : "Prestataire",
+};
 
 const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
   {
@@ -101,7 +102,7 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
         minute: "2-digit",
         second: "2-digit",
       }).format(new Date(row.original.sentDate));
-      
+
       return formattedDate;
     },
   },
@@ -152,15 +153,15 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
             Voir plus
           </Button>
         </SheetTrigger>
-        
+
         <SheetContent side="right" className="flex flex-col">
           <SheetHeader className="gap-1">
             <SheetTitle>{row.original.subject}</SheetTitle>
             <SheetDescription>Détails de l'email</SheetDescription>
           </SheetHeader>
-           
+
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
-          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               <Label>Date d'envoi</Label>
               <p>
                 {new Intl.DateTimeFormat("fr-FR", {
@@ -194,9 +195,7 @@ const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
               </Button>
             </SheetClose>
           </SheetFooter>
-
         </SheetContent>
-        
       </Sheet>
     ),
   },
@@ -207,7 +206,7 @@ export function EmailDataTable({
 }: {
   data: z.infer<typeof emailSchema>[];
 }) {
-
+  const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -220,7 +219,6 @@ export function EmailDataTable({
   React.useEffect(() => {
     setData(initialData);
   }, [initialData]);
-
 
   const table = useReactTable({
     data,
@@ -245,49 +243,43 @@ export function EmailDataTable({
   return (
     <>
       <div className="flex items-center justify-between px-4 lg:px-6">
-              <div className="flex justify-end items-center gap-2 w-full my-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <ColumnsIcon className="h-4 w-4 mr-2" />
-                      <span className="hidden lg:inline">Colonnes</span>
-                      <span className="lg:hidden">Colonnes</span>
-                      <ChevronDownIcon />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    {table
-                      .getAllColumns()
-                      .filter(
-                        (column) =>
-                          typeof column.accessorFn !== "undefined" &&
-                          column.getCanHide()
-                      )
-                      .map((column) => {
-                        const columnLinkItem = columnLink.find(
-                          (link) => link.column_id === column.id
-                        );
-                        const displayText = columnLinkItem
-                          ? columnLinkItem.text
-                          : column.id;
-      
-                        return (
-                          <DropdownMenuCheckboxItem
-                            key={column.id}
-                            className="capitalize"
-                            checked={column.getIsVisible()}
-                            onCheckedChange={(value) =>
-                              column.toggleVisibility(!!value)
-                            }
-                          >
-                            {displayText}
-                          </DropdownMenuCheckboxItem>
-                        );
-                      })}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
+        <div className="flex justify-end items-center gap-2 w-full my-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <ColumnsIcon className="h-4 w-4 mr-2" />
+                <span className="hidden lg:inline">{t("pages.mail.table.columnVisibility.button")}</span>
+                <span className="lg:hidden">Colonnes</span>
+                <ChevronDownIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {table
+                .getAllColumns()
+                .filter(
+                  (column) =>
+                    typeof column.accessorFn !== "undefined" &&
+                    column.getCanHide()
+                )
+                .map((column) => {
+
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {t(`pages.mail.table.columnVisibility.menu.${column.id}`)}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
       <div className="overflow-hidden rounded-lg border">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted">

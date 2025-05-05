@@ -91,7 +91,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         <Button
           variant="link"
           className="w-fit px-0 text-left text-foreground"
-          onClick={() => navigate(`/office/profile/providers/${row.original.id}`)}
+          onClick={() => navigate(`/office/profile/merchants/${row.original.id}`)}
         >
           Accéder au profil
         </Button>

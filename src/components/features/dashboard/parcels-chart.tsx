@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -10,20 +9,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 const colisData = [
   { taille: "Petit colis (S)", nombre: 120 },
   { taille: "Moyen colis (M)", nombre: 200 },
   { taille: "Grand colis (L)", nombre: 150 },
   { taille: "Très grand colis (XL)", nombre: 80 },
-]
+];
 
 const chartConfig = {
   colis: {
@@ -33,14 +33,16 @@ const chartConfig = {
   label: {
     color: "hsl(var(--background))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function ParcelsChart() {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nombre de colis expédiés</CardTitle>
-        <CardDescription>Période : 6 derniers mois</CardDescription>
+        <CardTitle>{t("pages.dashboard.parcelsChart.title")}</CardTitle>
+        <CardDescription>{t("pages.dashboard.parcelsChart.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -92,12 +94,12 @@ export function ParcelsChart() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Augmentation de 7.8% ce mois-ci <TrendingUp className="h-4 w-4" />
+          {t("pages.dashboard.parcelsChart.footer.increase")} <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Affichage du nombre total de colis expédiés
+          {t("pages.dashboard.parcelsChart.footer.totalParcels")}
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

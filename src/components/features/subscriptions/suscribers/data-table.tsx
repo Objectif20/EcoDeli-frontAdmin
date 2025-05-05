@@ -2,10 +2,8 @@
 
 import * as React from "react";
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -17,8 +15,6 @@ import {
   ChevronDownIcon,
 } from "lucide-react";
 import { z } from "zod";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -34,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useTranslation } from "react-i18next";
 
 export const subscriberSchema = z.object({
   subscription_id: z.string(),
@@ -47,55 +44,15 @@ export const subscriberSchema = z.object({
 });
 
 export const subscriberColumnLink = [
-  { column_id: "email", text: "Email" },
-  { column_id: "is_merchant", text: "Commerçant" },
-  { column_id: "plan_name", text: "Nom du Plan" },
-  { column_id: "start_date", text: "Date de Début" },
-  { column_id: "end_date", text: "Date de Fin" },
+  { column_id: "email", text: "pages.subscription.list.table.columns.email" },
+  { column_id: "is_merchant", text: "pages.subscription.list.table.columns.is_merchant" },
+  { column_id: "plan_name", text: "pages.subscription.list.table.columns.plan_name" },
+  { column_id: "start_date", text: "pages.subscription.list.table.columns.start_date" },
+  { column_id: "end_date", text: "pages.subscription.list.table.columns.end_date" },
 ];
 
-const subscriberColumns: ColumnDef<z.infer<typeof subscriberSchema>>[] = [
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => row.original.email,
-  },
-  {
-    accessorKey: "is_merchant",
-    header: "Marchand",
-    cell: ({ row }) => (
-      <Badge variant={row.original.is_merchant ? "success" : "destructive"}>
-        {row.original.is_merchant ? "✅" : "❌"}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "plan_name",
-    header: "Nom du Plan",
-    cell: ({ row }) => row.original.plan_name,
-  },
-  {
-    accessorKey: "start_date",
-    header: "Date de Début",
-    cell: ({ row }) => {
-      const date = new Date(row.original.start_date);
-      return date.toLocaleDateString('fr-FR');
-    },
-  },
-  {
-    accessorKey: "end_date",
-    header: "Date de Fin",
-    cell: ({ row }) => {
-        if (!row.original.end_date) {
-            return "N/A";
-        }
-      const date = new Date(row.original.end_date);
-      return date.toLocaleDateString('fr-FR');
-    },
-  },
-];
-
-export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeof subscriberSchema>[] }) {
+const SubscriberDataTable = ({ data: initialData }: { data: z.infer<typeof subscriberSchema>[] }) => {
+  const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
@@ -105,9 +62,46 @@ export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeo
   }, [initialData]);
 
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const subscriberColumns = [
+    {
+      accessorKey: "email",
+      header: t("pages.subscription.list.table.columns.email"),
+      cell: ({ row }: { row: { original: z.infer<typeof subscriberSchema> } }) => row.original.email,
+    },
+    {
+      accessorKey: "is_merchant",
+      header: t("pages.subscription.list.table.columns.is_merchant"),
+      cell: ({ row }: { row: { original: z.infer<typeof subscriberSchema> } }) => (row.original.is_merchant ? "✅" : "❌"),
+    },
+    {
+      accessorKey: "plan_name",
+      header: t("pages.subscription.list.table.columns.plan_name"),
+      cell: ({ row }: { row: { original: z.infer<typeof subscriberSchema> } }) => row.original.plan_name,
+    },
+    {
+      accessorKey: "start_date",
+      header: t("pages.subscription.list.table.columns.start_date"),
+      cell: ({ row }: { row: { original: z.infer<typeof subscriberSchema> } }) => {
+        const date = new Date(row.original.start_date);
+        return date.toLocaleDateString('fr-FR');
+      },
+    },
+    {
+      accessorKey: "end_date",
+      header: t("pages.subscription.list.table.columns.end_date"),
+      cell: ({ row }: { row: { original: z.infer<typeof subscriberSchema> } }) => {
+        if (!row.original.end_date) {
+          return "N/A";
+        }
+        const date = new Date(row.original.end_date);
+        return date.toLocaleDateString('fr-FR');
+      },
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -137,8 +131,12 @@ export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeo
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">Colonnes</span>
-                <span className="lg:hidden">Colonnes</span>
+                <span className="hidden lg:inline">
+                  {t("pages.subscription.list.table.columns_button")}
+                </span>
+                <span className="lg:hidden">
+                  {t("pages.subscription.list.table.columns_button")}
+                </span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -155,7 +153,7 @@ export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeo
                     (link) => link.column_id === column.id
                   );
                   const displayText = columnLinkItem
-                    ? columnLinkItem.text
+                    ? t(columnLinkItem.text)
                     : column.id;
 
                   return (
@@ -180,18 +178,16 @@ export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeo
           <TableHeader className="sticky top-0 bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -218,7 +214,7 @@ export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeo
                   colSpan={subscriberColumns.length}
                   className="h-24 text-center"
                 >
-                  Aucun résultat.
+                  {t("pages.subscription.list.table.no_results")}
                 </TableCell>
               </TableRow>
             )}
@@ -227,4 +223,6 @@ export function SubscriberDataTable({ data: initialData }: { data: z.infer<typeo
       </div>
     </>
   );
-}
+};
+
+export default SubscriberDataTable;

@@ -23,12 +23,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multiselect";
 import { createAdmin } from "@/api/admin.api";
+import { useTranslation } from "react-i18next";
 
 interface CreateAdminProps {
   onAdminCreated: () => void;
 }
 
 export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
+  const { t } = useTranslation();
   const createAdminSchema = z.object({
     last_name: z.string(),
     first_name: z.string(),
@@ -53,32 +55,32 @@ export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
     data.roles = selectedRoles;
     console.log(data);
     await createAdmin(data)();
-    form.reset(); 
+    form.reset();
     setSelectedRoles([]);
     setIsDialogOpen(false);
-    onAdminCreated(); 
+    onAdminCreated();
   }
 
   const rolesList = [
-    { label: "Finance", value: "FINANCE" },
-    { label: "Prestataire", value: "PROVIDER" },
-    { label: "Transporteur", value: "DELIVERY" },
-    { label: "Commerçant", value: "MERCHANT" },
-    { label: "Ticket", value: "TICKET" },
-    { label: "Mail", value: "MAIL" },
+    { label: t("pages.admin.create.roles_options.finance"), value: "FINANCE" },
+    { label: t("pages.admin.create.roles_options.provider"), value: "PROVIDER" },
+    { label: t("pages.admin.create.roles_options.delivery"), value: "DELIVERY" },
+    { label: t("pages.admin.create.roles_options.merchant"), value: "MERCHANT" },
+    { label: t("pages.admin.create.roles_options.ticket"), value: "TICKET" },
+    { label: t("pages.admin.create.roles_options.mail"), value: "MAIL" },
   ];
 
   return (
     <>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
-          <Button>Ajouter un utilisateur</Button>
+          <Button>{t("pages.admin.list.actions.add_user")}</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Création d'un compte administrateur</DialogTitle>
+            <DialogTitle>{t("pages.admin.list.actions.create_admin_title")}</DialogTitle>
             <DialogDescription>
-              Créer un profil administrateur
+              {t("pages.admin.list.actions.create_admin_description")}
             </DialogDescription>
           </DialogHeader>
           <div>
@@ -89,11 +91,11 @@ export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
                   name="last_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom</FormLabel>
+                      <FormLabel>{t("pages.admin.list.actions.last_name")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Nom de famille" {...field} />
+                        <Input placeholder={t("pages.admin.list.actions.last_name_placeholder")} {...field} />
                       </FormControl>
-                      <FormDescription>Saisissez le nom</FormDescription>
+                      <FormDescription>{t("pages.admin.list.actions.last_name_description")}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -103,11 +105,11 @@ export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
                   name="first_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Prénom</FormLabel>
+                      <FormLabel>{t("pages.admin.list.actions.first_name")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Prénom" {...field} />
+                        <Input placeholder={t("pages.admin.list.actions.first_name_placeholder")} {...field} />
                       </FormControl>
-                      <FormDescription>Saisissez le prénom</FormDescription>
+                      <FormDescription>{t("pages.admin.list.actions.first_name_description")}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -117,11 +119,11 @@ export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("pages.admin.list.actions.email")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Email" {...field} type="email" />
+                        <Input placeholder={t("pages.admin.list.actions.email_placeholder")} {...field} type="email" />
                       </FormControl>
-                      <FormDescription>Saisissez le mail</FormDescription>
+                      <FormDescription>{t("pages.admin.list.actions.email_description")}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -131,24 +133,24 @@ export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
                   name="roles"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Rôles</FormLabel>
+                      <FormLabel>{t("pages.admin.list.actions.roles")}</FormLabel>
                       <FormControl>
                         <MultiSelect
                           options={rolesList}
                           onValueChange={setSelectedRoles}
                           defaultValue={selectedRoles}
-                          placeholder="Choisissez un ou plusieurs rôles"
+                          placeholder={t("pages.admin.list.actions.select_roles")}
                           variant="inverted"
                           animation={2}
                           maxCount={3}
                         />
                       </FormControl>
-                      <FormDescription>Sélectionnez les rôles</FormDescription>
+                      <FormDescription>{t("pages.admin.list.actions.roles_description")}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Créer l'administrateur</Button>
+                <Button type="submit">{t("pages.admin.list.actions.create_admin")}</Button>
               </form>
             </Form>
           </div>

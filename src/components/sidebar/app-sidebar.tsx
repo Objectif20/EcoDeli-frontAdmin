@@ -109,7 +109,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     profil: [
       {
         title: t("sidebar.main.profil.listeParticulier"),
-        url: "/office/profile/users",
+        url: "/office/profile/clients",
         icon: Users, 
       },
       {

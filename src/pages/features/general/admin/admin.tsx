@@ -7,6 +7,7 @@ import { getAllAdmins } from "@/api/admin.api";
 import { z } from "zod";
 import { RootState } from "@/redux/store";
 import CreateAdmin from "@/components/features/general/admin/create-admin";
+import { useTranslation } from "react-i18next";
 
 export const adminSchema = z.object({
   id: z.string(),
@@ -17,6 +18,7 @@ export const adminSchema = z.object({
 });
 
 export default function AdminPage() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -29,13 +31,13 @@ export default function AdminPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Administrateurs"],
+        segments: [t("pages.admin.list.breadcrumb_home"), t("pages.admin.list.breadcrumb_admins")],
         links: ["/office/dashboard"],
       })
     );
 
     fetchAdminData();
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   const fetchAdminData = async () => {
     const data = await getAllAdmins();
@@ -66,7 +68,7 @@ export default function AdminPage() {
   return (
     <>
       <div className="w-full">
-        <h1 className="text-2xl font-semibold mb-4">Ensemble des administrateurs EcoDeli</h1>
+        <h1 className="text-2xl font-semibold mb-4">{t("pages.admin.list.title")}</h1>
         <CreateAdmin onAdminCreated={fetchAdminData} />
         <AdminDataTable key={`${pageIndex}-${pageSize}`} data={paginatedData} isSuperAdmin={isSuperAdmin} />
         <PaginationControls

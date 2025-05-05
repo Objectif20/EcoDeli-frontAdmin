@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
-
+import { TrendingUp } from "lucide-react";
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
 import {
   Card,
   CardContent,
@@ -10,13 +9,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
+
 const chartData = [
   { month: "Janvier", subscription: 186 },
   { month: "Février", subscription: 305 },
@@ -24,22 +25,24 @@ const chartData = [
   { month: "Avril", subscription: 273 },
   { month: "Mai", subscription: 209 },
   { month: "Juin", subscription: 214 },
-]
+];
 
 const chartConfig = {
-    subscription: {
+  subscription: {
     label: "Abonnement",
     color: "hsl(var(--chart-1))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export default function SuscriptionChart() {
+export default function SubscriptionChart() {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader className="items-center">
-        <CardTitle>Répartition des nouveaux abonnements</CardTitle>
+        <CardTitle>{t("pages.dashboard.subscriptionChart.title")}</CardTitle>
         <CardDescription>
-          Les nouveaux abonnements sur les 6 derniers mois
+          {t("pages.dashboard.subscriptionChart.description")}
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
@@ -65,12 +68,12 @@ export default function SuscriptionChart() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Hausse de 5,2 % <TrendingUp className="h-4 w-4" />
+          {t("pages.dashboard.subscriptionChart.footer.increase")} <TrendingUp className="h-4 w-4" />
         </div>
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-          Janvier - Juin 2024
+          {t("pages.dashboard.subscriptionChart.footer.period")}
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

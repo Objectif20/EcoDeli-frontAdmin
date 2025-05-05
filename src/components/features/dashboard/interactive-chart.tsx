@@ -1,33 +1,34 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-
-import { useIsMobile } from "@/hooks/use-mobile"
+import * as React from "react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/components/ui/toggle-group"
+} from "@/components/ui/toggle-group";
+import { useTranslation } from "react-i18next";
+
 const chartData = [
   { date: "2024-04-01", provider: 222, delivery: 150 },
   { date: "2024-04-02", provider: 97, delivery: 180 },
@@ -122,6 +123,7 @@ const chartData = [
   { date: "2024-06-30", provider: 446, delivery: 400 },
 ]
 
+
 const chartConfig = {
   visitors: {
     label: "Clients",
@@ -134,41 +136,44 @@ const chartConfig = {
     label: "Livraison",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function ChartAreaInteractive() {
-  const isMobile = useIsMobile()
-  const [timeRange, setTimeRange] = React.useState("30d")
+  const isMobile = useIsMobile();
+  const [timeRange, setTimeRange] = React.useState("30d");
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (isMobile) {
-      setTimeRange("7d")
+      setTimeRange("7d");
     }
-  }, [isMobile])
+  }, [isMobile]);
 
   const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
-    let daysToSubtract = 90
+    const date = new Date(item.date);
+    const referenceDate = new Date("2024-06-30");
+    let daysToSubtract = 90;
     if (timeRange === "30d") {
-      daysToSubtract = 30
+      daysToSubtract = 30;
     } else if (timeRange === "7d") {
-      daysToSubtract = 7
+      daysToSubtract = 7;
     }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+    const startDate = new Date(referenceDate);
+    startDate.setDate(startDate.getDate() - daysToSubtract);
+    return date >= startDate;
+  });
 
   return (
     <Card className="@container/card">
       <CardHeader className="relative">
-        <CardTitle>Total de livraisons / prestations</CardTitle>
+        <CardTitle>{t("pages.dashboard.chartAreaInteractive.title")}</CardTitle>
         <CardDescription>
           <span className="@[540px]/card:block hidden">
-            Total pour les 3 derniers mois
+            {t("pages.dashboard.chartAreaInteractive.description")}
           </span>
-          <span className="@[540px]/card:hidden">Les 3 derniers</span>
+          <span className="@[540px]/card:hidden">
+            {t("pages.dashboard.chartAreaInteractive.descriptionShort")}
+          </span>
         </CardDescription>
         <div className="absolute right-4 top-4">
           <ToggleGroup
@@ -179,13 +184,13 @@ export function ChartAreaInteractive() {
             className="@[767px]/card:flex hidden"
           >
             <ToggleGroupItem value="90d" className="h-8 px-2.5">
-              3 derniers mois
+              {t("pages.dashboard.chartAreaInteractive.toggleGroup.3months")}
             </ToggleGroupItem>
             <ToggleGroupItem value="30d" className="h-8 px-2.5">
-              Dernier mois
+              {t("pages.dashboard.chartAreaInteractive.toggleGroup.1month")}
             </ToggleGroupItem>
             <ToggleGroupItem value="7d" className="h-8 px-2.5">
-                La dernière semaine
+              {t("pages.dashboard.chartAreaInteractive.toggleGroup.1week")}
             </ToggleGroupItem>
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
@@ -193,17 +198,17 @@ export function ChartAreaInteractive() {
               className="@[767px]/card:hidden flex w-40"
               aria-label="Choisissez une valeur"
             >
-              <SelectValue placeholder="3 derniers mois" />
+              <SelectValue placeholder={t("pages.dashboard.chartAreaInteractive.select.placeholder")} />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               <SelectItem value="90d" className="rounded-lg">
-                Les 3 derniers mois
+                {t("pages.dashboard.chartAreaInteractive.select.options.3months")}
               </SelectItem>
               <SelectItem value="30d" className="rounded-lg">
-                Dernier mois
+                {t("pages.dashboard.chartAreaInteractive.select.options.1month")}
               </SelectItem>
               <SelectItem value="7d" className="rounded-lg">
-                La dernière semaine
+                {t("pages.dashboard.chartAreaInteractive.select.options.1week")}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -249,11 +254,11 @@ export function ChartAreaInteractive() {
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value)
+                const date = new Date(value);
                 return date.toLocaleDateString("fr-FR", {
                   month: "short",
                   day: "numeric",
-                })
+                });
               }}
             />
             <ChartTooltip
@@ -264,7 +269,7 @@ export function ChartAreaInteractive() {
                     return new Date(value).toLocaleDateString("fr-FR", {
                       month: "short",
                       day: "numeric",
-                    })
+                    });
                   }}
                   indicator="dot"
                 />
@@ -288,5 +293,5 @@ export function ChartAreaInteractive() {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

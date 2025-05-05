@@ -19,15 +19,14 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TFunction } from "i18next";
 import { Input } from "@/components/ui/input";
 import { MailService } from "@/api/mail.api";
 import { MultiSelect } from "@/components/ui/multiselect";
 import DateTimePicker from "@/components/ui/calendar-time";
 
-export const mailSchema = (t: TFunction) =>
+export const mailSchema = (t: (key: string) => string) =>
   z.object({
-    subject: z.string().min(1, { message: t("pages.ticket.details.erreur") }),
+    subject: z.string().min(1, { message: t("pages.mail.createTicket.error.required") }),
     profiles: z.array(z.enum(["provider", "deliveryman", "merchant", "client", "admin"])).optional(),
     day: z.string().optional(),
     hour: z.string().optional(),
@@ -40,10 +39,9 @@ export default function CreateTicket() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [description, setDescription] = useState<string>(t("pages.ticket.premierEcrit"));
+  const [description, setDescription] = useState<string>(t("pages.mail.createTicket.firstWrite"));
 
   const admin = useSelector((state: RootState) => state.admin.admin);
-
   const canEdit = !!admin && admin.roles.includes("MAIL");
 
   const form = useForm<MailFormValues>({
@@ -57,32 +55,34 @@ export default function CreateTicket() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: [t("pages.ticket.breadcrumb.accueil"), t("Mails"), t("Créer un mail")],
+        segments: [
+          t("pages.mail.createTicket.breadcrumb.home"),
+          t("pages.mail.createTicket.breadcrumb.mails"),
+          t("pages.mail.createTicket.breadcrumb.create"),
+        ],
         links: ["/office/dashboard", "/office/mail"],
       })
     );
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   const handleSubmit = async (values: MailFormValues) => {
-    console.log("Selected Date:", selectedDate);
-    console.log("Selected Time:", selectedTime);
     const parsedDescription = description;
     if (selectedDate) {
-        values.day = selectedDate.toISOString().split('T')[0];
+      values.day = selectedDate.toISOString().split('T')[0];
     }
     if (selectedTime) {
-        values.hour = selectedTime;
+      values.hour = selectedTime;
     } else {
-        if (values.day){
-            values.hour = "12:00";
-        }
+      if (values.day) {
+        values.hour = "12:00";
+      }
     }
-  
+
     const newMail = {
       ...values,
       htmlContent: parsedDescription,
     };
-  
+
     try {
       if (values.day) {
         await MailService.createScheduleMail({
@@ -104,7 +104,7 @@ export default function CreateTicket() {
     } catch (error) {
       console.error("Erreur lors de la création du ticket:", error);
     }
-  
+
     navigate("/office/mail");
   };
 
@@ -117,11 +117,11 @@ export default function CreateTicket() {
   };
 
   const profileList = [
-    { value: "merchant", label: "Commerçant" },
-    { value: "provider", label: "Prestataire" },
-    { value: "client", label: "Expéditeur" },
-    { value: "deliveryman", label: "Transporteur" },
-    { value: "admin", label: "Administrateur" },
+    { value: "merchant", label: t("pages.mail.table.profileLabels.merchant") },
+    { value: "provider", label: t("pages.mail.table.profileLabels.provider") },
+    { value: "client", label: t("pages.mail.table.profileLabels.client") },
+    { value: "deliveryman", label: t("pages.mail.table.profileLabels.deliveryman") },
+    { value: "admin", label: t("pages.mail.table.profileLabels.admin") },
   ];
 
   const [selectedProfile, setSelectedProfile] = useState<{ label: string; value: string }[]>([]);
@@ -132,7 +132,7 @@ export default function CreateTicket() {
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <Card className="mx-auto md:max-w-2xl">
             <CardHeader>
-              <CardTitle>Rédiger un nouveau mail</CardTitle>
+              <CardTitle>{t("pages.mail.createTicket.title")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
@@ -141,14 +141,14 @@ export default function CreateTicket() {
                   name="subject"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="title">Objet du mail</FormLabel>
+                      <FormLabel htmlFor="title">{t("pages.mail.createTicket.form.subject")}</FormLabel>
                       <FormControl>
                         <Input
                           id="title"
                           {...field}
                           className="w-full p-2 border rounded"
                           disabled={!canEdit}
-                          placeholder="Objet du mail"
+                          placeholder={t("pages.mail.createTicket.form.placeholder.subject")}
                         />
                       </FormControl>
                       <FormMessage />
@@ -160,7 +160,7 @@ export default function CreateTicket() {
                   name="profiles"
                   render={() => (
                     <FormItem>
-                      <FormLabel htmlFor="profiles">Choix du profil</FormLabel>
+                      <FormLabel htmlFor="profiles">{t("pages.mail.createTicket.form.profiles")}</FormLabel>
                       <MultiSelect
                         options={profileList}
                         onValueChange={(value) => {
@@ -168,7 +168,7 @@ export default function CreateTicket() {
                           form.setValue('profiles', value as ["provider" | "deliveryman" | "merchant" | "client" | "admin"]);
                         }}
                         defaultValue={selectedProfile.map(profile => profile.value)}
-                        placeholder="Choisissez des profils"
+                        placeholder={t("pages.mail.createTicket.form.placeholder.profiles")}
                         variant="inverted"
                         animation={2}
                         maxCount={3}
@@ -183,9 +183,9 @@ export default function CreateTicket() {
                   name="day"
                   render={() => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Date et heure</FormLabel>
+                      <FormLabel>{t("pages.mail.createTicket.form.dateTime")}</FormLabel>
                       <DateTimePicker onDateTimeChange={handleDateTimeChange} />
-                      <FormDescription>Choisissez une date et une heure</FormDescription>
+                      <FormDescription>{t("pages.mail.createTicket.form.description")}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -201,7 +201,7 @@ export default function CreateTicket() {
               className="w-full"
               editorContentClassName="p-5"
               output="html"
-              placeholder={t("pages.ticket.details.wysiwyg.placeholder")}
+              placeholder={t("pages.mail.createTicket.editor.placeholder")}
               autofocus
               editable={canEdit}
               editorClassName="focus:outline-none"
@@ -212,7 +212,7 @@ export default function CreateTicket() {
           {canEdit && (
             <div className="flex justify-end mt-4">
               <Button type="submit">
-                {t("pages.ticket.details.bouton.sauvegarder")}
+                {t("pages.mail.createTicket.form.button.save")}
               </Button>
             </div>
           )}
