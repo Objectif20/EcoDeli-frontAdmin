@@ -10,6 +10,7 @@ export default function ReportPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [reports, setReports] = useState<Report[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -28,10 +29,11 @@ export default function ReportPage() {
       try {
         const response = await ReportApi.getReports(pageIndex, pageSize);
         if (response) {
-          const data: Report[] = response.data.map(report => ({
+          const data: Report[] = response.data.map((report) => ({
             ...report,
           }));
           setReports(data);
+          setTotalItems(response.meta.total);
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des signalements", error);
@@ -51,6 +53,7 @@ export default function ReportPage() {
       <PaginationControls
         pageIndex={pageIndex}
         pageSize={pageSize}
+        totalItems={totalItems}
         onPageIndexChange={setPageIndex}
         onPageSizeChange={(size) => {
           setPageSize(size);
