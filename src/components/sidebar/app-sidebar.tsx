@@ -70,9 +70,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "#",
         icon: File, 
         items: [
-          { title: t("sidebar.main.contrat.contratTransporteur"), url: "#" },
-          { title: t("sidebar.main.contrat.contratPrestataire"), url: "#" },
-          { title: t("sidebar.main.contrat.contratCommercant"), url: "#" },
+          { title: t("sidebar.main.contrat.contratTransporteur"), url: "/office/contract/deliveryman" },
+          { title: t("sidebar.main.contrat.contratPrestataire"), url: "/office/contract/provider" },
+          { title: t("sidebar.main.contrat.contratCommercant"), url: "/office/contract/merchant" },
         ],
       },
       {
