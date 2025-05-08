@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 
 import { useState, useEffect, useCallback } from "react"
@@ -41,7 +39,7 @@ export default function ProviderContractPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: [t("client.pages.office.home"), t("client.pages.office.contratPrestataires")],
+        segments: [t("pages.contracts.provider.home"), t("pages.contracts.provider.contratPrestataires")],
         links: ["/office/dashboard"],
       }),
     )
@@ -235,13 +233,13 @@ export default function ProviderContractPage() {
   return (
     <div className="flex flex-col h-full md:flex-row">
       <div className="w-full md:w-2/5 p-4 md:border-r">
-        <h1 className="text-2xl font-bold mb-4">{t("client.pages.office.contratPrestataires")}</h1>
+        <h1 className="text-2xl font-bold mb-4">{t("pages.contracts.provider.contratPrestataires")}</h1>
 
         <form onSubmit={handleSearch} className="mb-4">
           <div className="flex gap-2">
             <Input
               type="text"
-              placeholder={t("client.pages.office.searchPrestataire")}
+              placeholder={t("pages.contracts.provider.searchPrestataire")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1"
@@ -253,7 +251,7 @@ export default function ProviderContractPage() {
           </div>
         </form>
 
-        <ScrollArea className="h-[calc(100vh-250px)]">
+        <ScrollArea className="h-[calc(100vh-270px)]">
           <div className="space-y-3 mb-4 mr-4">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, index) => (
@@ -290,7 +288,7 @@ export default function ProviderContractPage() {
                           {prestataire.nom} {prestataire.prenom}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {t("client.pages.office.contratDate")}: {prestataire.dateContrat}
+                          {t("pages.contracts.provider.contratDate")}: {prestataire.dateContrat}
                         </p>
                       </div>
                     </div>
@@ -299,7 +297,7 @@ export default function ProviderContractPage() {
               ))
             ) : (
               <div className="text-center py-8">
-                <p>{t("client.pages.office.noPrestatairesFound")}</p>
+                <p>{t("pages.contracts.provider.noPrestatairesFound")}</p>
               </div>
             )}
           </div>
@@ -373,8 +371,8 @@ export default function ProviderContractPage() {
         ) : (
           <div className="flex min-h-[70svh] flex-col items-center justify-center py-16 text-center">
             <FileText size={32} className="text-muted-foreground/50 mb-2" />
-            <h3 className="text-lg font-medium">{t("client.pages.office.noContractSelected")}</h3>
-            <p className="text-muted-foreground">{t("client.pages.office.selectPrestataire")}</p>
+            <h3 className="text-lg font-medium">{t("pages.contracts.provider.noContractSelected")}</h3>
+            <p className="text-muted-foreground">{t("pages.contracts.provider.selectPrestataire")}</p>
           </div>
         )}
       </div>

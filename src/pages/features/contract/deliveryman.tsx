@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 
 import { useState, useEffect, useCallback } from "react"
@@ -41,7 +39,7 @@ export default function DeliverymanContractPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: [t("client.pages.office.home"), t("client.pages.office.contratDeliverymen")],
+        segments: [t("pages.contracts.deliveryman.home"), t("pages.contracts.deliveryman.contratDeliverymen")],
         links: ["/office/dashboard"],
       }),
     )
@@ -235,13 +233,13 @@ export default function DeliverymanContractPage() {
   return (
     <div className="flex flex-col h-full md:flex-row">
       <div className="w-full md:w-2/5 p-4 md:border-r">
-        <h1 className="text-2xl font-bold mb-4">{t("client.pages.office.contratDeliverymen")}</h1>
+        <h1 className="text-2xl font-bold mb-4">{t("pages.contracts.deliveryman.contratDeliverymen")}</h1>
 
         <form onSubmit={handleSearch} className="mb-4">
           <div className="flex gap-2">
             <Input
               type="text"
-              placeholder={t("client.pages.office.searchDeliveryman")}
+              placeholder={t("pages.contracts.deliveryman.searchDeliveryman")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1"
@@ -253,7 +251,7 @@ export default function DeliverymanContractPage() {
           </div>
         </form>
 
-        <ScrollArea className="h-[calc(100vh-250px)]">
+        <ScrollArea className="h-[calc(100vh-270px)]">
           <div className="space-y-3 mb-4 mr-4">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, index) => (
@@ -290,7 +288,7 @@ export default function DeliverymanContractPage() {
                           {deliveryman.nom} {deliveryman.prenom}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {t("client.pages.office.contratDate")}: {deliveryman.dateContrat}
+                          {t("pages.contracts.deliveryman.contratDate")}: {deliveryman.dateContrat}
                         </p>
                       </div>
                     </div>
@@ -299,7 +297,7 @@ export default function DeliverymanContractPage() {
               ))
             ) : (
               <div className="text-center py-8">
-                <p>{t("client.pages.office.noDeliverymenFound")}</p>
+                <p>{t("pages.contracts.deliveryman.noDeliverymenFound")}</p>
               </div>
             )}
           </div>
@@ -373,8 +371,8 @@ export default function DeliverymanContractPage() {
         ) : (
           <div className="flex min-h-[70svh] flex-col items-center justify-center py-16 text-center">
             <FileText size={32} className="text-muted-foreground/50 mb-2" />
-            <h3 className="text-lg font-medium">{t("client.pages.office.noContractSelected")}</h3>
-            <p className="text-muted-foreground">{t("client.pages.office.selectDeliveryman")}</p>
+            <h3 className="text-lg font-medium">{t("pages.contracts.deliveryman.noContractSelected")}</h3>
+            <p className="text-muted-foreground">{t("pages.contracts.deliveryman.selectDeliveryman")}</p>
           </div>
         )}
       </div>
