@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const publicEndpoints = ["/admin/auth/2fa/login"];
+const publicEndpoints = ["/admin/auth/2fa/login", "/admin/auth/refresh"];
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -27,24 +27,31 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry && !publicEndpoints.includes(originalRequest.url)) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !publicEndpoints.includes(originalRequest.url)
+    ) {
       originalRequest._retry = true;
 
       try {
-        const { data } = await axios.post(`${API_BASE_URL}/admin/auth/refresh`, {}, {
-          withCredentials: true,
-        });
+        const { data } = await axios.post(
+          `${API_BASE_URL}/admin/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
 
         const newAccessToken = data.access_token;
 
-        store.dispatch(login({
-          accessToken: newAccessToken,
-          twoFactorRequired: false
-        }));
+        store.dispatch(
+          login({
+            accessToken: newAccessToken,
+            twoFactorRequired: false,
+          })
+        );
 
         axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -52,7 +59,6 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         store.dispatch(logout());
-        //window.location.href = "/auth/login";
         return Promise.reject(refreshError);
       }
     }
