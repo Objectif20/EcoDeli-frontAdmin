@@ -1,4 +1,5 @@
 import NotFoundPage from "@/pages/error/404";
+import StripeDashboard from "@/pages/features/finance/stripe";
 import TransactionsPage from "@/pages/features/finance/transaction";
 import AddPlanPage from "@/pages/features/subscriptions/create";
 import PlansPage from "@/pages/features/subscriptions/plans";
@@ -16,6 +17,7 @@ const FinanceRoutes: React.FC = () => {
         <Route path='/plans/:id' element={<EditPlanPage />} />
         <Route path='/plans/create' element={<AddPlanPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
+        <Route path="/stripe" element={<StripeDashboard />} />
         <Route path='/*' element={<NotFoundPage />} />
     </Routes>
   );

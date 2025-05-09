@@ -102,7 +102,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: FileText, 
         items: [
           { title: t("sidebar.main.finance.transaction.historiqueTransaction"), url: "/office/finance/transactions" },
-          { title: t("sidebar.main.finance.transaction.stripe"), url: "#" },
+          { title: t("sidebar.main.finance.transaction.stripe"), url: "/office/finance/stripe" },
         ],
       },
     ],
