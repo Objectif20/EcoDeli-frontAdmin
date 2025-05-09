@@ -1,4 +1,5 @@
 import NotFoundPage from "@/pages/error/404";
+import AddPlanPage from "@/pages/features/subscriptions/create";
 import PlansPage from "@/pages/features/subscriptions/plans";
 import EditPlanPage from "@/pages/features/subscriptions/plans-update";
 import SubscriberPage from "@/pages/features/subscriptions/subscribers";
@@ -12,6 +13,7 @@ const FinanceRoutes: React.FC = () => {
         <Route path='/subscribers' element={<SubscriberPage />} />
         <Route path='/plans' element={<PlansPage />} />
         <Route path='/plans/:id' element={<EditPlanPage />} />
+        <Route path='/plans/create' element={<AddPlanPage />} />
         <Route path='/*' element={<NotFoundPage />} />
     </Routes>
   );

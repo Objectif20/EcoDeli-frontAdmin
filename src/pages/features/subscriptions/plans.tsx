@@ -56,6 +56,9 @@ export default function PlansPage() {
       <h1 className="text-3xl font-bold mb-6 text-center">
         {t("pages.subscription.plan.page.title")}
       </h1>
+      <Button onClick={() => navigate("/office/finance/plans/create")} className="mb-4">
+        {t("pages.subscription.plan.page.create_plan")}
+      </Button>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {plansDetail?.map((plan) => (
           <Card key={plan.plan_id} className="p-2 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 h-auto">
