@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
-import { GetSubscriptionById, Subscriptions, updateSubscription } from "@/api/subscriptions.api";
+import { Subscriptions, SubscriptionsApi } from "@/api/subscriptions.api";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,7 +69,7 @@ export default function EditPlanPage() {
     const fetchPlan = async () => {
       try {
         if (id) {
-          const data = await GetSubscriptionById(id);
+          const data = await SubscriptionsApi.GetSubscriptionById(id);
           setPlanDetail(data);
           setValue("name", data.name || "");
           setValue("price", String(data.price) || "");
@@ -123,7 +123,7 @@ export default function EditPlanPage() {
         first_shipping_free_threshold: (data.first_shipping_free_threshold),
       };
 
-      await updateSubscription(id, apiData);
+      await SubscriptionsApi.updateSubscription(id, apiData);
 
       navigate("/office/finance/plans");
     }

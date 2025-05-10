@@ -439,7 +439,8 @@
           "small_package_permanent_discount": "Réduction permanente pour petits colis : {{discount}} €",
           "first_shipping_free": "Première livraison gratuite : {{free}}",
           "first_shipping_free_threshold": "Seuil pour la première livraison gratuite : {{threshold}} €",
-          "is_pro": "Formule professionnelle : {{isPro}}"
+          "is_pro": "Formule professionnelle : {{isPro}}",
+          "create_plan" : "Créer une formule d'abonnement"
         },
         "buttons": {
           "edit": "Modifier"
@@ -483,6 +484,48 @@
             "required": "Le champ est requis.",
             "valid_number": "Doit être un nombre valide.",
             "non_negative": "Doit être supérieur ou égal à 0."
+          }
+        }
+      },
+      "add": {
+        "breadcrumb": {
+          "home": "Accueil",
+          "subscriptions": "Abonnements",
+          "add": "Ajouter"
+        },
+        "page": {
+          "title": "Ajouter un plan d'abonnement",
+          "errors": {
+            "required": "Ce champ est requis.",
+            "valid_number": "Veuillez entrer un nombre valide.",
+            "non_negative": "Veuillez entrer un nombre non négatif."
+          },
+          "form": {
+            "name": "Nom",
+            "name_description": "Entrez le nom du plan d'abonnement.",
+            "price": "Prix",
+            "price_description": "Entrez le prix du plan.",
+            "priority_shipping": "Pourcentage de livraison prioritaire",
+            "priority_shipping_description": "Entrez le pourcentage de livraison prioritaire.",
+            "priority_months_offered": "Mois de priorité offerts",
+            "priority_months_offered_description": "Entrez le nombre de mois de priorité offerts.",
+            "max_insurance_coverage": "Couverture d'assurance maximale",
+            "max_insurance_coverage_description": "Entrez la couverture d'assurance maximale.",
+            "extra_insurance_price": "Prix de l'assurance supplémentaire",
+            "extra_insurance_price_description": "Entrez le prix de l'assurance supplémentaire.",
+            "shipping_discount": "Remise sur la livraison",
+            "shipping_discount_description": "Entrez la remise sur la livraison.",
+            "permanent_discount": "Remise permanente",
+            "permanent_discount_description": "Entrez la remise permanente.",
+            "small_package_permanent_discount": "Remise permanente pour petits colis",
+            "small_package_permanent_discount_description": "Entrez la remise permanente pour petits colis.",
+            "first_shipping_free": "Première livraison gratuite",
+            "first_shipping_free_description": "Cochez pour activer la première livraison gratuite.",
+            "first_shipping_free_threshold": "Seuil pour la première livraison gratuite",
+            "first_shipping_free_threshold_description": "Entrez le seuil pour la première livraison gratuite.",
+            "is_pro": "Est Pro",
+            "is_pro_description": "Cochez si c'est un plan Pro.",
+            "add_button": "Ajouter"
           }
         }
       }

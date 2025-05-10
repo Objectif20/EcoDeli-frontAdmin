@@ -30,50 +30,67 @@ export interface Subscriptions {
 }
 
 
+export class SubscriptionsApi {
 
-export async function GetSubscribersList(page : number, limit : number) : Promise <{data: Subscribers[], meta : {total: number, page: number, lastPage: number}}> {
-    try {
-        const response = await axiosInstance.get("/admin/subscriptions/list",{
-            params : {
-                page,
-                limit
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Erreur lors de la récupération des abonnements", error);
-        throw new Error("Erreur lors de la récupération des abonnements");
+    static async GetSubscribersList(page : number, limit : number) : Promise <{data: Subscribers[], meta : {total: number, page: number, lastPage: number}}> {
+        try {
+            const response = await axiosInstance.get("/admin/subscriptions/list",{
+                params : {
+                    page,
+                    limit
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la récupération des abonnements", error);
+            throw new Error("Erreur lors de la récupération des abonnements");
+        }
     }
+    
+    static async GetSubscriptions(): Promise<Subscriptions[]> {
+        try {
+            const response = await axiosInstance.get("/admin/subscriptions");
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la récupération des abonnements", error);
+            throw new Error("Erreur lors de la récupération des abonnements");
+        }
+    }
+    
+    static async GetSubscriptionById(id: string): Promise<Subscriptions> {
+        try {
+            const response = await axiosInstance.get(`/admin/subscriptions/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'abonnement", error);
+            throw new Error("Erreur lors de la récupération de l'abonnement");
+        }
+    }
+    
+    
+    static async updateSubscription(id: string, data: Subscriptions): Promise<Subscriptions | { message: string }> {
+        try {
+            const response = await axiosInstance.patch(`/admin/subscriptions/${id}`, data);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la modification de l'abonnement", error);
+            throw new Error("Erreur lors de la modification de l'abonnement");
+        }
+    
+    }
+
+    static async addSubscription(data: Subscriptions): Promise<Subscriptions | { message: string }> {
+        try {
+            const response = await axiosInstance.post("/admin/subscriptions", data);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de l'ajout de l'abonnement", error);
+            throw new Error("Erreur lors de l'ajout de l'abonnement");
+        }
+    }
+
 }
 
-export async function GetSubscriptions(): Promise<Subscriptions[]> {
-    try {
-        const response = await axiosInstance.get("/admin/subscriptions");
-        return response.data;
-    } catch (error) {
-        console.error("Erreur lors de la récupération des abonnements", error);
-        throw new Error("Erreur lors de la récupération des abonnements");
-    }
-}
-
-export async function GetSubscriptionById(id: string): Promise<Subscriptions> {
-    try {
-        const response = await axiosInstance.get(`/admin/subscriptions/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error("Erreur lors de la récupération de l'abonnement", error);
-        throw new Error("Erreur lors de la récupération de l'abonnement");
-    }
-}
 
 
-export async function updateSubscription(id: string, data: Subscriptions): Promise<Subscriptions | { message: string }> {
-    try {
-        const response = await axiosInstance.patch(`/admin/subscriptions/${id}`, data);
-        return response.data;
-    } catch (error) {
-        console.error("Erreur lors de la modification de l'abonnement", error);
-        throw new Error("Erreur lors de la modification de l'abonnement");
-    }
 
-}

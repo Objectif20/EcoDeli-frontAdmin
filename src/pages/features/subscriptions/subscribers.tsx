@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
-import { GetSubscribersList } from "@/api/subscriptions.api";
 import { z } from "zod";
 import SubscriberDataTable from "@/components/features/subscriptions/suscribers/data-table";
 import { useTranslation } from "react-i18next";
+import { SubscriptionsApi } from "@/api/subscriptions.api";
 
 export const subscriberSchema = z.object({
   subscription_id: z.string(),
@@ -39,7 +39,7 @@ export default function SubscriberPage() {
 
     const fetchSubscriberData = async () => {
       try {
-        const { data, meta } = await GetSubscribersList(pageIndex + 1, pageSize);
+        const { data, meta } = await SubscriptionsApi.GetSubscribersList(pageIndex + 1, pageSize);
         if (data) {
           const validatedData = data.map(item => subscriberSchema.parse(item));
           setSubscriberData(validatedData);

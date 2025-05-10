@@ -1,4 +1,4 @@
-import { GetSubscriptions, Subscriptions } from "@/api/subscriptions.api";
+import { Subscriptions, SubscriptionsApi } from "@/api/subscriptions.api";
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -34,7 +34,7 @@ export default function PlansPage() {
 
     const fetchPlans = async () => {
       try {
-        const data = await GetSubscriptions();
+        const data = await SubscriptionsApi.GetSubscriptions();
         setPlansDetail(data);
         console.log(data);
       } catch (error) {

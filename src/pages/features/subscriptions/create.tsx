@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
-import { Subscriptions } from "@/api/subscriptions.api";
+import { Subscriptions, SubscriptionsApi } from "@/api/subscriptions.api";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,14 +88,15 @@ export default function AddPlanPage() {
         first_shipping_free_threshold: (data.first_shipping_free_threshold),
       };
 
-      console.log(apiData);
+      await SubscriptionsApi.addSubscription(apiData);
+
       navigate("/office/finance/plans");
     }
     console.log(data);
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl w-5-xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">
         {t("pages.subscription.add.page.title")}
       </h1>
