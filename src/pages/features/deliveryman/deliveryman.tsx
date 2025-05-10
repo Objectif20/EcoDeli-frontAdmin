@@ -15,7 +15,7 @@ export default function DeliverymanPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Livreurs"],
+        segments: ["Accueil", "Transporteurs"],
         links: ["/office/dashboard"],
       })
     );

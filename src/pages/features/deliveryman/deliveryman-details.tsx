@@ -1,15 +1,13 @@
-"use client"
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
-import { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/redux/store"
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -18,16 +16,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Mail, Phone, AlertCircle, ArrowLeft, CheckCircle2, XCircle, User, Car, MapPin, FileText } from "lucide-react"
-import { DeliverymanApi, DeliverymanDetails, Route, Vehicle } from "@/api/deliveryman.api"
-
+} from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Mail, Phone, AlertCircle, ArrowLeft, CheckCircle2, XCircle, User, Car, FileText } from "lucide-react";
+import { DeliverymanApi, DeliverymanDetails, Vehicle } from "@/api/deliveryman.api";
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 
 export default function DeliverymanProfilePage() {
   const [deliverymanDetails, setDeliverymanDetails] = useState<DeliverymanDetails | null>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [routes, setRoutes] = useState<Route[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("profile");
@@ -37,6 +34,17 @@ export default function DeliverymanProfilePage() {
   const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
   const isDeliverymanManager = admin?.roles.includes("DELIVERYMAN");
 
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(
+      setBreadcrumb({
+        segments: ["Accueil", "Transporteurs", "Détails du transporteur"],
+        links: ["/office/dashboard" , "/office/profile/deliverymen"],
+      })
+    );
+  }, [dispatch]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,7 +53,6 @@ export default function DeliverymanProfilePage() {
           const details = await DeliverymanApi.getDeliverymanDetails(id);
           setDeliverymanDetails(details);
           setVehicles(details.vehicles);
-          setRoutes(details.routes);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,21 +70,23 @@ export default function DeliverymanProfilePage() {
         ...deliverymanDetails!,
         info: { ...deliverymanDetails!.info, validated: true },
       });
+      await DeliverymanApi.validateDeliveryman(id);
+      const details = await DeliverymanApi.getDeliverymanDetails(id);
+      setDeliverymanDetails(details);
+      setVehicles(details.vehicles);
       setIsDialogOpen(false);
-      navigate("/office/profile/deliverymen");
     } else {
       console.error("Deliveryman ID is undefined");
     }
   };
 
-  const handleReject = async () => {
+  const handleValidateVehicle = async (vehicleId : string) => {
+    console.log(`Véhicule avec l'ID ${vehicleId} a été validé.`);
     if (id) {
-      setDeliverymanDetails({
-        ...deliverymanDetails!,
-        info: { ...deliverymanDetails!.info, validated: false },
-      });
-      setIsDialogOpen(false);
-      navigate("/office/profile/deliverymen");
+      await DeliverymanApi.validateVehicle(vehicleId, id);
+      const details = await DeliverymanApi.getDeliverymanDetails(id);
+      setDeliverymanDetails(details);
+      setVehicles(details.vehicles);
     } else {
       console.error("Deliveryman ID is undefined");
     }
@@ -154,7 +163,7 @@ export default function DeliverymanProfilePage() {
             </div>
           </div>
 
-          {deliverymanDetails.info.validated === null && isDeliverymanManager && (
+          {(deliverymanDetails.info.validated === null || deliverymanDetails.info.validated === false) && isDeliverymanManager && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button>Valider le profil</Button>
@@ -162,15 +171,11 @@ export default function DeliverymanProfilePage() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Validation du profil</DialogTitle>
-                  <DialogDescription>Voulez-vous accepter ou refuser ce livreur ?</DialogDescription>
+                  <DialogDescription>Voulez-vous accepter ce livreur ?</DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
                   <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Annuler
-                  </Button>
-                  <Button variant="destructive" onClick={handleReject}>
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Refuser
                   </Button>
                   <Button variant="default" onClick={handleAccept}>
                     <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -184,7 +189,7 @@ export default function DeliverymanProfilePage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-3 mb-6">
+        <TabsList className="grid grid-cols-2 mb-6">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
             Profil
@@ -192,10 +197,6 @@ export default function DeliverymanProfilePage() {
           <TabsTrigger value="vehicles" className="flex items-center gap-2">
             <Car className="h-4 w-4" />
             Véhicules
-          </TabsTrigger>
-          <TabsTrigger value="routes" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Trajets
           </TabsTrigger>
         </TabsList>
 
@@ -261,24 +262,10 @@ export default function DeliverymanProfilePage() {
               ) : (
                 <div className="grid gap-6 md:grid-cols-2">
                   {vehicles.map((vehicle) => (
-                    <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                    <VehicleCard key={vehicle.id} vehicle={vehicle} onValidate={handleValidateVehicle} />
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="routes" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
-                Trajets du livreur
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RoutesList routes={routes} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -313,9 +300,12 @@ function DeliverymanProfileSkeleton() {
 
 interface VehicleCardProps {
   vehicle: Vehicle;
+  onValidate: (vehicleId: string) => void;
 }
 
-function VehicleCard({ vehicle }: VehicleCardProps) {
+function VehicleCard({ vehicle, onValidate }: VehicleCardProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <Card className="overflow-hidden">
       <div className="aspect-video relative">
@@ -351,121 +341,32 @@ function VehicleCard({ vehicle }: VehicleCardProps) {
             <FileText className="h-4 w-4 mr-2" />
             Voir le justificatif
           </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-
-interface RoutesListProps {
-  routes: Route[];
-}
-
-function RoutesList({ routes }: RoutesListProps) {
-  const { activeRoutes, pastRoutes } = routes.reduce(
-    (acc, route) => {
-      if (route.permanent) {
-        acc.activeRoutes.push(route);
-      } else if (route.date) {
-        const routeDate = new Date(route.date);
-        if (routeDate < new Date()) {
-          acc.pastRoutes.push(route);
-        } else {
-          acc.activeRoutes.push(route);
-        }
-      }
-      return acc;
-    },
-    { activeRoutes: [] as Route[], pastRoutes: [] as Route[] },
-  );
-
-  if (routes.length === 0) {
-    return <div className="text-center py-8 text-muted-foreground">Aucun trajet enregistré</div>;
-  }
-
-  return (
-    <div className="space-y-6">
-      <section>
-        <h3 className="text-lg font-semibold mb-3">Trajets actifs et permanents</h3>
-        {activeRoutes.length === 0 ? (
-          <Card className="bg-muted">
-            <CardContent className="p-4 text-center text-muted-foreground">Aucun trajet actif ou permanent</CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {activeRoutes.map((route) => (
-              <RouteCard key={route.id} route={route} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {pastRoutes.length > 0 && (
-        <section>
-          <h3 className="text-lg font-semibold mb-3">Trajets passés</h3>
-          <div className="space-y-4">
-            {pastRoutes.map((route) => (
-              <RouteCard key={route.id} route={route} disabled />
-            ))}
-          </div>
-        </section>
-      )}
-    </div>
-  );
-}
-
-interface RouteCardProps {
-  route: Route;
-  disabled?: boolean;
-}
-
-function RouteCard({ route, disabled = false }: RouteCardProps) {
-  const weekdayName = route.weekday !== undefined ? daysOfWeek[Number.parseInt(route.weekday, 10)] : "";
-
-  return (
-    <Card className={`${disabled ? "opacity-60" : ""}`}>
-      <CardContent className="p-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-          <div className="flex items-center mb-2 md:mb-0">
-            <div className="font-medium">
-              <span>{route.from}</span>
-              <span className="mx-2">→</span>
-              <span>{route.to}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {route.permanent ? (
-              <Badge variant="outline" className="bg-accent text-accent-foreground">
-                Permanent - {weekdayName}
-              </Badge>
-            ) : route.date ? (
-              <Badge variant="outline" className="bg-secondary text-secondary-foreground">
-                {new Date(route.date).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })}
-              </Badge>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-muted-foreground">
-              Rayon de tolérance: <span className="font-medium text-foreground">{route.tolerate_radius} km</span>
-            </p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">
-              Retour:{" "}
-              <span className="font-medium text-foreground">
-                {route.comeback_today_or_tomorrow === "today"
-                  ? "Le même jour"
-                  : route.comeback_today_or_tomorrow === "tomorrow"
-                    ? "Le lendemain"
-                    : "Plus tard"}
-              </span>
-            </p>
-          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="w-full mt-2">
+                Valider le véhicule
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Valider le véhicule</DialogTitle>
+                <DialogDescription>
+                  Êtes-vous sûr de vouloir valider ce véhicule ?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Annuler
+                </Button>
+                <Button variant="default" onClick={() => {
+                  onValidate(vehicle.id);
+                  setIsDialogOpen(false);
+                }}>
+                  Oui
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </CardContent>
     </Card>

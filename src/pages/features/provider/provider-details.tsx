@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/redux/store"
 import { Provider, type ProviderDetails } from "@/api/provider.api"
 
@@ -38,6 +38,7 @@ import {
   Download,
 } from "lucide-react"
 import { ServiceValidationDialog } from "@/components/features/provider/service-dialog"
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
 
 export default function ProviderProfilePage() {
   const [providerDetails, setProviderDetails] = useState<ProviderDetails | null>(null)
@@ -48,6 +49,17 @@ export default function ProviderProfilePage() {
 
   const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin)
   const isProviderManager = admin?.roles.includes("PROVIDER")
+
+  const dispatch = useDispatch()
+
+    useEffect(() => {
+      dispatch(
+        setBreadcrumb({
+          segments: ["Accueil", "Prestataires", "Détails du prestataire"],
+          links: ["/office/dashboard" , "/office/profile/providers"],
+        })
+      );
+    }, [dispatch]);
 
   useEffect(() => {
     if (!id) {
@@ -87,18 +99,9 @@ export default function ProviderProfilePage() {
   const handleAccept = async () => {
     if (id) {
       await Provider.updateProviderStatus(id, true)
+      const data = await Provider.getProviderDetails(id)
+      setProviderDetails(data)
       setIsDialogOpen(false)
-      navigate("/office/profile/providers")
-    } else {
-      console.error("Provider ID is undefined")
-    }
-  }
-
-  const handleReject = async () => {
-    if (id) {
-      await Provider.updateProviderStatus(id, false)
-      setIsDialogOpen(false)
-      navigate("/office/profile/providers")
     } else {
       console.error("Provider ID is undefined")
     }
@@ -183,15 +186,11 @@ export default function ProviderProfilePage() {
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Validation du profil</DialogTitle>
-                    <DialogDescription>Voulez-vous accepter ou refuser ce prestataire ?</DialogDescription>
+                    <DialogDescription>Voulez-vous accepter ce prestataire ?</DialogDescription>
                   </DialogHeader>
                   <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
                     <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Annuler
-                    </Button>
-                    <Button variant="destructive" onClick={handleReject}>
-                      <XCircle className="mr-2 h-4 w-4" />
-                      Refuser
                     </Button>
                     <Button variant="default" onClick={handleAccept}>
                       <CheckCircle2 className="mr-2 h-4 w-4" />

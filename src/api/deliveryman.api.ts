@@ -23,7 +23,6 @@ export interface DeliverymanDetails {
       document?: string
     },
     vehicles: Vehicle[]
-    routes: Route[]
   }
   
   export  interface Vehicle {
@@ -34,21 +33,6 @@ export interface DeliverymanDetails {
     allow: boolean
     image: string
     justification_file: string
-  }
-  
-  export interface Route {
-    id: string
-    from: string
-    to: string
-    permanent: boolean
-    coordinates: {
-      origin: [number, number]
-      destination: [number, number]
-    }
-    date?: string
-    weekday?: string
-    tolerate_radius: number
-    comeback_today_or_tomorrow: "today" | "tomorrow" | "later"
   }
 
 export class DeliverymanApi {
@@ -76,6 +60,24 @@ export class DeliverymanApi {
         } catch (error) {
             console.error("Erreur lors de la récupération des détails du livreur", error);
             throw new Error("Erreur lors de la récupération des détails du livreur");
+        }
+    }
+
+    static async validateDeliveryman(id: string): Promise<void> {
+        try {
+            await axiosInstance.post(`/admin/deliveryPerson/${id}/validate`);
+        } catch (error) {
+            console.error("Erreur lors de la validation du livreur", error);
+            throw new Error("Erreur lors de la validation du livreur");
+        }
+    }
+
+    static async validateVehicle(id: string, deliveryPersonId : string): Promise<void> {
+        try {
+            await axiosInstance.post(`/admin/deliveryPerson/${deliveryPersonId}/vehicle/${id}/validate`);
+        } catch (error) {
+            console.error("Erreur lors de la validation du véhicule", error);
+            throw new Error("Erreur lors de la validation du véhicule");
         }
     }
 
