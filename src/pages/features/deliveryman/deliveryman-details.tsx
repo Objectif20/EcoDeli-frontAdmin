@@ -22,7 +22,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Mail, Phone, AlertCircle, ArrowLeft, CheckCircle2, XCircle, User, Car, MapPin, FileText } from "lucide-react"
 
-// Définir une interface pour les détails du livreur
 interface DeliverymanDetails {
   info: {
     profile_picture: string | null
@@ -36,7 +35,6 @@ interface DeliverymanDetails {
   }
 }
 
-// Interface pour les véhicules
 interface Vehicle {
   id: string
   name: string
@@ -47,7 +45,6 @@ interface Vehicle {
   justification_file: string
 }
 
-// Interface pour les trajets
 interface Route {
   id: string
   from: string

@@ -3,34 +3,14 @@ import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { DataTable } from "@/components/features/deliveryman/data-table";
-
-const fakeDeliverymenData = [
-  {
-    id: "1",
-    profile_picture: "https://via.placeholder.com/150",
-    first_name: "John",
-    last_name: "Doe",
-    status: true,
-    email: "john.doe@example.com",
-    rate: 4.5,
-  },
-  {
-    id: "2",
-    profile_picture: null,
-    first_name: "Jane",
-    last_name: "Smith",
-    status: false,
-    email: "jane.smith@example.com",
-    rate: 3.0,
-  },
-];
+import { AllDeliveryPerson, DeliverymanApi } from "@/api/deliveryman.api";
 
 export default function DeliverymanPage() {
   const dispatch = useDispatch();
-  const [deliverymen, setDeliverymen] = useState(fakeDeliverymenData);
+  const [deliverymen, setDeliverymen] = useState<AllDeliveryPerson[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [totalItems, setTotalItems] = useState(fakeDeliverymenData.length);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
     dispatch(
@@ -40,9 +20,18 @@ export default function DeliverymanPage() {
       })
     );
 
-    setDeliverymen(fakeDeliverymenData);
-    setTotalItems(fakeDeliverymenData.length);
-  }, [dispatch]);
+    const fetchDeliverymen = async () => {
+      try {
+        const { data, meta } = await DeliverymanApi.getDeliverymanList(pageIndex + 1, pageSize);
+        setDeliverymen(data);
+        setTotalItems(meta.total);
+      } catch (error) {
+        console.error("Failed to fetch deliverymen:", error);
+      }
+    };
+
+    fetchDeliverymen();
+  }, [dispatch, pageIndex, pageSize]);
 
   return (
     <>
