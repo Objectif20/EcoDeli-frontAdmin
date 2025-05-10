@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { VehicleCategory } from "@/api/general.api"
+import { useState } from "react"
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
@@ -24,12 +26,15 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 interface AddVehicleDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSubmit: (values: FormValues) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (values: FormValues) => Promise<void>;
+  existingCategories: VehicleCategory[];
 }
 
-export function AddVehicleDialog({ open, onOpenChange, onSubmit }: AddVehicleDialogProps) {
+export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategories }: AddVehicleDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,12 +42,30 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit }: AddVehicleDia
       max_weight: 0,
       max_dimension: 0,
     },
-  })
+  });
 
-  const handleSubmit = (values: FormValues) => {
-    onSubmit(values)
-    form.reset()
-  }
+  const handleSubmit = async (values: FormValues) => {
+    try {
+      const isNameUnique = !existingCategories.some(category => category.name === values.name);
+      if (!isNameUnique) {
+        form.setError("name", {
+          type: "manual",
+          message: "Le nom de la catégorie doit être unique",
+        });
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      onSubmit(values);
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la catégorie de véhicule:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -95,11 +118,13 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit }: AddVehicleDia
               )}
             />
             <DialogFooter>
-              <Button type="submit">Ajouter</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Ajout en cours..." : "Ajouter"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

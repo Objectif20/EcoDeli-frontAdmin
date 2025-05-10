@@ -10,62 +10,66 @@ import { AddVehicleDialog } from "@/components/features/general/categories/add-d
 import { UpdateVehicleDialog } from "@/components/features/general/categories/update-dialog"
 import { useDispatch } from "react-redux"
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
-
-
-export type VehicleCategory = {
-  id: string
-  name: string
-  max_weight: number
-  max_dimension: number
-}
+import { VehicleCategory, GeneralApi } from "@/api/general.api"
 
 export default function VehicleCategoriesPage() {
-  const [vehicleCategories, setVehicleCategories] = useState<VehicleCategory[]>([
-    { id: "1", name: "Camionnette", max_weight: 1500, max_dimension: 8 },
-    { id: "2", name: "Camion léger", max_weight: 3500, max_dimension: 15 },
-    { id: "3", name: "Poids lourd", max_weight: 7500, max_dimension: 30 },
-  ])
+  const [vehicleCategories, setVehicleCategories] = useState<VehicleCategory[]>([]);
 
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-
-    useEffect(() => {
-      dispatch(
-        setBreadcrumb({
-          segments: ["Accueil", "Catégories"],
-          links: ["/office/dashboard"],
-        })
-      );
-  
-    }, [dispatch]);
-
-  const [addDialogOpen, setAddDialogOpen] = useState(false)
-  const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
-  const [selectedVehicle, setSelectedVehicle] = useState<VehicleCategory | null>(null)
-
-  const handleAddVehicle = (vehicle: Omit<VehicleCategory, "id">) => {
-    const newVehicle = {
-      ...vehicle,
-      id: Math.random().toString(36).substring(2, 9),
+  const fetchVehicleCategories = async () => {
+    try {
+      const categories = await GeneralApi.getVehiclesCategories();
+      setVehicleCategories(categories.data);
+    } catch (error) {
+      console.error("Erreur lors du chargement des catégories de véhicules:", error);
     }
-    console.log("Nouvelle catégorie ajoutée:", newVehicle)
-    setVehicleCategories([...vehicleCategories, newVehicle])
-    setAddDialogOpen(false)
-  }
+  };
 
-  const handleUpdateVehicle = (updatedVehicle: VehicleCategory) => {
-    console.log("Catégorie mise à jour:", updatedVehicle)
-    setVehicleCategories(
-      vehicleCategories.map((vehicle) => (vehicle.id === updatedVehicle.id ? updatedVehicle : vehicle)),
-    )
-    setUpdateDialogOpen(false)
-    setSelectedVehicle(null)
-  }
+  useEffect(() => {
+    dispatch(
+      setBreadcrumb({
+        segments: ["Accueil", "Catégories"],
+        links: ["/office/dashboard"],
+      })
+    );
+
+    fetchVehicleCategories();
+  }, [dispatch]);
+
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState<VehicleCategory | null>(null);
+
+  const handleAddVehicle = async (vehicle: Omit<VehicleCategory, "id">) => {
+    try {
+      const newVehicle = await GeneralApi.addVehicleCategory(vehicle);
+      setVehicleCategories([...vehicleCategories, newVehicle]);
+      setAddDialogOpen(false);
+      fetchVehicleCategories();
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la catégorie de véhicule:", error);
+    }
+  };
+
+  const handleUpdateVehicle = async (updatedVehicle: VehicleCategory) => {
+    try {
+      const vehicle = await GeneralApi.updateVehicleCategory(updatedVehicle);
+      setVehicleCategories(
+        vehicleCategories.map((v) => (v.id === vehicle.id ? vehicle : v))
+      );
+      setUpdateDialogOpen(false);
+      setSelectedVehicle(null);
+      fetchVehicleCategories();
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la catégorie de véhicule:", error);
+    }
+  };
 
   const openUpdateDialog = (vehicle: VehicleCategory) => {
-    setSelectedVehicle(vehicle)
-    setUpdateDialogOpen(true)
-  }
+    setSelectedVehicle(vehicle);
+    setUpdateDialogOpen(true);
+  };
 
   return (
     <div className="container mx-auto py-10">
@@ -82,7 +86,7 @@ export default function VehicleCategoriesPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {vehicleCategories.map((vehicle) => (
+            {vehicleCategories.slice(0, 3).map((vehicle) => (
               <Card key={vehicle.id} className="overflow-hidden">
                 <CardHeader className="bg-muted/50 pb-4">
                   <div className="flex justify-between items-center">
@@ -138,7 +142,12 @@ export default function VehicleCategoriesPage() {
         </CardContent>
       </Card>
 
-      <AddVehicleDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} onSubmit={handleAddVehicle} />
+      <AddVehicleDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onSubmit={handleAddVehicle}
+        existingCategories={vehicleCategories}
+      />
 
       {selectedVehicle && (
         <UpdateVehicleDialog
@@ -146,8 +155,9 @@ export default function VehicleCategoriesPage() {
           onOpenChange={setUpdateDialogOpen}
           vehicle={selectedVehicle}
           onSubmit={handleUpdateVehicle}
+          existingCategories={vehicleCategories}
         />
       )}
     </div>
-  )
+  );
 }
