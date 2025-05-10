@@ -39,7 +39,7 @@ export const subscriberSchema = z.object({
   plan_id: z.number(),
   plan_name: z.string(),
   start_date: z.string(),
-  end_date: z.string(),
+  end_date: z.string().optional().nullable(),
   is_merchant: z.boolean(),
 });
 
@@ -95,12 +95,12 @@ const SubscriberDataTable = ({ data: initialData }: { data: z.infer<typeof subsc
       header: t("pages.subscription.list.table.columns.end_date"),
       cell: ({ row }: { row: { original: z.infer<typeof subscriberSchema> } }) => {
         if (!row.original.end_date) {
-          return "N/A";
+          return "";
         }
         const date = new Date(row.original.end_date);
         return date.toLocaleDateString('fr-FR');
       },
-    },
+    }
   ];
 
   const table = useReactTable({

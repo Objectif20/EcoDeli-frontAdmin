@@ -14,7 +14,7 @@ export const subscriberSchema = z.object({
   plan_id: z.number(),
   plan_name: z.string(),
   start_date: z.string(),
-  end_date: z.string(),
+  end_date: z.string().optional().nullable(),
   is_merchant: z.boolean(),
 });
 
