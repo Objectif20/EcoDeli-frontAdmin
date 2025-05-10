@@ -1,20 +1,19 @@
-"use client"
+import { useEffect, useState } from "react";
+import { Plus, Pencil } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
-import { useEffect, useState } from "react"
-import { Plus, Pencil } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { AddVehicleDialog } from "@/components/features/general/categories/add-dialog"
-import { UpdateVehicleDialog } from "@/components/features/general/categories/update-dialog"
-import { useDispatch } from "react-redux"
-import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
-import { VehicleCategory, GeneralApi } from "@/api/general.api"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AddVehicleDialog } from "@/components/features/general/categories/add-dialog";
+import { UpdateVehicleDialog } from "@/components/features/general/categories/update-dialog";
+import { useDispatch } from "react-redux";
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
+import { VehicleCategory, GeneralApi } from "@/api/general.api";
 
 export default function VehicleCategoriesPage() {
   const [vehicleCategories, setVehicleCategories] = useState<VehicleCategory[]>([]);
-
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const fetchVehicleCategories = async () => {
@@ -22,20 +21,20 @@ export default function VehicleCategoriesPage() {
       const categories = await GeneralApi.getVehiclesCategories();
       setVehicleCategories(categories.data);
     } catch (error) {
-      console.error("Erreur lors du chargement des catégories de véhicules:", error);
+      console.error(t("pages.category.error.loading"), error);
     }
   };
 
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Catégories"],
+        segments: ["Accueil", t("pages.category.title")],
         links: ["/office/dashboard"],
       })
     );
 
     fetchVehicleCategories();
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
@@ -48,7 +47,7 @@ export default function VehicleCategoriesPage() {
       setAddDialogOpen(false);
       fetchVehicleCategories();
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la catégorie de véhicule:", error);
+      console.error(t("pages.category.error.adding"), error);
     }
   };
 
@@ -62,7 +61,7 @@ export default function VehicleCategoriesPage() {
       setSelectedVehicle(null);
       fetchVehicleCategories();
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de la catégorie de véhicule:", error);
+      console.error(t("pages.category.error.updating"), error);
     }
   };
 
@@ -76,12 +75,12 @@ export default function VehicleCategoriesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Catégories de véhicules</CardTitle>
-            <CardDescription>Gérez les différentes catégories de véhicules disponibles.</CardDescription>
+            <CardTitle>{t("pages.category.title")}</CardTitle>
+            <CardDescription>{t("pages.category.description")}</CardDescription>
           </div>
           <Button onClick={() => setAddDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Ajouter une catégorie
+            {t("pages.category.addCategory")}
           </Button>
         </CardHeader>
         <CardContent>
@@ -99,11 +98,11 @@ export default function VehicleCategoriesPage() {
                 <CardContent className="pt-6">
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Poids max:</span>
+                      <span className="text-muted-foreground">{t("pages.category.maxWeight")}</span>
                       <span className="font-medium">{vehicle.max_weight} kg</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Volume max:</span>
+                      <span className="text-muted-foreground">{t("pages.category.maxVolume")}</span>
                       <span className="font-medium">{vehicle.max_dimension} m³</span>
                     </div>
                   </div>
@@ -116,10 +115,10 @@ export default function VehicleCategoriesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nom</TableHead>
-                  <TableHead>Poids max (kg)</TableHead>
-                  <TableHead>Volume max (m³)</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("pages.category.name")}</TableHead>
+                  <TableHead>{t("pages.category.maxWeightKg")}</TableHead>
+                  <TableHead>{t("pages.category.maxVolumeM3")}</TableHead>
+                  <TableHead className="text-right">{t("pages.category.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -131,7 +130,7 @@ export default function VehicleCategoriesPage() {
                     <TableCell className="text-right">
                       <Button variant="ghost" size="sm" onClick={() => openUpdateDialog(vehicle)}>
                         <Pencil className="h-4 w-4 mr-2" />
-                        Modifier
+                        {t("pages.category.edit")}
                       </Button>
                     </TableCell>
                   </TableRow>

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from 'react-i18next';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,14 +17,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { VehicleCategory } from "@/api/general.api";
 
-const formSchema = z.object({
+const getFormSchema = (t: (key: string) => string) => z.object({
   id: z.string(),
-  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
-  max_weight: z.coerce.number().positive({ message: "Le poids doit être un nombre positif" }),
-  max_dimension: z.coerce.number().positive({ message: "Le volume doit être un nombre positif" }),
+  name: z.string().min(2, { message: t("pages.category.error.nameMinChars") }),
+  max_weight: z.coerce.number().positive({ message: t("pages.category.error.weightPositive") }),
+  max_dimension: z.coerce.number().positive({ message: t("pages.category.error.volumePositive") }),
 });
-
-type FormValues = z.infer<typeof formSchema>;
 
 interface UpdateVehicleDialogProps {
   open: boolean;
@@ -34,6 +33,11 @@ interface UpdateVehicleDialogProps {
 }
 
 export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, existingCategories }: UpdateVehicleDialogProps) {
+  const { t } = useTranslation();
+
+  const formSchema = getFormSchema(t);
+  type FormValues = z.infer<typeof formSchema>;
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,15 +63,15 @@ export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, exi
       if (!isNameUnique) {
         form.setError("name", {
           type: "manual",
-          message: "Le nom de la catégorie doit être unique",
+          message: t("pages.category.error.uniqueName"),
         });
         return;
       }
 
       onSubmit(values);
-      onOpenChange(false); 
+      onOpenChange(false);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de la catégorie de véhicule:", error);
+      console.error(t("pages.category.error.updating"), error);
     }
   };
 
@@ -75,8 +79,8 @@ export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, exi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Modifier la catégorie de véhicule</DialogTitle>
-          <DialogDescription>Modifiez les informations de la catégorie de véhicule.</DialogDescription>
+          <DialogTitle>{t("pages.category.editVehicleCategory")}</DialogTitle>
+          <DialogDescription>{t("pages.category.editCategoryInfo")}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -85,7 +89,7 @@ export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, exi
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                  <FormLabel>{t("pages.category.name")}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -98,7 +102,7 @@ export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, exi
               name="max_weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Poids maximum (kg)</FormLabel>
+                  <FormLabel>{t("pages.category.maxWeightKg")}</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
@@ -111,7 +115,7 @@ export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, exi
               name="max_dimension"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Volume maximum (m³)</FormLabel>
+                  <FormLabel>{t("pages.category.maxVolumeM3")}</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
@@ -120,7 +124,7 @@ export function UpdateVehicleDialog({ open, onOpenChange, vehicle, onSubmit, exi
               )}
             />
             <DialogFooter>
-              <Button type="submit">Enregistrer les modifications</Button>
+              <Button type="submit">{t("pages.category.saveChanges")}</Button>
             </DialogFooter>
           </form>
         </Form>

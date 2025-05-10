@@ -533,6 +533,37 @@
           "finance": "Finance"
         }
       }
+    },
+    "category": {
+      "title": "Catégories de véhicules",
+      "description": "Gérez les différentes catégories de véhicules disponibles.",
+      "addCategory": "Ajouter une catégorie",
+      "maxWeight": "Poids max",
+      "maxVolume": "Volume max",
+      "actions": "Actions",
+      "edit": "Modifier",
+      "name": "Nom",
+      "maxWeightKg": "Poids maximum (kg)",
+      "maxVolumeM3": "Volume maximum (m³)",
+      "saveChanges": "Enregistrer les modifications",
+      "addVehicleCategory": "Ajouter une catégorie de véhicule",
+      "createNewCategory": "Créez une nouvelle catégorie de véhicule en remplissant les informations ci-dessous.",
+      "placeholderName": "Camionnette, Camion, etc.",
+      "placeholderWeight": "1500",
+      "placeholderVolume": "8",
+      "adding": "Ajout en cours...",
+      "add": "Ajouter",
+      "editVehicleCategory": "Modifier la catégorie de véhicule",
+      "editCategoryInfo": "Modifiez les informations de la catégorie de véhicule.",
+      "error": {
+        "loading": "Erreur lors du chargement des catégories de véhicules:",
+        "adding": "Erreur lors de l'ajout de la catégorie de véhicule:",
+        "updating": "Erreur lors de la mise à jour de la catégorie de véhicule:",
+        "nameMinChars": "Le nom doit contenir au moins 2 caractères",
+        "weightPositive": "Le poids doit être un nombre positif",
+        "volumePositive": "Le volume doit être un nombre positif",
+        "uniqueName": "Le nom de la catégorie doit être unique"
+      }
     }
   },
   "sidebar": {

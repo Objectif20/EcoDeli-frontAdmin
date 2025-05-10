@@ -1,9 +1,9 @@
-"use client"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from 'react-i18next';
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,29 +11,31 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { VehicleCategory } from "@/api/general.api"
-import { useState } from "react"
+} from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { VehicleCategory } from "@/api/general.api";
+import { useState } from "react";
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
-  max_weight: z.coerce.number().positive({ message: "Le poids doit être un nombre positif" }),
-  max_dimension: z.coerce.number().positive({ message: "Le volume doit être un nombre positif" }),
-})
-
-type FormValues = z.infer<typeof formSchema>
+const getFormSchema = (t: (key: string) => string) => z.object({
+  name: z.string().min(2, { message: t("pages.category.error.nameMinChars") }),
+  max_weight: z.coerce.number().positive({ message: t("pages.category.error.weightPositive") }),
+  max_dimension: z.coerce.number().positive({ message: t("pages.category.error.volumePositive") }),
+});
 
 interface AddVehicleDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (values: FormValues) => Promise<void>;
+  onSubmit: (values: any) => Promise<void>;
   existingCategories: VehicleCategory[];
 }
 
 export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategories }: AddVehicleDialogProps) {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formSchema = getFormSchema(t);
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -50,7 +52,7 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
       if (!isNameUnique) {
         form.setError("name", {
           type: "manual",
-          message: "Le nom de la catégorie doit être unique",
+          message: t("pages.category.error.uniqueName"),
         });
         return;
       }
@@ -61,7 +63,7 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
       form.reset();
       onOpenChange(false);
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la catégorie de véhicule:", error);
+      console.error(t("pages.category.error.adding"), error);
     } finally {
       setIsSubmitting(false);
     }
@@ -71,9 +73,9 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Ajouter une catégorie de véhicule</DialogTitle>
+          <DialogTitle>{t("pages.category.addVehicleCategory")}</DialogTitle>
           <DialogDescription>
-            Créez une nouvelle catégorie de véhicule en remplissant les informations ci-dessous.
+            {t("pages.category.createNewCategory")}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -83,9 +85,9 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                  <FormLabel>{t("pages.category.name")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Camionnette, Camion, etc." {...field} />
+                    <Input placeholder={t("pages.category.placeholderName")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -96,9 +98,9 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
               name="max_weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Poids maximum (kg)</FormLabel>
+                  <FormLabel>{t("pages.category.maxWeightKg")}</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="1500" {...field} />
+                    <Input type="number" placeholder={t("pages.category.placeholderWeight")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,9 +111,9 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
               name="max_dimension"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Volume maximum (m³)</FormLabel>
+                  <FormLabel>{t("pages.category.maxVolumeM3")}</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="8" {...field} />
+                    <Input type="number" placeholder={t("pages.category.placeholderVolume")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,7 +121,7 @@ export function AddVehicleDialog({ open, onOpenChange, onSubmit, existingCategor
             />
             <DialogFooter>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Ajout en cours..." : "Ajouter"}
+                {isSubmitting ? t("pages.category.adding") : t("pages.category.add")}
               </Button>
             </DialogFooter>
           </form>
