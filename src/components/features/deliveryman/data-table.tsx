@@ -21,7 +21,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { StarIcon } from "lucide-react";
+import { CheckIcon, StarIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const deliverymanSchema = z.object({
@@ -64,8 +64,27 @@ export const deliverymanColumns: ColumnDef<z.infer<typeof deliverymanSchema>>[] 
     accessorKey: "status",
     header: "Statut",
     cell: ({ row }) => (
-      <Badge variant={row.original.status ? "success" : "destructive"}>
-        {row.original.status ? "Validé" : "Non validé"}
+      <Badge
+        variant={
+          row.original.status === true
+        ? "outline"
+        : row.original.status === false
+        ? "outline"
+        : "outline"
+        }
+        className="gap-1"
+      >
+        {row.original.status === false ? (
+          <>
+        <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
+        En attente
+          </>
+        ) : (
+          <>
+        <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
+        Validé
+          </>
+        ) }
       </Badge>
     ),
   },

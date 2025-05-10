@@ -21,165 +21,67 @@ import {
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Mail, Phone, AlertCircle, ArrowLeft, CheckCircle2, XCircle, User, Car, MapPin, FileText } from "lucide-react"
+import { DeliverymanApi, DeliverymanDetails, Route, Vehicle } from "@/api/deliveryman.api"
 
-interface DeliverymanDetails {
-  info: {
-    profile_picture: string | null
-    first_name: string
-    last_name: string
-    validated: boolean | null
-    description: string
-    email: string
-    phone: string
-    document?: string
-  }
-}
-
-interface Vehicle {
-  id: string
-  name: string
-  matricule: string
-  co2: number
-  allow: boolean
-  image: string
-  justification_file: string
-}
-
-interface Route {
-  id: string
-  from: string
-  to: string
-  permanent: boolean
-  coordinates: {
-    origin: [number, number]
-    destination: [number, number]
-  }
-  date?: string
-  weekday?: string
-  tolerate_radius: number
-  comeback_today_or_tomorrow: "today" | "tomorrow" | "later"
-}
 
 export default function DeliverymanProfilePage() {
-  const [deliverymanDetails, setDeliverymanDetails] = useState<DeliverymanDetails | null>(null)
-  const [vehicles, setVehicles] = useState<Vehicle[]>([])
-  const [routes, setRoutes] = useState<Route[]>([])
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("profile")
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const [deliverymanDetails, setDeliverymanDetails] = useState<DeliverymanDetails | null>(null);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("profile");
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin)
-  const isDeliverymanManager = admin?.roles.includes("DELIVERYMAN")
-
-  // Données fictives pour tester l'interface
-  const fakeDeliverymanDetails: DeliverymanDetails = {
-    info: {
-      profile_picture: "https://via.placeholder.com/150",
-      first_name: "John",
-      last_name: "Doe",
-      validated: null,
-      description: "Livreur expérimenté avec 5 ans d'expérience.",
-      email: "john.doe@example.com",
-      phone: "+33 1 23 45 67 89",
-      document: "https://example.com/document.pdf",
-    },
-  }
-
-  const fakeVehicles: Vehicle[] = [
-    {
-      id: "v1",
-      name: "Peugeot 208",
-      matricule: "AB-123-CD",
-      co2: 95,
-      allow: true,
-      image: "https://via.placeholder.com/300",
-      justification_file: "https://example.com/justification1.pdf",
-    },
-    {
-      id: "v2",
-      name: "Vélo électrique",
-      matricule: "N/A",
-      co2: 0,
-      allow: true,
-      image: "https://via.placeholder.com/300",
-      justification_file: "https://example.com/justification2.pdf",
-    },
-  ]
-
-  const fakeRoutes: Route[] = [
-    {
-      id: "r1",
-      from: "Paris",
-      to: "Lyon",
-      permanent: true,
-      coordinates: {
-        origin: [48.8566, 2.3522],
-        destination: [45.764, 4.8357],
-      },
-      weekday: "1",
-      tolerate_radius: 5,
-      comeback_today_or_tomorrow: "tomorrow",
-    },
-    {
-      id: "r2",
-      from: "Marseille",
-      to: "Nice",
-      permanent: false,
-      coordinates: {
-        origin: [43.2965, 5.3698],
-        destination: [43.7102, 7.262],
-      },
-      date: "2025-06-15",
-      tolerate_radius: 3,
-      comeback_today_or_tomorrow: "today",
-    },
-  ]
+  const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
+  const isDeliverymanManager = admin?.roles.includes("DELIVERYMAN");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
-        // Simuler des appels API
-        setDeliverymanDetails(fakeDeliverymanDetails)
-        setVehicles(fakeVehicles)
-        setRoutes(fakeRoutes)
+        setLoading(true);
+        if (id) {
+          const details = await DeliverymanApi.getDeliverymanDetails(id);
+          setDeliverymanDetails(details);
+          setVehicles(details.vehicles);
+          setRoutes(details.routes);
+        }
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("Error fetching data:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [id])
+    fetchData();
+  }, [id]);
 
   const handleAccept = async () => {
     if (id) {
       setDeliverymanDetails({
         ...deliverymanDetails!,
         info: { ...deliverymanDetails!.info, validated: true },
-      })
-      setIsDialogOpen(false)
-      navigate("/office/profile/deliverymen")
+      });
+      setIsDialogOpen(false);
+      navigate("/office/profile/deliverymen");
     } else {
-      console.error("Deliveryman ID is undefined")
+      console.error("Deliveryman ID is undefined");
     }
-  }
+  };
 
   const handleReject = async () => {
     if (id) {
       setDeliverymanDetails({
         ...deliverymanDetails!,
         info: { ...deliverymanDetails!.info, validated: false },
-      })
-      setIsDialogOpen(false)
-      navigate("/office/profile/deliverymen")
+      });
+      setIsDialogOpen(false);
+      navigate("/office/profile/deliverymen");
     } else {
-      console.error("Deliveryman ID is undefined")
+      console.error("Deliveryman ID is undefined");
     }
-  }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -187,11 +89,11 @@ export default function DeliverymanProfilePage() {
       .map((part) => part[0])
       .join("")
       .toUpperCase()
-      .substring(0, 2)
-  }
+      .substring(0, 2);
+  };
 
   if (loading) {
-    return <DeliverymanProfileSkeleton />
+    return <DeliverymanProfileSkeleton />;
   }
 
   if (!deliverymanDetails) {
@@ -205,7 +107,7 @@ export default function DeliverymanProfilePage() {
           Retour à la liste
         </Button>
       </div>
-    )
+    );
   }
 
   return (
@@ -382,7 +284,7 @@ export default function DeliverymanProfilePage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 
 function DeliverymanProfileSkeleton() {
@@ -406,11 +308,11 @@ function DeliverymanProfileSkeleton() {
       <Skeleton className="h-12 w-full mb-6" />
       <Skeleton className="h-64 w-full rounded-lg" />
     </div>
-  )
+  );
 }
 
 interface VehicleCardProps {
-  vehicle: Vehicle
+  vehicle: Vehicle;
 }
 
 function VehicleCard({ vehicle }: VehicleCardProps) {
@@ -452,35 +354,35 @@ function VehicleCard({ vehicle }: VehicleCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
 interface RoutesListProps {
-  routes: Route[]
+  routes: Route[];
 }
 
 function RoutesList({ routes }: RoutesListProps) {
   const { activeRoutes, pastRoutes } = routes.reduce(
     (acc, route) => {
       if (route.permanent) {
-        acc.activeRoutes.push(route)
+        acc.activeRoutes.push(route);
       } else if (route.date) {
-        const routeDate = new Date(route.date)
+        const routeDate = new Date(route.date);
         if (routeDate < new Date()) {
-          acc.pastRoutes.push(route)
+          acc.pastRoutes.push(route);
         } else {
-          acc.activeRoutes.push(route)
+          acc.activeRoutes.push(route);
         }
       }
-      return acc
+      return acc;
     },
     { activeRoutes: [] as Route[], pastRoutes: [] as Route[] },
-  )
+  );
 
   if (routes.length === 0) {
-    return <div className="text-center py-8 text-muted-foreground">Aucun trajet enregistré</div>
+    return <div className="text-center py-8 text-muted-foreground">Aucun trajet enregistré</div>;
   }
 
   return (
@@ -511,16 +413,16 @@ function RoutesList({ routes }: RoutesListProps) {
         </section>
       )}
     </div>
-  )
+  );
 }
 
 interface RouteCardProps {
-  route: Route
-  disabled?: boolean
+  route: Route;
+  disabled?: boolean;
 }
 
 function RouteCard({ route, disabled = false }: RouteCardProps) {
-  const weekdayName = route.weekday !== undefined ? daysOfWeek[Number.parseInt(route.weekday, 10)] : ""
+  const weekdayName = route.weekday !== undefined ? daysOfWeek[Number.parseInt(route.weekday, 10)] : "";
 
   return (
     <Card className={`${disabled ? "opacity-60" : ""}`}>
@@ -567,5 +469,5 @@ function RouteCard({ route, disabled = false }: RouteCardProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
