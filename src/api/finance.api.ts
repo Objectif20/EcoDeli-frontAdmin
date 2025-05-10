@@ -44,7 +44,7 @@ export class FinanceApi {
           queryParams.append("pageIndex", params.pageIndex.toString());
           queryParams.append("pageSize", params.pageSize.toString());
     
-          const response = await axiosInstance.get("/transactions", {
+          const response = await axiosInstance.get("/client/finance/transactions", {
             params: queryParams,
           });
     
@@ -55,36 +55,36 @@ export class FinanceApi {
         }
       }
     
-      static async getTransactionInCsv(params?: {
-        startMonth?: string
-        startYear?: string
-        endMonth?: string
-        endYear?: string
-        categories?: TransactionCategory[]
-      }) {
-        try {
-          const queryParams = new URLSearchParams();
-      
-          if (params?.startMonth) queryParams.append("startMonth", params.startMonth);
-          if (params?.startYear) queryParams.append("startYear", params.startYear);
-          if (params?.endMonth) queryParams.append("endMonth", params.endMonth);
-          if (params?.endYear) queryParams.append("endYear", params.endYear);
-          if (params?.categories && params.categories.length > 0) {
-            for (const category of params.categories) {
-              queryParams.append("categories", category);
-            }
-          }
-      
-          const response = await axiosInstance.get("/transactions/csv", {
-            params: queryParams,
-            responseType: "blob",
-          });
-      
-          return response.data;
-        } catch (error) {
-          console.error("Error fetching transactions in CSV:", error);
-          throw error;
+    static async getTransactionInCsv(params?: {
+    startMonth?: string
+    startYear?: string
+    endMonth?: string
+    endYear?: string
+    categories?: TransactionCategory[]
+    }) {
+    try {
+        const queryParams = new URLSearchParams();
+    
+        if (params?.startMonth) queryParams.append("startMonth", params.startMonth);
+        if (params?.startYear) queryParams.append("startYear", params.startYear);
+        if (params?.endMonth) queryParams.append("endMonth", params.endMonth);
+        if (params?.endYear) queryParams.append("endYear", params.endYear);
+        if (params?.categories && params.categories.length > 0) {
+        for (const category of params.categories) {
+            queryParams.append("categories", category);
         }
-      }
+        }
+    
+        const response = await axiosInstance.get("/client/finance/transactions/csv", {
+        params: queryParams,
+        responseType: "blob",
+        });
+    
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching transactions in CSV:", error);
+        throw error;
+    }
+    }
 
 }
