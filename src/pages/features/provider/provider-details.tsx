@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
-import { Provider, ProviderDetails } from '@/api/provider.api'
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/redux/store"
+import { Provider, type ProviderDetails } from "@/api/provider.api"
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,7 +22,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Building2, FileText, MapPin, Phone, Mail, Clock, Euro, CheckCircle2, XCircle, AlertCircle, ArrowLeft, ExternalLink, Download } from 'lucide-react'
+import {
+  Building2,
+  FileText,
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  Euro,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  ArrowLeft,
+  ExternalLink,
+  Download,
+} from "lucide-react"
+import { ServiceValidationDialog } from "@/components/features/provider/service-dialog"
 
 export default function ProviderProfilePage() {
   const [providerDetails, setProviderDetails] = useState<ProviderDetails | null>(null)
@@ -32,11 +47,11 @@ export default function ProviderProfilePage() {
   const navigate = useNavigate()
 
   const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin)
-  const isProviderManager = admin?.roles.includes('PROVIDER')
+  const isProviderManager = admin?.roles.includes("PROVIDER")
 
   useEffect(() => {
     if (!id) {
-      navigate('/office/profile/providers')
+      navigate("/office/profile/providers")
     } else {
       const fetchProviderDetails = async () => {
         try {
@@ -44,7 +59,7 @@ export default function ProviderProfilePage() {
           const data = await Provider.getProviderDetails(id)
           setProviderDetails(data)
         } catch (error) {
-          console.error('Error fetching provider details:', error)
+          console.error("Error fetching provider details:", error)
         } finally {
           setLoading(false)
         }
@@ -55,14 +70,14 @@ export default function ProviderProfilePage() {
   }, [id, navigate])
 
   const handleDocumentClick = (url: string) => {
-    if (url.endsWith('.pdf')) {
-      window.open(url, '_blank')
+    if (url.endsWith(".pdf")) {
+      window.open(url, "_blank")
     } else if (url.match(/\.(jpg|jpeg|png|gif)$/)) {
-      window.open(url, '_blank')
+      window.open(url, "_blank")
     } else {
-      const link = document.createElement('a')
+      const link = document.createElement("a")
       link.href = url
-      link.download = url.split('/').pop() || 'download'
+      link.download = url.split("/").pop() || "download"
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -73,9 +88,9 @@ export default function ProviderProfilePage() {
     if (id) {
       await Provider.updateProviderStatus(id, true)
       setIsDialogOpen(false)
-      navigate('/office/profile/providers')
+      navigate("/office/profile/providers")
     } else {
-      console.error('Provider ID is undefined')
+      console.error("Provider ID is undefined")
     }
   }
 
@@ -83,17 +98,17 @@ export default function ProviderProfilePage() {
     if (id) {
       await Provider.updateProviderStatus(id, false)
       setIsDialogOpen(false)
-      navigate('/office/profile/providers')
+      navigate("/office/profile/providers")
     } else {
-      console.error('Provider ID is undefined')
+      console.error("Provider ID is undefined")
     }
   }
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
       .toUpperCase()
       .substring(0, 2)
   }
@@ -108,7 +123,7 @@ export default function ProviderProfilePage() {
         <AlertCircle className="h-16 w-16 text-destructive mb-4" />
         <h2 className="text-2xl font-bold mb-2">Prestataire non trouvé</h2>
         <p className="text-muted-foreground mb-6">Les détails du prestataire n'ont pas pu être chargés.</p>
-        <Button onClick={() => navigate('/office/profile/providers')}>
+        <Button onClick={() => navigate("/office/profile/providers")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Retour à la liste
         </Button>
@@ -119,19 +134,15 @@ export default function ProviderProfilePage() {
   return (
     <div className="container mx-auto p-4 max-w-6xl">
       <div className="mb-6">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/office/profile/providers')}
-          className="mb-4"
-        >
+        <Button variant="ghost" onClick={() => navigate("/office/profile/providers")} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Retour à la liste
         </Button>
-        
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 border-2 border-primary/10">
-              <AvatarImage src={providerDetails.info.profile_picture || ''} alt={providerDetails.info.name} />
+              <AvatarImage src={providerDetails.info.profile_picture || ""} alt={providerDetails.info.name} />
               <AvatarFallback>{getInitials(providerDetails.info.name)}</AvatarFallback>
             </Avatar>
             <div>
@@ -162,35 +173,34 @@ export default function ProviderProfilePage() {
               </div>
             </div>
           </div>
-          
-          {providerDetails.info.validated === null && isProviderManager && (
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>Valider le profil</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Validation du profil</DialogTitle>
-                  <DialogDescription>
-                    Voulez-vous accepter ou refuser ce prestataire ?
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Annuler
-                  </Button>
-                  <Button variant="destructive" onClick={handleReject}>
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Refuser
-                  </Button>
-                  <Button variant="default" onClick={handleAccept}>
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Accepter
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
+
+          {(providerDetails.info.validated === null || providerDetails.info.validated === false) &&
+            isProviderManager && (
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>Valider le profil</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Validation du profil</DialogTitle>
+                    <DialogDescription>Voulez-vous accepter ou refuser ce prestataire ?</DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
+                    <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                      Annuler
+                    </Button>
+                    <Button variant="destructive" onClick={handleReject}>
+                      <XCircle className="mr-2 h-4 w-4" />
+                      Refuser
+                    </Button>
+                    <Button variant="default" onClick={handleAccept}>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Accepter
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
         </div>
       </div>
 
@@ -214,18 +224,19 @@ export default function ProviderProfilePage() {
                   <h3 className="font-medium text-sm text-muted-foreground mb-1">Description</h3>
                   <p>{providerDetails.info.description}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="font-medium text-sm text-muted-foreground mb-1">Adresse</h3>
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                     <p>
-                      {providerDetails.info.address}, {providerDetails.info.postal_code} {providerDetails.info.city}, {providerDetails.info.country}
+                      {providerDetails.info.address}, {providerDetails.info.postal_code} {providerDetails.info.city},{" "}
+                      {providerDetails.info.country}
                     </p>
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <h3 className="font-medium text-sm text-muted-foreground mb-1">Contact</h3>
@@ -238,7 +249,7 @@ export default function ProviderProfilePage() {
                     <p>{providerDetails.info.phone}</p>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="font-medium text-sm text-muted-foreground mb-1">SIRET</h3>
                   <p>{providerDetails.info.siret}</p>
@@ -253,15 +264,13 @@ export default function ProviderProfilePage() {
                 <FileText className="h-5 w-5 text-primary" />
                 Documents
               </CardTitle>
-              <CardDescription>
-                Documents fournis par le prestataire
-              </CardDescription>
+              <CardDescription>Documents fournis par le prestataire</CardDescription>
             </CardHeader>
             <CardContent>
               {providerDetails.documents && providerDetails.documents.length > 0 ? (
                 <div className="grid gap-3">
                   {providerDetails.documents.map((doc) => (
-                    <div 
+                    <div
                       key={doc.id}
                       className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
                       onClick={() => handleDocumentClick(doc.url)}
@@ -276,7 +285,7 @@ export default function ProviderProfilePage() {
                         </div>
                       </div>
                       <Button variant="ghost" size="icon">
-                        {doc.url.endsWith('.pdf') || doc.url.match(/\.(jpg|jpeg|png|gif)$/) ? (
+                        {doc.url.endsWith(".pdf") || doc.url.match(/\.(jpg|jpeg|png|gif)$/) ? (
                           <ExternalLink className="h-4 w-4" />
                         ) : (
                           <Download className="h-4 w-4" />
@@ -286,9 +295,7 @@ export default function ProviderProfilePage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-muted-foreground">
-                  Aucun document disponible
-                </div>
+                <div className="text-center py-6 text-muted-foreground">Aucun document disponible</div>
               )}
             </CardContent>
           </Card>
@@ -299,9 +306,7 @@ export default function ProviderProfilePage() {
                 <Building2 className="h-5 w-5 text-primary" />
                 Contrats
               </CardTitle>
-              <CardDescription>
-                Contrats associés au prestataire
-              </CardDescription>
+              <CardDescription>Contrats associés au prestataire</CardDescription>
             </CardHeader>
             <CardContent>
               {providerDetails.contracts && providerDetails.contracts.length > 0 ? (
@@ -327,9 +332,7 @@ export default function ProviderProfilePage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-muted-foreground">
-                  Aucun contrat disponible
-                </div>
+                <div className="text-center py-6 text-muted-foreground">Aucun contrat disponible</div>
               )}
             </CardContent>
           </Card>
@@ -361,15 +364,43 @@ export default function ProviderProfilePage() {
                       <p className="text-muted-foreground text-sm">{service.description}</p>
                     </ScrollArea>
                   </CardContent>
-                  <CardFooter className="flex justify-between pt-0">
-                    <div className="flex items-center gap-1">
-                      <Euro className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">{service.price} €</span>
+                  <CardFooter className="flex flex-col gap-3 pt-0">
+                    <div className="flex justify-between w-full">
+                      <div className="flex items-center gap-1">
+                        <Euro className="h-4 w-4 text-muted-foreground" />
+                        <span className="font-medium">{service.price} €</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">{service.duration_minute} min</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">{service.duration_minute} min</span>
-                    </div>
+
+                    {service.validated ? (
+                      <div className="flex items-center gap-2 text-green-600 w-full">
+                        <CheckCircle2 className="h-5 w-5" />
+                        <span>Validé</span>
+                      </div>
+                    ) : (
+                      isProviderManager && (
+                        <ServiceValidationDialog
+                          service={service}
+                          onValidate={async (serviceId, newPrice) => {
+                            try {
+                              if (id) {
+                                await Provider.validateService(id, serviceId, newPrice);
+                                const updatedData = await Provider.getProviderDetails(id);
+                                setProviderDetails(updatedData);
+                              } else {
+                                console.error("Provider ID is undefined");
+                              }
+                            } catch (error) {
+                              console.error("Error validating service:", error);
+                            }
+                          }}
+                        />
+                      )
+                    )}
                   </CardFooter>
                 </Card>
               ))}
@@ -393,7 +424,7 @@ function ProviderProfileSkeleton() {
     <div className="container mx-auto p-4 max-w-6xl">
       <div className="mb-6">
         <Skeleton className="h-10 w-24 mb-4" />
-        
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-4">
             <Skeleton className="h-16 w-16 rounded-full" />

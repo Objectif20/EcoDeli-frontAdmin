@@ -60,6 +60,7 @@ interface Service {
   available: boolean;
   keywords?: Keyword[];
   images?: Image[];
+  validated: boolean;
 }
 
 interface Keyword {
@@ -108,6 +109,10 @@ export class Provider {
 
     static async updateServiceStatus(providerId: string, serviceId: string, validated: boolean, price_admin ?: number): Promise<void> {
       await axiosInstance.post(`/admin/providers/${providerId}/services/${serviceId}/validate`, { validated, price_admin });
+    }
+
+    static async validateService(providerId: string, serviceId: string, price_admin : number) : Promise<void> {
+      await axiosInstance.post(`/admin/providers/${providerId}/service/${serviceId}/validate`, { price_admin });
     }
 
 }
