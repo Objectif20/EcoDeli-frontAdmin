@@ -20,6 +20,7 @@ import { z } from "zod";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const clientSchema = z.object({
   id: z.string(),
@@ -38,18 +39,18 @@ export const clientColumns: ColumnDef<z.infer<typeof clientSchema>>[] = [
   {
     id: "profile",
     accessorKey: "profile_picture",
-    header: "Client",
+    header: "Livreur",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        {row.original.profile_picture ? (
-          <img
-            src={row.original.profile_picture}
-            alt={`${row.original.first_name} ${row.original.last_name}`}
-            className="w-10 h-10 rounded-full"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-        )}
+          <Avatar>
+            <AvatarImage
+              src={row.original.profile_picture || undefined}
+              alt={`${row.original.first_name} ${row.original.last_name}`} />
+            <AvatarFallback>
+              {`${row.original.first_name.charAt(0)}${row.original.last_name.charAt(0)}`}
+            </AvatarFallback>
+          </Avatar>
+
         <span>{`${row.original.first_name} ${row.original.last_name}`}</span>
       </div>
     ),

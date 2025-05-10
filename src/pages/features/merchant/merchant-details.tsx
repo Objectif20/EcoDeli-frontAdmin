@@ -20,6 +20,7 @@ import {
   CreditCard,
   User,
 } from "lucide-react"
+import { MerchantAPI } from "@/api/merchant.api"
 
 interface MerchantDetails {
   info: {
@@ -44,28 +45,12 @@ export default function MerchantProfilePage() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const fakeMerchantDetails: MerchantDetails = {
-    info: {
-      profile_picture: "https://via.placeholder.com/150",
-      first_name: "Alice",
-      last_name: "Dupont",
-      description: "Commerçant fidèle depuis 3 ans.",
-      email: "alice.dupont@example.com",
-      phone: "+33 1 23 45 67 89",
-      nbDemandeDeLivraison: 15,
-      nomAbonnement: "Premium",
-      nbSignalements: 1,
-      entreprise: "Entreprise XYZ",
-      siret: "123 456 789 00012",
-      pays: "France",
-    },
-  }
-
   useEffect(() => {
     const fetchMerchantDetails = async () => {
       try {
+        const response = await MerchantAPI.getMerchantDetails(id as string);
         setLoading(true)
-        setMerchantDetails(fakeMerchantDetails)
+        setMerchantDetails(response)
       } catch (error) {
         console.error("Error fetching merchant details:", error)
       } finally {

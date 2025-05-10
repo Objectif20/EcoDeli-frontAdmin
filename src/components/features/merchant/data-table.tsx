@@ -35,20 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
-
-export interface Merchant {
-  id: string;
-  companyName: string;
-  siret: string;
-  city: string;
-  address: string;
-  postalCode: string;
-  country: string;
-  phone: string;
-  stripeCustomerId: string;
-  description: string;
-  merchantContracts: string[];
-}
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const schema = z.object({
   id: z.string(),
@@ -57,6 +44,9 @@ export const schema = z.object({
   country: z.string(),
   phone: z.string(),
   description: z.string(),
+  profilePicture: z.string().nullable(),
+  firstName: z.string(),
+  lastName: z.string(),
 });
 
 export const columnLink = [
@@ -65,9 +55,30 @@ export const columnLink = [
   { column_id: "country", text: "Pays" },
   { column_id: "phone", text: "Téléphone" },
   { column_id: "description", text: "Description" },
+  { column_id: "profilePicture", text: "Commerçant" },
 ];
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "profile",
+    accessorKey: "profilePicture",
+    header: "Commerçant",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage
+              src={row.original.profilePicture || undefined}
+              alt={`${row.original.firstName} ${row.original.lastName}`} />
+            <AvatarFallback>
+              {`${row.original.firstName.charAt(0)}${row.original.lastName.charAt(0)}`}
+            </AvatarFallback>
+          </Avatar>
+
+        <span>{`${row.original.firstName} ${row.original.lastName}`}</span>
+      </div>
+    ),
+    enableHiding: false,
+  },
   {
     id: "id",
     accessorKey: "companyName",

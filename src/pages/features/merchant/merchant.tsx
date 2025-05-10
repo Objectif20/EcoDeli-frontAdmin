@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/features/merchant/data-table";
-import type { Merchant } from "@/components/features/merchant/data-table";
 import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
-import { MerchantAPI } from "@/api/merchant.api";
+import { AllMerchant, MerchantAPI } from "@/api/merchant.api";
 
 export default function MerchantPage() {
   const dispatch = useDispatch();
-  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [merchants, setMerchants] = useState<AllMerchant[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);

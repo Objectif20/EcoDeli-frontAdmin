@@ -43,18 +43,15 @@ export const deliverymanColumns: ColumnDef<z.infer<typeof deliverymanSchema>>[] 
     header: "Livreur",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        {row.original.profile_picture ? (
           <Avatar>
             <AvatarImage
-              src={row.original.profile_picture}
+              src={row.original.profile_picture || undefined}
               alt={`${row.original.first_name} ${row.original.last_name}`} />
             <AvatarFallback>
               {`${row.original.first_name.charAt(0)}${row.original.last_name.charAt(0)}`}
             </AvatarFallback>
           </Avatar>
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-        )}
+
         <span>{`${row.original.first_name} ${row.original.last_name}`}</span>
       </div>
     ),

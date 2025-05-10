@@ -38,6 +38,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const schema = z.object({
   id: z.string(),
@@ -67,16 +68,16 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Prestataire",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        {row.original.profile_picture ? (
-          <img
-            src={row.original.profile_picture}
-            alt={row.original.name}
-            className="w-10 h-10 rounded-full"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-        )}
-        <span>{row.original.name}</span>
+          <Avatar>
+            <AvatarImage
+              src={row.original.profile_picture || undefined}
+              alt={`${row.original.name} `} />
+            <AvatarFallback>
+              {`${row.original.name.charAt(0)}`}
+            </AvatarFallback>
+          </Avatar>
+
+        <span>{`${row.original.name}`}</span>
       </div>
     ),
     enableHiding: false,
