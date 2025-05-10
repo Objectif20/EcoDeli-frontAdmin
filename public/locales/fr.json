@@ -371,6 +371,35 @@
         }
       }
     },
+    "contracts": {
+      "deliveryman": {
+        "home": "Accueil",
+        "contratDeliverymen": "Contrats des livreurs",
+        "searchDeliveryman": "Rechercher un livreur",
+        "contratDate": "Date du contrat",
+        "noDeliverymenFound": "Aucun livreur trouvé",
+        "noContractSelected": "Aucun contrat sélectionné",
+        "selectDeliveryman": "Veuillez sélectionner un livreur pour voir son contrat"
+      },
+      "merchant": {
+        "home": "Accueil",
+        "contratMerchants": "Contrats des commerçants",
+        "searchMerchant": "Rechercher un commerçant",
+        "contratDate": "Date du contrat",
+        "noMerchantsFound": "Aucun commerçant trouvé",
+        "noContractSelected": "Aucun contrat sélectionné",
+        "selectMerchant": "Veuillez sélectionner un commerçant pour voir son contrat"
+      },
+      "provider": {
+        "home": "Accueil",
+        "contratPrestataires": "Contrats des prestataires",
+        "searchPrestataire": "Rechercher un prestataire",
+        "contratDate": "Date du contrat",
+        "noPrestatairesFound": "Aucun prestataire trouvé",
+        "noContractSelected": "Aucun contrat sélectionné",
+        "selectPrestataire": "Veuillez sélectionner un prestataire pour voir son contrat"
+      }
+    },
     "subscription": {
       "list": {
         "breadcrumb": {
@@ -1418,7 +1447,12 @@
             },
             "allDaysSelected": "Tous les jours de la semaine sont déjà sélectionnés.",
             "availabilityUpdated": "Disponibilités mises à jour !",
-            "save": "Enregistrer"
+            "save": "Enregistrer",
+            "scheduleDescription": "Définissez vos horaires de disponibilité pour chaque jour de la semaine",
+            "startTime": "Heure de début",
+            "endTime": "Heure de fin",
+            "errorFetchingAvailability": "Erreur lors de la récupération des disponibilités",
+            "errorUpdatingAvailability": "Erreur lors de la mise à jour des disponibilités"
           },
           "reports": {
             "title": "Signalements",
@@ -1459,6 +1493,80 @@
             "discoverPlans": "Découvrir les autres formules d'abonnements",
             "changePlan": "Changer de formule",
             "cancelSubscription": "Stopper votre abonnement"
+          },
+          "deliveryman": {
+            "deliverymanSettings": "Paramètres du Livreur",
+            "modifyInfo": "Modifier vos informations",
+            "professionalEmail": "Email Professionnel",
+            "invalidEmail": "Adresse email invalide",
+            "phoneNumber": "Numéro de Téléphone",
+            "phoneRequired": "Le numéro de téléphone est requis",
+            "country": "Pays",
+            "countryRequired": "Le pays est requis",
+            "city": "Ville",
+            "cityRequired": "La ville est requise",
+            "address": "Adresse",
+            "addressRequired": "L'adresse est requise",
+            "postalCode": "Code Postal",
+            "postalCodeRequired": "Le code postal est requis",
+            "updateInfo": "Mettre à Jour les Informations",
+            "yourPhoneNumber": "Votre numéro de téléphone",
+            "yourCity": "Votre ville",
+            "yourAddress": "Votre adresse",
+            "yourPostalCode": "Votre code postal"
+          },
+          "merchant": {
+            "merchantSettings": "Paramètres du Marchand",
+            "modifyInfo": "Modifier vos informations",
+            "companyName": "Nom de l'Entreprise",
+            "companyNameRequired": "Le nom de l'entreprise est requis",
+            "siret": "SIRET",
+            "siretRequired": "Le SIRET est requis",
+            "address": "Adresse",
+            "addressRequired": "L'adresse est requise",
+            "postalCode": "Code Postal",
+            "postalCodeRequired": "Le code postal est requis",
+            "city": "Ville",
+            "cityRequired": "La ville est requise",
+            "country": "Pays",
+            "countryRequired": "Le pays est requis",
+            "phone": "Téléphone",
+            "phoneRequired": "Le téléphone est requis",
+            "updateInfo": "Mettre à Jour les Informations",
+            "yourCompanyName": "Votre nom d'entreprise",
+            "yourSiret": "Votre SIRET",
+            "yourAddress": "Votre adresse",
+            "yourPostalCode": "Votre code postal",
+            "yourCity": "Votre ville",
+            "yourPhone": "Votre téléphone"
+          },
+          "provider": {
+            "providerSettings": "Paramètres du Fournisseur",
+            "modifyInfo": "Modifier vos informations",
+            "companyName": "Nom de l'Entreprise",
+            "companyNameRequired": "Le nom de l'entreprise est requis",
+            "siret": "SIRET",
+            "siretRequired": "Le SIRET est requis",
+            "address": "Adresse",
+            "addressRequired": "L'adresse est requise",
+            "serviceType": "Type de Service",
+            "serviceTypeRequired": "Le type de service est requis",
+            "postalCode": "Code Postal",
+            "postalCodeRequired": "Le code postal est requis",
+            "city": "Ville",
+            "cityRequired": "La ville est requise",
+            "country": "Pays",
+            "countryRequired": "Le pays est requis",
+            "phone": "Téléphone",
+            "phoneRequired": "Le téléphone est requis",
+            "updateInfo": "Mettre à Jour les Informations",
+            "yourCompanyName": "Votre nom d'entreprise",
+            "yourSiret": "Votre SIRET",
+            "yourAddress": "Votre adresse",
+            "yourServiceType": "Votre type de service",
+            "yourPostalCode": "Votre code postal",
+            "yourCity": "Votre ville",
+            "yourPhone": "Votre téléphone"
           }
         },
         "planning": {
@@ -1806,6 +1914,28 @@
               }
             }
           }
+        },
+        "shipment": {
+          "shipmentHistory": {
+            "title": "Historique des demandes de livraisons terminées",
+            "breadcrumb": {
+              "home": "Accueil",
+              "shipmentHistory": "Historique des demandes"
+            },
+            "table": {
+              "name": "Nom",
+              "departureCity": "Ville de départ",
+              "arrivalCity": "Ville d'arrivée",
+              "urgent": "Urgent",
+              "nbColis": "Nombre de colis",
+              "nbLivraisons": "Nombre de livraisons",
+              "actions": "Actions",
+              "viewDetails": "Accéder aux détails",
+              "columns": "Colonnes",
+              "yes": "Oui",
+              "no": "Non"
+            }
+          }
         }
       }
     },
@@ -1861,6 +1991,7 @@
         "becomeDeliveryman": "Devenir Transporteur ?",
         "createDeliveryRequest": "Nouvelle demande de livraison",
         "activeShipments": "Annonces actives",
+        "createTrolleyDrop" : "Lâcher de chariot",
         "createService": "Nouvelle prestation",
         "becomeDeliverymanDescription": "Devenez transporteur et livrez vos colis en toute sécurité avec EcoDeli. Inscrivez-vous dès maintenant pour profiter de nos offres exclusives.",
         "close": "Fermer",
@@ -1899,8 +2030,10 @@
         "providerProfileUnderReview": "Profil Prestataire en cours d'analyse",
         "providerProfileUnderReviewDescription": "Votre profil Prestataire est en cours d'analyse. Vous serez informé dès que le processus sera terminé.",
         "deliverymanProfileUnderReview": "Profil Transporteur en cours d'analyse",
-        "deliverymanProfileUnderReviewDescription": "Votre profil Transporteur est en cours d'analyse. Vous serez informé dès que le processus sera terminé."
+        "deliverymanProfileUnderReviewDescription": "Votre profil Transporteur est en cours d'analyse. Vous serez informé dès que le processus sera terminé.",
+        "availability" : "Disponibilités"
       },
+      
       "disclosure": {
         "completed": "(complété)",
         "previous": "Précédent",
@@ -1917,6 +2050,57 @@
         "previousPage": "Page précédente",
         "nextPage": "Page suivante",
         "lastPage": "Dernière page"
+      }
+    },
+    "notif": {
+      "slidedown": {
+        "actionMessage": "Souhaitez-vous recevoir des notifications ?",
+        "acceptButton": "Oui",
+        "cancelMessage": "Non merci",
+        "confirmMessage": "Merci ! Vous êtes bien inscrit.",
+        "emailLabel": "Email",
+        "negativeUpdateButton": "Annuler",
+        "positiveUpdateButton": "Enregistrer",
+        "smsLabel": "Téléphone",
+        "updateMessage": "Mettez à jour vos préférences de notification"
+      },
+      "welcome": {
+        "title": "Bienvenue !",
+        "message": "Merci pour votre abonnement."
+      },
+      "dialog": {
+        "blocked": {
+          "message": "Les notifications sont bloquées. Veuillez les activer dans les paramètres de votre navigateur.",
+          "title": "Notifications bloquées"
+        },
+        "main": {
+          "button": {
+            "subscribe": "S'abonner",
+            "unsubscribe": "Se désabonner"
+          },
+          "title": "Gérer les notifications"
+        }
+      },
+      "message": {
+        "action": {
+          "resubscribed": "Vous êtes à nouveau abonné(e).",
+          "subscribed": "Abonnement réussi.",
+          "subscribing": "Abonnement en cours...",
+          "unsubscribed": "Vous êtes désabonné(e)."
+        },
+        "prenotify": "Cliquez ici pour activer les notifications."
+      },
+      "tip": {
+        "state": {
+          "blocked": "Notifications bloquées.",
+          "subscribed": "Notifications activées.",
+          "unsubscribed": "Notifications désactivées."
+        }
+      }
+    },
+    "client": {
+      "common": {
+        "search": "Rechercher"
       }
     }
   }
