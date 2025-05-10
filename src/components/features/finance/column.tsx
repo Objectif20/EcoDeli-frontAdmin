@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Download } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
-export type TransactionType = "abonnements" | "virements reçus" | "virements émis"
-export type TransactionCategory = "abonnements" | "livraison" | "prestations"
+export type TransactionType = "sub" | "in" | "out"
+export type TransactionCategory = "sub" | "delivery" | "service"
 
 export type Transaction = {
   id: string
@@ -27,10 +27,15 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Type de transaction",
     cell: ({ row }) => {
       const type = row.getValue("type") as TransactionType
+      const typeDisplayMap = {
+        "sub": "Abonnement",
+        "in": "Virement reçu",
+        "out": "Virement émis"
+      }
 
       return (
-        <Badge variant={type === "abonnements" ? "default" : type === "virements reçus" ? "success" : "destructive"}>
-          {type}
+        <Badge variant={type === "sub" ? "default" : type === "in" ? "success" : "destructive"}>
+          {typeDisplayMap[type]}
         </Badge>
       )
     },
@@ -43,8 +48,13 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Catégorie",
     cell: ({ row }) => {
       const category = row.getValue("category") as TransactionCategory
+      const categoryDisplayMap = {
+        "sub": "Abonnement",
+        "delivery": "Livraison",
+        "service": "Prestation"
+      }
 
-      return <Badge variant="outline">{category}</Badge>
+      return <Badge variant="outline">{categoryDisplayMap[category]}</Badge>
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
@@ -53,6 +63,16 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) => {
+      const date = row.getValue("date") as string;
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        const [year, month, day] = date.split('-');
+        return `${day}/${month}/${year}`;
+      } else {
+        return date;
+      }
+    },
   },
   {
     id: "actions",

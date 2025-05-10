@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useEffect, useState } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -11,23 +9,48 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  filters: any;
+  onNameFilter: (value: string) => void;
+  onTypeFilter: (value: string) => void;
+  onYearFilter: (value: string) => void;
+  onMonthFilter: (value: string) => void;
+  onApplyFilters: () => void;
+  onResetFilters: () => void;
+  totalRows: number;
+  pageIndex: number;
+  pageSize: number;
+  onPageChange: (newPageIndex: number) => void;
+  onPageSizeChange: (newPageSize: number) => void;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [selectedYear, setSelectedYear] = useState<string>("")
-  const [selectedMonth, setSelectedMonth] = useState<string>("")
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  filters,
+  onNameFilter,
+  onTypeFilter,
+  onYearFilter,
+  onMonthFilter,
+  onApplyFilters,
+  onResetFilters,
+  totalRows,
+  pageIndex,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
@@ -42,77 +65,29 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       sorting,
       columnFilters,
     },
-  })
+    manualPagination: true,
+    pageCount: Math.ceil(totalRows / pageSize),
+  });
 
-  const handleNameFilter = (value: string) => {
-    table.getColumn("name")?.setFilterValue(value)
-  }
+  useEffect(() => {
+    table.setPageIndex(pageIndex);
+  }, [pageIndex, table]);
 
-  const handleTypeFilter = (value: string) => {
-    if (value === "all") {
-      table.getColumn("type")?.setFilterValue([])
-    } else {
-      table.getColumn("type")?.setFilterValue([value])
-    }
-  }
-
-  const handleDateFilter = () => {
-    if (selectedYear || selectedMonth) {
-      table.getColumn("date")?.setFilterValue((value: string) => {
-        if (!value) return false
-
-        if (value.includes("/")) {
-          const [month, year] = value.split("/")
-
-          if (selectedYear && selectedMonth) {
-            return year === selectedYear && month === selectedMonth
-          } else if (selectedYear) {
-            return year === selectedYear
-          } else if (selectedMonth) {
-            return month === selectedMonth
-          }
-        }
-        else {
-          const date = new Date(value)
-          const year = date.getFullYear().toString()
-          const month = (date.getMonth() + 1).toString().padStart(2, "0")
-
-          if (selectedYear && selectedMonth) {
-            return year === selectedYear && month === selectedMonth
-          } else if (selectedYear) {
-            return year === selectedYear
-          } else if (selectedMonth) {
-            return month === selectedMonth
-          }
-        }
-
-        return true
-      })
-    } else {
-      table.getColumn("date")?.setFilterValue(undefined)
-    }
-  }
-
-  const resetFilters = () => {
-    setSelectedYear("")
-    setSelectedMonth("")
-    setColumnFilters([])
-  }
+  useEffect(() => {
+    table.setPageSize(pageSize);
+  }, [pageSize, table]);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 md:flex-row">
         <Input
           placeholder="Rechercher par nom..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => handleNameFilter(event.target.value)}
+          value={filters.name}
+          onChange={(event) => onNameFilter(event.target.value)}
           className="max-w-sm"
         />
 
-        <Select
-          value={(table.getColumn("type")?.getFilterValue() as string[])?.[0] || "all"}
-          onValueChange={handleTypeFilter}
-        >
+        <Select value={filters.type} onValueChange={onTypeFilter}>
           <SelectTrigger className="max-w-[200px]">
             <SelectValue placeholder="Type de transaction" />
           </SelectTrigger>
@@ -125,7 +100,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </Select>
 
         <div className="flex gap-2">
-          <Select value={selectedYear} onValueChange={setSelectedYear}>
+          <Select value={filters.year} onValueChange={onYearFilter}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Année" />
             </SelectTrigger>
@@ -136,7 +111,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             </SelectContent>
           </Select>
 
-          <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+          <Select value={filters.month} onValueChange={onMonthFilter}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Mois" />
             </SelectTrigger>
@@ -157,11 +132,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             </SelectContent>
           </Select>
 
-          <Button variant="secondary" onClick={handleDateFilter}>
+          <Button variant="secondary" onClick={onApplyFilters}>
             Filtrer
           </Button>
 
-          <Button variant="outline" onClick={resetFilters}>
+          <Button variant="outline" onClick={onResetFilters}>
             Réinitialiser
           </Button>
         </div>
@@ -177,7 +152,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     <TableHead key={header.id}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -204,22 +179,45 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} transaction(s)
+          {totalRows} transaction(s)
         </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
+            onClick={() => onPageChange(table.getCanPreviousPage() ? pageIndex - 1 : pageIndex)}
             disabled={!table.getCanPreviousPage()}
           >
             Précédent
           </Button>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(table.getCanNextPage() ? pageIndex + 1 : pageIndex)}
+            disabled={!table.getCanNextPage()}
+          >
             Suivant
           </Button>
         </div>
+        <div className="space-x-2">
+          <Select
+            value={pageSize.toString()}
+            onValueChange={(value) => onPageSizeChange(Number(value))}
+          >
+            <SelectTrigger className="w-[80px]">
+              <SelectValue placeholder={pageSize} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+              <SelectItem value="30">30</SelectItem>
+              <SelectItem value="40">40</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
-  )
+  );
 }
+

@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import type { TransactionCategory } from "./column"
+import { FinanceApi } from "@/api/finance.api"
 
 interface ExportCSVDialogProps {
   open: boolean
@@ -37,18 +38,28 @@ export function ExportCSVDialog({ open, onOpenChange }: ExportCSVDialogProps) {
     })
   }
 
-  const handleExport = () => {
-    // Log the selected filters to the console as requested
-    console.log("Export CSV with filters:", {
-      period: {
-        start: startYear && startMonth ? `${startMonth}/${startYear}` : "All",
-        end: endYear && endMonth ? `${endMonth}/${endYear}` : "All",
-      },
-      categories: selectedCategories.length > 0 ? selectedCategories : "All",
-    })
-
-    // Close the dialog
-    onOpenChange(false)
+  const handleExport = async () => {
+    try {
+      const csvBlob = await FinanceApi.getTransactionInCsv({
+        startMonth: startMonth !== "all" ? startMonth : undefined,
+        startYear: startYear !== "all" ? startYear : undefined,
+        endMonth: endMonth !== "all" ? endMonth : undefined,
+        endYear: endYear !== "all" ? endYear : undefined,
+        categories: selectedCategories.length > 0 ? selectedCategories : undefined,
+      });
+  
+      const url = window.URL.createObjectURL(new Blob([csvBlob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "transactions.csv");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Export CSV failed:", error);
+    }
+  
+    onOpenChange(false);
   }
 
   return (
@@ -147,24 +158,24 @@ export function ExportCSVDialog({ open, onOpenChange }: ExportCSVDialogProps) {
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="category-abonnements"
-                  checked={selectedCategories.includes("abonnements")}
-                  onCheckedChange={() => handleCategoryChange("abonnements")}
+                  checked={selectedCategories.includes("sub")}
+                  onCheckedChange={() => handleCategoryChange("sub")}
                 />
                 <Label htmlFor="category-abonnements">Abonnements</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="category-livraison"
-                  checked={selectedCategories.includes("livraison")}
-                  onCheckedChange={() => handleCategoryChange("livraison")}
+                  checked={selectedCategories.includes("delivery")}
+                  onCheckedChange={() => handleCategoryChange("delivery")}
                 />
                 <Label htmlFor="category-livraison">Livraison</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="category-prestations"
-                  checked={selectedCategories.includes("prestations")}
-                  onCheckedChange={() => handleCategoryChange("prestations")}
+                  checked={selectedCategories.includes("service")}
+                  onCheckedChange={() => handleCategoryChange("service")}
                 />
                 <Label htmlFor="category-prestations">Prestations</Label>
               </div>
