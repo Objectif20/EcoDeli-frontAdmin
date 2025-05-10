@@ -10,7 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import {
   Mail,
-  Phone,
   ArrowLeft,
   Package,
   AlertTriangle,
@@ -19,23 +18,7 @@ import {
   ClipboardList,
   ExternalLink,
 } from "lucide-react"
-
-interface ClientDetails {
-  info: {
-    profile_picture: string | null
-    first_name: string
-    last_name: string
-    description: string
-    email: string
-    phone: string
-    nbDemandeDeLivraison: number
-    nomAbonnement: string
-    nbSignalements: number
-    nombreDePrestations: number
-    profilTransporteur: boolean
-    idTransporteur?: string
-  }
-}
+import { ClientApi, ClientDetails } from "@/api/client.api"
 
 export default function ClientProfilePage() {
   const [clientDetails, setClientDetails] = useState<ClientDetails | null>(null)
@@ -43,29 +26,14 @@ export default function ClientProfilePage() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  // Données fictives pour tester l'interface
-  const fakeClientDetails: ClientDetails = {
-    info: {
-      profile_picture: "https://via.placeholder.com/150",
-      first_name: "Alice",
-      last_name: "Dupont",
-      description: "Client fidèle depuis 3 ans.",
-      email: "alice.dupont@example.com",
-      phone: "+33 1 23 45 67 89",
-      nbDemandeDeLivraison: 15,
-      nomAbonnement: "Premium",
-      nbSignalements: 1,
-      nombreDePrestations: 28,
-      profilTransporteur: true,
-      idTransporteur: "T12345",
-    },
-  }
-
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
         setLoading(true)
-        setClientDetails(fakeClientDetails)
+        if (id) {
+          const details = await ClientApi.getClientDetails(id)
+          setClientDetails(details)
+        }
       } catch (error) {
         console.error("Error fetching client details:", error)
       } finally {
@@ -157,15 +125,10 @@ export default function ClientProfilePage() {
                     )}
                   </div>
                 </div>
-                <p className="text-muted-foreground">{clientDetails.info.description}</p>
                 <div className="flex flex-wrap gap-4 mt-2">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <span>{clientDetails.info.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span>{clientDetails.info.phone}</span>
                   </div>
                 </div>
 
@@ -245,11 +208,6 @@ export default function ClientProfilePage() {
           <CardContent className="grid gap-6 md:grid-cols-2">
             <div className="space-y-4">
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Description</h3>
-                <p>{clientDetails.info.description}</p>
-              </div>
-
-              <div className="p-4 rounded-lg border bg-muted/50">
                 <h3 className="font-medium text-sm text-muted-foreground mb-2">Abonnement</h3>
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5 text-muted-foreground" />
@@ -264,10 +222,6 @@ export default function ClientProfilePage() {
                 <div className="flex items-center gap-2 mb-2">
                   <Mail className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{clientDetails.info.email}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-5 w-5 text-muted-foreground" />
-                  <p className="font-medium">{clientDetails.info.phone}</p>
                 </div>
               </div>
 

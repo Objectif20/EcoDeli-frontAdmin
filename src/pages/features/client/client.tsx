@@ -3,36 +3,14 @@ import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { DataTable } from "@/components/features/client/data-table";
-
-const fakeClientsData = [
-  {
-    id: "1",
-    profile_picture: "https://via.placeholder.com/150",
-    first_name: "Alice",
-    last_name: "Dupont",
-    email: "alice.dupont@example.com",
-    nbDemandeDeLivraison: 10,
-    nomAbonnement: "Premium",
-    nbSignalements: 2,
-  },
-  {
-    id: "2",
-    profile_picture: null,
-    first_name: "Bob",
-    last_name: "Martin",
-    email: "bob.martin@example.com",
-    nbDemandeDeLivraison: 5,
-    nomAbonnement: "Basic",
-    nbSignalements: 0,
-  },
-];
+import { AllClient, ClientApi } from "@/api/client.api";
 
 export default function ClientPage() {
   const dispatch = useDispatch();
-  const [clients, setClients] = useState(fakeClientsData);
+  const [clients, setClients] = useState<AllClient[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [totalItems, setTotalItems] = useState(fakeClientsData.length);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
     dispatch(
@@ -42,9 +20,18 @@ export default function ClientPage() {
       })
     );
 
-    setClients(fakeClientsData);
-    setTotalItems(fakeClientsData.length);
-  }, [dispatch]);
+    const fetchClients = async () => {
+      try {
+        const { data, meta } = await ClientApi.getClientList(pageIndex + 1, pageSize);
+        setClients(data);
+        setTotalItems(meta.total);
+      } catch (error) {
+        console.error("Failed to fetch clients:", error);
+      }
+    };
+
+    fetchClients();
+  }, [dispatch, pageIndex, pageSize]);
 
   return (
     <>
