@@ -1,26 +1,40 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Mail, Phone, ArrowLeft } from 'lucide-react'
+import { Badge } from "@/components/ui/badge"
+import {
+  Mail,
+  Phone,
+  ArrowLeft,
+  Package,
+  AlertTriangle,
+  CreditCard,
+  Truck,
+  ClipboardList,
+  ExternalLink,
+} from "lucide-react"
 
 interface ClientDetails {
   info: {
-    profile_picture: string | null;
-    first_name: string;
-    last_name: string;
-    description: string;
-    email: string;
-    phone: string;
-    nbDemandeDeLivraison: number;
-    nomAbonnement: string;
-    nbSignalements: number;
-  };
+    profile_picture: string | null
+    first_name: string
+    last_name: string
+    description: string
+    email: string
+    phone: string
+    nbDemandeDeLivraison: number
+    nomAbonnement: string
+    nbSignalements: number
+    nombreDePrestations: number
+    profilTransporteur: boolean
+    idTransporteur?: string
+  }
 }
 
 export default function ClientProfilePage() {
@@ -41,8 +55,11 @@ export default function ClientProfilePage() {
       nbDemandeDeLivraison: 15,
       nomAbonnement: "Premium",
       nbSignalements: 1,
+      nombreDePrestations: 28,
+      profilTransporteur: true,
+      idTransporteur: "T12345",
     },
-  };
+  }
 
   useEffect(() => {
     const fetchClientDetails = async () => {
@@ -50,7 +67,7 @@ export default function ClientProfilePage() {
         setLoading(true)
         setClientDetails(fakeClientDetails)
       } catch (error) {
-        console.error('Error fetching client details:', error)
+        console.error("Error fetching client details:", error)
       } finally {
         setLoading(false)
       }
@@ -61,11 +78,24 @@ export default function ClientProfilePage() {
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
       .toUpperCase()
       .substring(0, 2)
+  }
+
+  const getSubscriptionBadgeColor = (subscription: string) => {
+    switch (subscription.toLowerCase()) {
+      case "premium":
+        return "bg-amber-100 text-amber-800 hover:bg-amber-100"
+      case "pro":
+        return "bg-purple-100 text-purple-800 hover:bg-purple-100"
+      case "basic":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-100"
+      default:
+        return "bg-gray-100 text-gray-800 hover:bg-gray-100"
+    }
   }
 
   if (loading) {
@@ -78,7 +108,7 @@ export default function ClientProfilePage() {
         <ArrowLeft className="h-16 w-16 text-destructive mb-4" />
         <h2 className="text-2xl font-bold mb-2">Client non trouvé</h2>
         <p className="text-muted-foreground mb-6">Les détails du client n'ont pas pu être chargés.</p>
-        <Button onClick={() => navigate('/office/profile/clients')}>
+        <Button onClick={() => navigate("/office/profile/clients")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Retour à la liste
         </Button>
@@ -88,71 +118,185 @@ export default function ClientProfilePage() {
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
-      <div className="mb-6">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/office/profile/clients')}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
-        </Button>
+      <Button variant="ghost" onClick={() => navigate("/office/profile/clients")} className="mb-6">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Retour à la liste
+      </Button>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border-2 border-primary/10">
-              <AvatarImage src={clientDetails.info.profile_picture || ''} alt={`${clientDetails.info.first_name} ${clientDetails.info.last_name}`} />
-              <AvatarFallback>{getInitials(`${clientDetails.info.first_name} ${clientDetails.info.last_name}`)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-3xl font-bold">{`${clientDetails.info.first_name} ${clientDetails.info.last_name}`}</h1>
+      <div className="grid gap-6">
+        <Card >
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+              <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
+                <AvatarImage
+                  src={clientDetails.info.profile_picture || ""}
+                  alt={`${clientDetails.info.first_name} ${clientDetails.info.last_name}`}
+                />
+                <AvatarFallback className="text-xl">
+                  {getInitials(`${clientDetails.info.first_name} ${clientDetails.info.last_name}`)}
+                </AvatarFallback>
+              </Avatar>
+
+              <div className="space-y-2 flex-1">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                  <h1 className="text-3xl font-bold">{`${clientDetails.info.first_name} ${clientDetails.info.last_name}`}</h1>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge
+                      variant="outline"
+                      className={`${getSubscriptionBadgeColor(clientDetails.info.nomAbonnement)} font-medium`}
+                    >
+                      <CreditCard className="w-3.5 h-3.5 mr-1" />
+                      {clientDetails.info.nomAbonnement}
+                    </Badge>
+
+                    {clientDetails.info.profilTransporteur && (
+                      <Badge variant="outline" className="bg-teal-100 text-teal-800 hover:bg-teal-100 font-medium">
+                        <Truck className="w-3.5 h-3.5 mr-1" />
+                        Transporteur
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <p className="text-muted-foreground">{clientDetails.info.description}</p>
+                <div className="flex flex-wrap gap-4 mt-2">
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span>{clientDetails.info.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <span>{clientDetails.info.phone}</span>
+                  </div>
+                </div>
+
+                {clientDetails.info.profilTransporteur && clientDetails.info.idTransporteur && (
+                  <Button
+                    variant="outline"
+                    className="mt-3"
+                    onClick={() => navigate(`/office/profile/deliverymen/${clientDetails.info.idTransporteur}`)}
+                  >
+                    <Truck className="mr-2 h-4 w-4" />
+                    Voir profil transporteur
+                    <ExternalLink className="ml-2 h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Livraisons</p>
+                  <h3 className="text-3xl font-bold mt-2">{clientDetails.info.nbDemandeDeLivraison}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Demandes totales</p>
+                </div>
+                <div className=" p-3 rounded-full">
+                  <Package className="h-6 w-6 " />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className=" border-none shadow-md">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Prestations</p>
+                  <h3 className="text-3xl font-bold mt-2">{clientDetails.info.nombreDePrestations}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Services réalisés</p>
+                </div>
+                <div className=" p-3 rounded-full">
+                  <ClipboardList className="h-6 w-6 " />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card >
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Signalements</p>
+                  <h3 className="text-3xl font-bold mt-2">{clientDetails.info.nbSignalements}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Total reçus</p>
+                </div>
+                <div className=" p-3 rounded-full">
+                  <AlertTriangle className="h-6 w-6 " />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Client Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-primary" />
+              Informations détaillées
+            </CardTitle>
+            <CardDescription>Détails du profil client et préférences</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg border bg-muted/50">
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">Description</h3>
+                <p>{clientDetails.info.description}</p>
+              </div>
+
+              <div className="p-4 rounded-lg border bg-muted/50">
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">Abonnement</h3>
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                  <p className="font-medium">{clientDetails.info.nomAbonnement}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg border bg-muted/50">
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">Contact</h3>
+                <div className="flex items-center gap-2 mb-2">
+                  <Mail className="h-5 w-5 text-muted-foreground" />
+                  <p className="font-medium">{clientDetails.info.email}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-muted-foreground" />
+                  <p className="font-medium">{clientDetails.info.phone}</p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg border bg-muted/50">
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">Statut transporteur</h3>
+                <div className="flex items-center gap-2">
+                  <Truck className="h-5 w-5 text-muted-foreground" />
+                  <p className="font-medium">
+                    {clientDetails.info.profilTransporteur
+                      ? `Actif (ID: ${clientDetails.info.idTransporteur})`
+                      : "Inactif"}
+                  </p>
+                </div>
+                {clientDetails.info.profilTransporteur && clientDetails.info.idTransporteur && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => navigate(`/office/profile/deliverymen/${clientDetails.info.idTransporteur}`)}
+                  >
+                    <Truck className="mr-2 h-4 w-4" />
+                    Voir profil transporteur
+                  </Button>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Mail className="h-5 w-5 text-primary" />
-            Informations générales
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-medium text-sm text-muted-foreground mb-1">Description</h3>
-              <p>{clientDetails.info.description}</p>
-            </div>
-            <div>
-              <h3 className="font-medium text-sm text-muted-foreground mb-1">Nombre de demandes de livraison</h3>
-              <p>{clientDetails.info.nbDemandeDeLivraison}</p>
-            </div>
-            <div>
-              <h3 className="font-medium text-sm text-muted-foreground mb-1">Nombre de signalements</h3>
-              <p>{clientDetails.info.nbSignalements}</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-medium text-sm text-muted-foreground mb-1">Contact</h3>
-              <div className="flex items-center gap-2 mb-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <p>{clientDetails.info.email}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <p>{clientDetails.info.phone}</p>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-medium text-sm text-muted-foreground mb-1">Abonnement</h3>
-              <p>{clientDetails.info.nomAbonnement}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
@@ -160,21 +304,17 @@ export default function ClientProfilePage() {
 function ClientProfileSkeleton() {
   return (
     <div className="container mx-auto p-4 max-w-6xl">
-      <div className="mb-6">
-        <Skeleton className="h-10 w-24 mb-4" />
+      <Skeleton className="h-10 w-24 mb-6" />
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-16 w-16 rounded-full" />
-            <div>
-              <Skeleton className="h-8 w-64 mb-2" />
-              <Skeleton className="h-5 w-32" />
-            </div>
-          </div>
+      <div className="grid gap-6">
+        <Skeleton className="h-48 w-full rounded-lg" />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Skeleton className="h-32 w-full rounded-lg" />
+          <Skeleton className="h-32 w-full rounded-lg" />
+          <Skeleton className="h-32 w-full rounded-lg" />
         </div>
-      </div>
 
-      <div className="space-y-6">
         <Skeleton className="h-64 w-full rounded-lg" />
       </div>
     </div>
