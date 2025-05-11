@@ -4,9 +4,9 @@ import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { Button } from "@/components/ui/button";
-import { getLanguages } from "@/api/languages.api";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { LanguageApi } from "@/api/languages.api";
 
 interface Language {
   id: string;
@@ -34,7 +34,7 @@ export default function LanguagePage() {
 
   const fetchLanguages = async () => {
     try {
-      const response = await getLanguages(pageIndex + 1, pageSize);
+      const response = await LanguageApi.getLanguages(pageIndex + 1, pageSize);
       const formattedLanguages: Language[] = response.data.map((lang) => ({
         id: lang.language_id,
         name: lang.language_name,

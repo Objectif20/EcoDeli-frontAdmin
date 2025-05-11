@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,17 @@ import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Upload, Eye } from 'lucide-react';
+import { Download, Upload, Eye } from "lucide-react";
 import MonacoEditorWrapper from "@/components/monacoEditorWrapper";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { LanguageApi } from "@/api/languages.api";
 
 interface UpdatedLanguage {
   language_name: string;
@@ -24,22 +32,36 @@ interface JsonField {
   key: string;
   value: string;
   path: string;
+  isObject?: boolean;
 }
 
 export default function UpdateLanguage() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const mockInitialData = {
     language_name: "Français",
     iso_code: "fr",
     active: true,
   };
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!id) {
+      console.error("ID is not defined");
+      navigate("/office/general/languages");
+    }
+  }, [id, navigate]);
 
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: [t("pages.languages.breadcrumb.home"), t("pages.languages.breadcrumb.languages"), t("pages.languages.breadcrumb.updateLanguage")],
+        segments: [
+          t("pages.languages.breadcrumb.home"),
+          t("pages.languages.breadcrumb.languages"),
+          t("pages.languages.breadcrumb.updateLanguage"),
+        ],
         links: ["/office/dashboard", "/office/general/languages"],
       })
     );
@@ -52,27 +74,22 @@ export default function UpdateLanguage() {
     file: null,
   });
 
-  const [jsonContent, setJsonContent] = useState<string>(
-    JSON.stringify(
-      {
-        greeting: "Bonjour",
-        farewell: "Au revoir",
-        question: "Comment ça va ?",
-        test : {
-          test2 : "test3",
-          test4 : "test5",
-          test6 : "test7",
-          test8 : {
-            test9 : "test10",
-            test11 : "test12",
-            test13 : "test14",
-          }
+  const [jsonContent, setJsonContent] = useState<string>("");
+
+  useEffect(() => {
+    const fetchDefaultLanguage = async () => {
+      try {
+        if (id) {
+          const data = await LanguageApi.getDefaultLanguage(id);
+          setJsonContent(JSON.stringify(data, null, 2));
         }
-      },
-      null,
-      2
-    )
-  );
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la langue par défaut", error);
+      }
+    };
+
+    fetchDefaultLanguage();
+  }, [id]);
 
   const [updateMethod, setUpdateMethod] = useState<"editor" | "file" | "visual">("editor");
   const [isJsonValid, setIsJsonValid] = useState<boolean>(true);
@@ -83,23 +100,15 @@ export default function UpdateLanguage() {
       const parsedJson = JSON.parse(jsonContent);
       const fields: JsonField[] = [];
 
-      const extractFields = (obj: any, parentPath = "") => {
+      const extractFields = (obj: any, parentPath: string = "") => {
         Object.entries(obj).forEach(([key, value]) => {
           const currentPath = parentPath ? `${parentPath}.${key}` : key;
 
           if (typeof value === "object" && value !== null) {
-            fields.push({
-              key,
-              value: JSON.stringify(value),
-              path: currentPath,
-            });
+            fields.push({ key, value: "", path: currentPath, isObject: true });
             extractFields(value, currentPath);
           } else {
-            fields.push({
-              key,
-              value: String(value),
-              path: currentPath,
-            });
+            fields.push({ key, value: String(value), path: currentPath, isObject: false });
           }
         });
       };
@@ -111,7 +120,7 @@ export default function UpdateLanguage() {
     }
   }, [jsonContent]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setUpdatedLanguage((prev) => ({
       ...prev,
@@ -119,19 +128,16 @@ export default function UpdateLanguage() {
     }));
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
-    setUpdatedLanguage((prev) => ({
-      ...prev,
-      file,
-    }));
+    setUpdatedLanguage((prev) => ({ ...prev, file }));
 
     if (file && file.type === "application/json") {
       const reader = new FileReader();
       reader.onload = (event) => {
-        if (event.target?.result) {
+        if (event.target?.result && typeof event.target.result === "string") {
           try {
-            const json = JSON.parse(event.target.result as string);
+            const json = JSON.parse(event.target.result);
             setJsonContent(JSON.stringify(json, null, 2));
             setUpdateMethod("editor");
             setIsJsonValid(true);
@@ -174,57 +180,70 @@ export default function UpdateLanguage() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      const { language_name, iso_code, active, file } = updatedLanguage;
+      const updateData: UpdatedLanguage = { language_name, iso_code, active, file };
+
+      let jsonFile: File | null = null;
+
       if (updateMethod === "editor" || updateMethod === "visual") {
-        downloadJsonFile();
-      } else {
-        console.log("File to upload:", updatedLanguage.file);
+        const blob = new Blob([jsonContent], { type: "application/json" });
+        jsonFile = new File([blob], `${iso_code}_translations.json`, { type: "application/json" });
+      } else if (updateMethod === "file" && file) {
+        jsonFile = file;
       }
+
+      if (!jsonFile) {
+        alert(t("pages.languages.updateLanguage.form.invalidJsonAlert"));
+        return;
+      }
+
+      if (!id) throw new Error("ID is not defined");
+
+      const response = await LanguageApi.updateLanguage(id, updateData, jsonFile);
+      console.log("Language updated successfully", response);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la langue", error);
+      alert(t("pages.languages.updateLanguage.form.updateError"));
     }
   };
 
-  const downloadJsonFile = () => {
-    try {
-      const parsedJson = JSON.parse(jsonContent);
+  const renderJsonField = (field: JsonField, allFields: JsonField[]) => {
+    if (field.isObject) {
+      const childFields = allFields.filter(
+        (f) =>
+          f.path.startsWith(field.path + ".") &&
+          f.path.split(".").length === field.path.split(".").length + 1
+      );
 
-      const blob = new Blob([JSON.stringify(parsedJson, null, 2)], {
-        type: "application/json",
-      });
-
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${updatedLanguage.iso_code}_translations.json`;
-      document.body.appendChild(link);
-      link.click();
-
-      URL.revokeObjectURL(url);
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Invalid JSON format", error);
-      alert(t("pages.languages.updateLanguage.form.invalidJsonAlert"));
-    }
-  };
-
-  const renderJsonField = (field: JsonField) => {
-    return (
-      <div key={field.path} className="mb-4 flex items-start gap-2">
-        <div className="flex-1">
-          <Label htmlFor={field.path}>{field.key}</Label>
-          <Input
-            id={field.path}
-            value={field.value}
-            onChange={(e) => handleFieldChange(field.path, e.target.value)}
-            className="mt-1"
-          />
+      return (
+        <AccordionItem value={field.path} key={field.path}>
+          <AccordionTrigger>{field.key}</AccordionTrigger>
+          <AccordionContent>
+            <Accordion type="multiple">
+              {childFields.map((child) => renderJsonField(child, allFields))}
+            </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+      );
+    } else {
+      return (
+        <div key={field.path} className="mb-4 flex items-start gap-2">
+          <div className="flex-1 mx-2">
+            <Label htmlFor={field.path}>{field.key}</Label>
+            <Input
+              id={field.path}
+              value={field.value}
+              onChange={(e) => handleFieldChange(field.path, e.target.value)}
+              className="mt-1"
+            />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   };
 
   return (
@@ -268,11 +287,11 @@ export default function UpdateLanguage() {
                   handleChange({
                     target: {
                       name: "active",
-                      checked: checked as boolean,
+                      checked: checked,
                       type: "checkbox",
                       value: "",
                     },
-                  } as ChangeEvent<HTMLInputElement>)
+                  } as React.ChangeEvent<HTMLInputElement>)
                 }
               />
               <Label htmlFor="active">{t("pages.languages.updateLanguage.form.active")}</Label>
@@ -334,9 +353,11 @@ export default function UpdateLanguage() {
           <TabsContent value="visual" className="space-y-4 mt-4">
             <Card>
               <CardContent className="pt-6">
-                <div className="mt-6">
-                  {jsonFields.map((field) => renderJsonField(field))}
-                </div>
+                <Accordion type="multiple">
+                  {jsonFields
+                    .filter((field) => field.path.split(".").length === 1)
+                    .map((field) => renderJsonField(field, jsonFields))}
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>
@@ -344,7 +365,9 @@ export default function UpdateLanguage() {
 
         <div className="flex justify-end mt-6">
           <Button type="submit" size="lg" disabled={!isJsonValid && (updateMethod === "editor" || updateMethod === "visual")}>
-            {updateMethod === "file" ? t("pages.languages.updateLanguage.form.updateButton") : t("pages.languages.updateLanguage.form.submitButton")}
+            {updateMethod === "file"
+              ? t("pages.languages.updateLanguage.form.updateButton")
+              : t("pages.languages.updateLanguage.form.submitButton")}
           </Button>
         </div>
       </form>

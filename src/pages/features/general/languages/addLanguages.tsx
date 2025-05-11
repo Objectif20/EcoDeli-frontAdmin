@@ -1,22 +1,28 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useDispatch } from "react-redux";
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Upload, Eye, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { Download, Upload, Eye } from "lucide-react";
 import MonacoEditorWrapper from "@/components/monacoEditorWrapper";
-import { addLanguage } from "@/api/languages.api";
-import { Accordion } from "@/components/ui/accordion";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { LanguageApi } from "@/api/languages.api";
 
 interface NewLanguage {
-  name: string;
+  language_name: string;
   iso_code: string;
   active: boolean;
   file: File | null;
@@ -24,92 +30,82 @@ interface NewLanguage {
 
 interface JsonField {
   key: string;
-  value: string;
   path: string;
+  isObject?: boolean;
 }
 
 export default function AddLanguage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [newLanguage, setNewLanguage] = useState<NewLanguage>({
-    name: "",
-    iso_code: "",
-    active: false,
-    file: null,
-  });
-
-  function clearJsonValues(obj: any): any {
-    if (typeof obj === "object" && obj !== null) {
-      const cleared: any = Array.isArray(obj) ? [] : {};
-      for (const key in obj) {
-        cleared[key] = typeof obj[key] === "object" && obj[key] !== null
-          ? clearJsonValues(obj[key])
-          : "";
-      }
-      return cleared;
-    }
-    return "";
-  }
-
-  const defaultJson = {
-    greeting: "Bonjour",
-    farewell: "Au revoir",
-    question: "Comment ça va ?",
-    test: {
-      test2: "test3",
-      test4: "test5",
-      test6: "test7",
-      test8: {
-        test9: "test10",
-        test11: "test12",
-        test13: "test14",
-      }
-    }
-  };
-
-  const emptyJson = clearJsonValues(defaultJson);
-
-  const [jsonContent, setJsonContent] = useState<string>(
-    JSON.stringify(emptyJson, null, 2)
-  );
-
-  const [updateMethod, setUpdateMethod] = useState<"editor" | "file" | "visual">("editor");
-  const [isJsonValid, setIsJsonValid] = useState<boolean>(true);
-  const [jsonFields, setJsonFields] = useState<JsonField[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: [t("pages.languages.breadcrumb.home"), t("pages.languages.breadcrumb.languages"), t("pages.languages.breadcrumb.addLanguage")],
+        segments: [
+          t("pages.languages.breadcrumb.home"),
+          t("pages.languages.breadcrumb.languages"),
+          t("pages.languages.breadcrumb.addLanguage"),
+        ],
         links: ["/office/dashboard", "/office/general/languages"],
       })
     );
   }, [dispatch, t]);
+
+  const [newLanguage, setNewLanguage] = useState<NewLanguage>({
+    language_name: "",
+    iso_code: "",
+    active: true,
+    file: null,
+  });
+
+  const [jsonContent, setJsonContent] = useState<string>("");
+
+  useEffect(() => {
+    const fetchDefaultLanguage = async () => {
+      try {
+        const data = await LanguageApi.getFrenchLanguage();
+  
+        const emptyValues = (obj: any): any => {
+          if (Array.isArray(obj)) {
+            return obj.map(emptyValues);
+          } else if (obj && typeof obj === 'object') {
+            return Object.fromEntries(
+              Object.entries(obj).map(([key, value]) => [key, emptyValues(value)])
+            );
+          } else {
+            return "";
+          }
+        };
+  
+        const emptiedData = emptyValues(data);
+        setJsonContent(JSON.stringify(emptiedData, null, 2));
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la langue par défaut", error);
+      }
+    };
+  
+    fetchDefaultLanguage();
+  }, []);
+
+  const [updateMethod, setUpdateMethod] = useState<"editor" | "file" | "visual">("editor");
+  const [isJsonValid, setIsJsonValid] = useState<boolean>(true);
+  const [jsonFields, setJsonFields] = useState<JsonField[]>([]);
 
   useEffect(() => {
     try {
       const parsedJson = JSON.parse(jsonContent);
       const fields: JsonField[] = [];
 
-      const extractFields = (obj: any, parentPath = "") => {
-        Object.entries(obj).forEach(([key, value]) => {
+      const extractFields = (obj: any, parentPath: string = "") => {
+        Object.keys(obj).forEach((key) => {
           const currentPath = parentPath ? `${parentPath}.${key}` : key;
 
-          if (typeof value === "object" && value !== null) {
-            fields.push({
-              key,
-              value: JSON.stringify(value),
-              path: currentPath,
-            });
-            extractFields(value, currentPath);
+          if (typeof obj[key] === "object" && obj[key] !== null) {
+            fields.push({ key, path: currentPath, isObject: true });
+            extractFields(obj[key], currentPath);
           } else {
-            fields.push({
-              key,
-              value: String(value),
-              path: currentPath,
-            });
+            fields.push({ key, path: currentPath, isObject: false });
           }
         });
       };
@@ -121,7 +117,7 @@ export default function AddLanguage() {
     }
   }, [jsonContent]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setNewLanguage((prev) => ({
       ...prev,
@@ -129,19 +125,16 @@ export default function AddLanguage() {
     }));
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
-    setNewLanguage((prev) => ({
-      ...prev,
-      file,
-    }));
+    setNewLanguage((prev) => ({ ...prev, file }));
 
     if (file && file.type === "application/json") {
       const reader = new FileReader();
       reader.onload = (event) => {
-        if (event.target?.result) {
+        if (event.target?.result && typeof event.target.result === "string") {
           try {
-            const json = JSON.parse(event.target.result as string);
+            const json = JSON.parse(event.target.result);
             setJsonContent(JSON.stringify(json, null, 2));
             setUpdateMethod("editor");
             setIsJsonValid(true);
@@ -184,72 +177,61 @@ export default function AddLanguage() {
     }
   };
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const filteredFields = jsonFields.filter(
-    (field) =>
-      field.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      field.value.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      field.path.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const toggleSection = (path: string) => {
-    setExpandedSections((prev) => (prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]));
-  };
-
-  const isSection = (field: JsonField) => {
     try {
-      const value = JSON.parse(field.value);
-      return typeof value === "object" && value !== null;
-    } catch {
-      return false;
+      const { language_name, iso_code, active, file } = newLanguage;
+      const newLanguageData: NewLanguage = { language_name, iso_code, active, file };
+
+      let jsonFile: File | null = null;
+
+      if (updateMethod === "editor" || updateMethod === "visual") {
+        const blob = new Blob([jsonContent], { type: "application/json" });
+        jsonFile = new File([blob], `${iso_code}_translations.json`, { type: "application/json" });
+      } else if (updateMethod === "file" && file) {
+        jsonFile = file;
+      }
+
+      if (!jsonFile) {
+        alert(t("pages.languages.addLanguage.form.invalidJsonAlert"));
+        return;
+      }
+
+      const response = await LanguageApi.addLanguage(newLanguageData, jsonFile);
+      console.log("Language added successfully", response);
+      navigate("/office/general/languages");
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la langue", error);
+      alert(t("pages.languages.addLanguage.form.addError"));
     }
   };
 
-  const getNestedFields = (parentPath: string) => {
-    return jsonFields.filter(
-      (field) =>
-        field.path.startsWith(parentPath + ".") && field.path.split(".").length === parentPath.split(".").length + 1
-    );
-  };
-
-  const getRootFields = () => {
-    return jsonFields.filter((field) => !field.path.includes("."));
-  };
-
-  const renderJsonField = (field: JsonField) => {
-    if (isSection(field)) {
-      const isExpanded = expandedSections.includes(field.path);
-      const nestedFields = getNestedFields(field.path);
+  const renderJsonField = (field: JsonField, allFields: JsonField[]) => {
+    if (field.isObject) {
+      const childFields = allFields.filter(
+        (f) =>
+          f.path.startsWith(field.path + ".") &&
+          f.path.split(".").length === field.path.split(".").length + 1
+      );
 
       return (
-        <div key={field.path} className="mb-4">
-          <div className="flex items-center justify-between bg-muted/50 p-2 rounded-md">
-            <div className="font-medium">{field.key}</div>
-            <div className="flex gap-2">
-              <Button variant="ghost" size="sm" onClick={() => toggleSection(field.path)}>
-                {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </Button>
-            </div>
-          </div>
-
-          {isExpanded && (
-            <div className="pl-4 mt-2 border-l-2 border-muted">
-              {nestedFields.map((nestedField) => renderJsonField(nestedField))}
-            </div>
-          )}
-        </div>
+        <AccordionItem value={field.path} key={field.path}>
+          <AccordionTrigger>{field.key}</AccordionTrigger>
+          <AccordionContent>
+            <Accordion type="multiple">
+              {childFields.map((child) => renderJsonField(child, allFields))}
+            </Accordion>
+          </AccordionContent>
+        </AccordionItem>
       );
     } else {
       return (
         <div key={field.path} className="mb-4 flex items-start gap-2">
-          <div className="flex-1">
+          <div className="flex-1 mx-2">
             <Label htmlFor={field.path}>{field.key}</Label>
             <Input
               id={field.path}
-              value={field.value}
               onChange={(e) => handleFieldChange(field.path, e.target.value)}
               className="mt-1"
             />
@@ -259,40 +241,10 @@ export default function AddLanguage() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      if (updateMethod === "editor" || updateMethod === "visual") {
-        const blob = new Blob([jsonContent], { type: "application/json" });
-        const file = new File([blob], `${newLanguage.iso_code}_translations.json`, { type: "application/json" });
-        await addLanguage(
-          {
-            language_name: newLanguage.name,
-            iso_code: newLanguage.iso_code,
-            active: newLanguage.active,
-          },
-          file
-        );
-      } else if (newLanguage.file) {
-        await addLanguage(
-          {
-            language_name: newLanguage.name,
-            iso_code: newLanguage.iso_code,
-            active: newLanguage.active,
-          },
-          newLanguage.file
-        );
-      } else {
-        console.error("Erreur: Aucun fichier de langue sélectionné");
-      }
-    } catch (error) {
-      console.error("Erreur lors de l'ajout de la langue", error);
-    }
-  };
-
   return (
     <div className="container mx-auto py-6 space-y-6">
       <h1 className="text-2xl font-semibold">{t("pages.languages.addLanguage.title")}</h1>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardContent className="pt-6 space-y-4">
@@ -300,9 +252,9 @@ export default function AddLanguage() {
               <div>
                 <Label htmlFor="name">{t("pages.languages.addLanguage.form.languageName")}</Label>
                 <Input
-                  name="name"
+                  name="language_name"
                   placeholder={t("pages.languages.addLanguage.form.languageName")}
-                  value={newLanguage.name}
+                  value={newLanguage.language_name}
                   onChange={handleChange}
                   id="name"
                   className="mt-1"
@@ -330,11 +282,11 @@ export default function AddLanguage() {
                   handleChange({
                     target: {
                       name: "active",
-                      checked: checked as boolean,
+                      checked: checked,
                       type: "checkbox",
                       value: "",
                     },
-                  } as ChangeEvent<HTMLInputElement>)
+                  } as React.ChangeEvent<HTMLInputElement>)
                 }
               />
               <Label htmlFor="active">{t("pages.languages.addLanguage.form.active")}</Label>
@@ -379,7 +331,13 @@ export default function AddLanguage() {
                 <Label htmlFor="file" className="mb-2 block">
                   {t("pages.languages.addLanguage.form.uploadFile")}
                 </Label>
-                <Input accept=".json" type="file" onChange={handleFileChange} id="file" className="mt-1" />
+                <Input
+                  accept=".json"
+                  type="file"
+                  onChange={handleFileChange}
+                  id="file"
+                  className="mt-1"
+                />
                 <p className="text-sm text-muted-foreground mt-2">
                   {t("pages.languages.addLanguage.form.uploadDescription")}
                 </p>
@@ -390,43 +348,21 @@ export default function AddLanguage() {
           <TabsContent value="visual" className="space-y-4 mt-4">
             <Card>
               <CardContent className="pt-6">
-                <div className="mb-4">
-                  <Label htmlFor="search" className="mb-2 block">
-                    {t("pages.languages.addLanguage.form.search")}
-                  </Label>
-                  <div className="relative">
-                    <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="search"
-                      placeholder={t("pages.languages.addLanguage.form.searchPlaceholder")}
-                      value={searchQuery}
-                      onChange={handleSearchChange}
-                      className="pl-8"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <Accordion type="multiple" className="w-full">
-                    {searchQuery ? (
-                      filteredFields.map((field) => renderJsonField(field))
-                    ) : (
-                      getRootFields().map((field) => renderJsonField(field))
-                    )}
-                  </Accordion>
-                </div>
+                <Accordion type="multiple">
+                  {jsonFields
+                    .filter((field) => field.path.split(".").length === 1)
+                    .map((field) => renderJsonField(field, jsonFields))}
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
 
         <div className="flex justify-end mt-6">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={!isJsonValid && (updateMethod === "editor" || updateMethod === "visual")}
-          >
-            {updateMethod === "file" ? t("pages.languages.addLanguage.form.importButton") : t("pages.languages.addLanguage.form.submitButton")}
+          <Button type="submit" size="lg" disabled={!isJsonValid && (updateMethod === "editor" || updateMethod === "visual")}>
+            {updateMethod === "file"
+              ? t("pages.languages.addLanguage.form.addButton")
+              : t("pages.languages.addLanguage.form.submitButton")}
           </Button>
         </div>
       </form>
