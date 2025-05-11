@@ -12,6 +12,53 @@ export type Transaction = {
   invoiceUrl?: string
 }
 
+export interface StripeStats {
+  revenue: RevenueStats;
+  customers: CustomerStats;
+  payments: PaymentStats;
+  transactions: TransactionStripe[];
+}
+
+export interface RevenueStats {
+  total: number;
+  previousPeriod: number;
+  percentChange: number;
+  byPeriod: PeriodData[];
+}
+
+export interface CustomerStats {
+  total: number;
+  new: number;
+  percentChange: number;
+  activeSubscribers: number;
+}
+
+export interface PaymentStats {
+  successRate: number;
+  averageValue: number;
+  refundRate: number;
+  byMethod: PaymentMethod[];
+}
+
+export interface PaymentMethod {
+  method: string;
+  count: number;
+  value: number;
+}
+
+export interface PeriodData {
+  date: string;
+  revenue: number;
+  profit: number;
+  margin: number;
+}
+
+
+export interface TransactionStripe {
+  method: string;
+  number: number;
+}
+
 export class FinanceApi {
 
     static async getTransactions(params: {
@@ -85,6 +132,16 @@ export class FinanceApi {
         console.error("Error fetching transactions in CSV:", error);
         throw error;
     }
+    }
+
+    static async getStripeStats(): Promise<StripeStats> {
+        try {
+            const response = await axiosInstance.get("/client/finance/stripe");
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching Stripe stats:", error);
+            throw error;
+        }
     }
 
 }

@@ -1,6 +1,5 @@
-"use client"
-
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
+import { FinanceApi, StripeStats } from "@/api/finance.api"; // Assurez-vous que le chemin est correct
 import {
   ArrowDown,
   ArrowUp,
@@ -11,91 +10,29 @@ import {
   LineChartIcon,
   RefreshCcw,
   Users,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { GrossMarginChart, RadialChartComponent, RevenueProfitChart, StripeStats, TransactionBarChart } from "@/components/features/finance/stripe-chart"
-
-
-
-
-const mockStripeData: StripeStats = {
-  revenue: {
-    total: 48250,
-    previousPeriod: 42100,
-    percentChange: 14.6,
-    byPeriod: [
-      { date: "Jan", revenue: 4000, profit: 2400, margin: 60 },
-      { date: "Fév", revenue: 4500, profit: 2700, margin: 60 },
-      { date: "Mar", revenue: 5000, profit: 3000, margin: 60 },
-      { date: "Avr", revenue: 4800, profit: 2880, margin: 60 },
-      { date: "Mai", revenue: 5200, profit: 3120, margin: 60 },
-      { date: "Juin", revenue: 5800, profit: 3480, margin: 60 },
-      { date: "Juil", revenue: 6200, profit: 3720, margin: 60 },
-      { date: "Août", revenue: 6800, profit: 4080, margin: 60 },
-      { date: "Sep", revenue: 7200, profit: 4320, margin: 60 },
-      { date: "Oct", revenue: 7800, profit: 4680, margin: 60 },
-      { date: "Nov", revenue: 8200, profit: 4920, margin: 60 },
-      { date: "Déc", revenue: 8500, profit: 5100, margin: 60 },
-    ],
-  },
-  customers: {
-    total: 1248,
-    new: 128,
-    percentChange: 8.2,
-    activeSubscribers: 876,
-  },
-  payments: {
-    successRate: 96.7,
-    averageValue: 87.5,
-    refundRate: 2.3,
-    byMethod: [
-      { method: "Carte de crédit", count: 850, value: 32500 },
-      { method: "Apple Pay", count: 320, value: 12800 },
-      { method: "Google Pay", count: 120, value: 4800 },
-      { method: "Virement bancaire", count: 45, value: 1800 },
-    ],
-  },
-  transactions: [
-    {
-      method: "CB",
-      number: 850,
-    },
-    {
-      method: "Apple",
-      number: 320,
-    },
-    {
-      method: "Google",
-      number: 120,
-    },
-    {
-      method: "Cash",
-      number: 30,
-    },
-    {
-      method: "Check",
-      number: 15,
-    },
-  ]
-};
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { GrossMarginChart, RadialChartComponent, RevenueProfitChart, TransactionBarChart } from "@/components/features/finance/stripe-chart";
 
 export default function StripeDashboard() {
   const [period, setPeriod] = useState("30days");
-  const [data, setData] = useState(mockStripeData);
+  const [data, setData] = useState<StripeStats | null>(null);
 
   useEffect(() => {
-    const filterDataByPeriod = () => {
-      setData({
-        ...mockStripeData,
-        transactions: mockStripeData.transactions,
-      });
+    const fetchData = async () => {
+      try {
+        const stripeStats = await FinanceApi.getStripeStats();
+        setData(stripeStats);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
-    filterDataByPeriod();
-  }, [period]);
+    fetchData();
+  }, []);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("fr-FR", {
@@ -104,6 +41,10 @@ export default function StripeDashboard() {
       minimumFractionDigits: 2,
     }).format(amount);
   };
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-8 max-w-7xl mx-auto">

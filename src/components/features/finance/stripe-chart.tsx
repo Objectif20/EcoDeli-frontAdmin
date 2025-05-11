@@ -24,56 +24,12 @@ import {
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer } from "@/components/ui/chart"
-
-export interface StripeStats {
-    revenue: RevenueStats;
-    customers: CustomerStats;
-    payments: PaymentStats;
-    transactions: Transaction[];
-  }
-  
-  export interface RevenueStats {
-    total: number;
-    previousPeriod: number;
-    percentChange: number;
-    byPeriod: PeriodData[];
-  }
-  
-  export interface CustomerStats {
-    total: number;
-    new: number;
-    percentChange: number;
-    activeSubscribers: number;
-  }
-  
-  export interface PaymentStats {
-    successRate: number;
-    averageValue: number;
-    refundRate: number;
-    byMethod: PaymentMethod[];
-  }
-  
-  export interface PaymentMethod {
-    method: string;
-    count: number;
-    value: number;
-  }
-  
-  export interface PeriodData {
-    date: string;
-    revenue: number;
-    profit: number;
-    margin: number;
-  }
+import { PaymentStats, RevenueStats, TransactionStripe } from "@/api/finance.api"
 
 
-export interface Transaction {
-    method: string;
-    number: number;
-  }
 
 
- export const TransactionBarChart = ({ transactions }: { transactions: Transaction[] }) => {
+ export const TransactionBarChart = ({ transactions }: { transactions: TransactionStripe[] }) => {
 
     const chartConfig = {
       number: {
