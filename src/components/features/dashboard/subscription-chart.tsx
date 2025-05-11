@@ -17,15 +17,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTranslation } from "react-i18next";
+import { SubscriptionChartData } from "@/api/finance.api";
 
-const chartData = [
-  { month: "Janvier", subscription: 186 },
-  { month: "Février", subscription: 305 },
-  { month: "Mars", subscription: 237 },
-  { month: "Avril", subscription: 273 },
-  { month: "Mai", subscription: 209 },
-  { month: "Juin", subscription: 214 },
-];
 
 const chartConfig = {
   subscription: {
@@ -34,7 +27,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function SubscriptionChart() {
+interface SubscriptionChartProps {
+  data: SubscriptionChartData[];
+}
+
+export default function SubscriptionChart({ data }: SubscriptionChartProps) {
   const { t } = useTranslation();
 
   return (
@@ -50,7 +47,7 @@ export default function SubscriptionChart() {
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
         >
-          <RadarChart data={chartData}>
+          <RadarChart data={data}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="month" />
             <PolarGrid />

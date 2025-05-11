@@ -17,13 +17,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTranslation } from "react-i18next";
-
-const colisData = [
-  { taille: "Petit colis (S)", nombre: 120 },
-  { taille: "Moyen colis (M)", nombre: 200 },
-  { taille: "Grand colis (L)", nombre: 150 },
-  { taille: "Très grand colis (XL)", nombre: 80 },
-];
+import { ParcelsChartData } from "@/api/finance.api";
 
 const chartConfig = {
   colis: {
@@ -35,7 +29,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ParcelsChart() {
+interface ParcelsChartProps {
+  data: ParcelsChartData[];
+}
+
+export function ParcelsChart({ data }: ParcelsChartProps) {
   const { t } = useTranslation();
 
   return (
@@ -48,7 +46,7 @@ export function ParcelsChart() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={colisData}
+            data={data}
             layout="vertical"
             margin={{
               right: 16,

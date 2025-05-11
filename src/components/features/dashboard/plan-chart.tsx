@@ -17,12 +17,7 @@ import {
 } from "@/components/ui/chart";
 import { TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-const chartData = [
-  { plan: "free", number: 275, fill: "var(--color-free)" },
-  { plan: "starter", number: 200, fill: "var(--color-starter)" },
-  { plan: "premium", number: 187, fill: "var(--color-premium)" },
-];
+import { PlanChartData } from "@/api/finance.api";
 
 const chartConfig = {
   number: {
@@ -42,7 +37,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function PlanChart() {
+interface PlanChartProps {
+  data: PlanChartData[];
+}
+
+export default function PlanChart({ data }: PlanChartProps) {
   const { t } = useTranslation();
 
   return (
@@ -52,7 +51,7 @@ export default function PlanChart() {
         <CardDescription>{t("pages.dashboard.planChart.description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
+      <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
         >
@@ -60,14 +59,14 @@ export default function PlanChart() {
             <ChartTooltip
               content={<ChartTooltipContent nameKey="number" hideLabel />}
             />
-            <Pie data={chartData} dataKey="number" label>
+            <Pie data={data} dataKey="number">
               <LabelList
                 dataKey="plan"
                 className="fill-background"
                 stroke="none"
                 fontSize={12}
-                formatter={(value: string | number) =>
-                  chartConfig[value as keyof typeof chartConfig]?.label || value
+                formatter={(value: keyof typeof chartConfig) =>
+                  chartConfig[value]?.label
                 }
               />
             </Pie>
