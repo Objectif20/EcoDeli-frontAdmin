@@ -49,6 +49,7 @@ export default function ReportPage() {
 
   return (
     <>
+      <h1 className="text-2xl font-semibold">{t("pages.report.reportPage.title")}</h1>
       <DataTable key={`${pageIndex}-${pageSize}`} data={reports} />
       <PaginationControls
         pageIndex={pageIndex}

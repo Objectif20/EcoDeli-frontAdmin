@@ -56,8 +56,8 @@ import { ReportApi } from "@/api/report.api";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTranslation } from "react-i18next";
+import { MinimalTiptapEditorReadOnly } from "@/components/minimal-tiptap";
 
-// Schéma de validation
 export const schema = z.object({
   report_id: z.string(),
   status: z.string(),
@@ -86,10 +86,36 @@ const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[
   {
     accessorKey: "report_message",
     header: "Message",
-    cell: ({ row }) => {
-      const message = row.original.report_message;
-      return message.length > 50 ? message.substring(0, 50) + "..." : message;
-    },
+    cell: ({ row }) => (
+      <Dialog>
+      <DialogTrigger>
+        <Button className="w-fit px-0 text-left text-foreground">
+          {t("pages.report.table.dialog.buttons.viewMessage")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("pages.report.table.dialog.buttons.content")}</DialogTitle>
+          <DialogDescription>
+            {t("pages.report.table.dialog.description.contentDescription")}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <Label htmlFor="message">{t("pages.report.table.dialog.labels.message")}</Label>
+          <MinimalTiptapEditorReadOnly
+            value={row.original.report_message}
+            className="w-full"
+            editorContentClassName="p-5"
+            output="html"
+            placeholder="Contenu du signalement"
+            autofocus
+            editable={false}
+            editorClassName="focus:outline-none"
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+    )
   },
   {
     id: "user_email",
