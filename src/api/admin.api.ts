@@ -9,6 +9,7 @@ interface AdminData {
   email: string;
   photo: string | "";
   active: boolean;
+  roles: string[];
 }
 
 interface createAdminData {
@@ -106,3 +107,16 @@ export const createAdmin = (data : createAdminData) => async () => {
     }
 
 }
+
+export const updateAdminRoles = async (admin_id: string, roles: string[]) => {
+  console.log(admin_id, roles);
+
+  const rolesUpperCase = roles.map(role => role.toUpperCase());
+
+  try {
+    await axiosInstance.patch(`/admin/profile/${admin_id}/role`, { roles: rolesUpperCase });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour des rôles de l'admin:", error);
+  }
+};
+ 

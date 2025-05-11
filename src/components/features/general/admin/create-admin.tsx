@@ -68,6 +68,7 @@ export default function CreateAdmin({ onAdminCreated }: CreateAdminProps) {
     { label: t("pages.admin.create.roles_options.merchant"), value: "MERCHANT" },
     { label: t("pages.admin.create.roles_options.ticket"), value: "TICKET" },
     { label: t("pages.admin.create.roles_options.mail"), value: "MAIL" },
+    { label : t("pages.admin.create.roles_options.language"), value: "LANGUAGE" },
   ];
 
   return (

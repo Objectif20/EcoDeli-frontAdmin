@@ -573,7 +573,8 @@
           "provider": "Prestataire",
           "merchant": "Commerçant",
           "delivery": "Livreur",
-          "finance": "Finance"
+          "finance": "Finance",
+          "language": "Langue"
         }
       }
     },

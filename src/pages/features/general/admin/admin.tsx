@@ -16,7 +16,6 @@ export const adminSchema = z.object({
   roles: z.array(z.string()),
   photo_url: z.string(),
 });
-
 export default function AdminPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -46,7 +45,7 @@ export default function AdminPage() {
         id: admin.admin_id,
         name: `${admin.first_name} ${admin.last_name}`,
         email: admin.email,
-        roles: admin.active ? ["TICKET"] : [],
+        roles: admin.roles ?? [],
         photo_url: admin.photo || "https://example.com/default-photo.jpg",
       }));
 
@@ -70,7 +69,12 @@ export default function AdminPage() {
       <div className="w-full">
         <h1 className="text-2xl font-semibold mb-4">{t("pages.admin.list.title")}</h1>
         <CreateAdmin onAdminCreated={fetchAdminData} />
-        <AdminDataTable key={`${pageIndex}-${pageSize}`} data={paginatedData} isSuperAdmin={isSuperAdmin} />
+        <AdminDataTable
+          key={`${pageIndex}-${pageSize}`}
+          data={paginatedData}
+          isSuperAdmin={isSuperAdmin}
+          onRolesUpdated={fetchAdminData}
+        />
         <PaginationControls
           pageIndex={pageIndex}
           pageSize={pageSize}
@@ -85,3 +89,4 @@ export default function AdminPage() {
     </>
   );
 }
+

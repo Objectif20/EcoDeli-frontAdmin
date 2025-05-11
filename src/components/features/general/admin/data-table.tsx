@@ -46,6 +46,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multiselect";
 import { useTranslation } from "react-i18next";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { updateAdminRoles } from "@/api/admin.api";
 
 export const adminSchema = z.object({
   id: z.string(),
@@ -69,13 +71,14 @@ const rolesMapping = {
   "MERCHANT": "pages.admin.create.roles_options.merchant",
   "DELIVERY": "pages.admin.create.roles_options.delivery",
   "FINANCE": "pages.admin.create.roles_options.finance",
+  "LANGUAGE" : "pages.admin.create.roles_options.language",
 };
 
 const getRoleLabel = (roleValue: keyof typeof rolesMapping, t: any) => {
   return t(rolesMapping[roleValue]) || roleValue;
 };
 
-const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof adminSchema>>[] => {
+const adminColumns = (isSuperAdmin: boolean, t: any, onRolesUpdated: () => void): ColumnDef<z.infer<typeof adminSchema>>[] => {
   const rolesOptions = [
     { value: "ticket", label: t("pages.admin.create.roles_options.ticket") },
     { value: "mail", label: t("pages.admin.create.roles_options.mail") },
@@ -83,6 +86,7 @@ const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof a
     { value: "merchant", label: t("pages.admin.create.roles_options.merchant") },
     { value: "delivery", label: t("pages.admin.create.roles_options.delivery") },
     { value: "finance", label: t("pages.admin.create.roles_options.finance") },
+    { value: "language", label: t("pages.admin.create.roles_options.language") },
   ];
 
   return [
@@ -92,27 +96,26 @@ const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof a
       header: t("pages.admin.list.columns.admin"),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          {row.original.photo_url ? (
-            <img
-              src={row.original.photo_url}
-              alt={row.original.name}
-              className="w-10 h-10 rounded-full"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-          )}
+          <Avatar>
+            <AvatarImage src={row.original.photo_url} alt="Admin Photo" />
+            <AvatarFallback>{row.original.name.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
           <span>{row.original.name}</span>
         </div>
       ),
       enableHiding: false,
     },
-    { accessorKey: "email", header: t("pages.admin.list.columns.email"), cell: ({ row }) => row.original.email },
+    {
+      accessorKey: "email",
+      header: t("pages.admin.list.columns.email"),
+      cell: ({ row }) => row.original.email,
+    },
     {
       accessorKey: "roles",
       header: t("pages.admin.list.columns.roles"),
       cell: ({ row }) => (
         <div className="flex flex-wrap gap-2">
-          {row.original.roles.map((role, index) => (
+          {row.original.roles.map((role: string, index: number) => (
             <Badge key={index} variant="outline">
               {getRoleLabel(role as keyof typeof rolesMapping, t)}
             </Badge>
@@ -126,16 +129,20 @@ const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof a
             id: "actions",
             cell: ({ row }: { row: any }) => {
               const [open, setOpen] = React.useState(false);
-              const [selectedRoles, setSelectedRoles] = React.useState(
-                row.original.roles.map((role: any) => ({
-                  value: role,
-                  label: getRoleLabel(role as keyof typeof rolesMapping, t),
-                }))
-              );
 
-              const updateRoles = () => {
-                setOpen(false);
-              };
+              const normalizedRoles = row.original.roles.map((role: string) => role.toLowerCase());
+
+              const [selectedRoles, setSelectedRoles] = React.useState<string[]>(normalizedRoles);
+
+                const updateRoles = async () => {
+                  try {
+                    await updateAdminRoles(row.original.id, selectedRoles);
+                    setOpen(false);
+                    onRolesUpdated();
+                  } catch (error) {
+                    console.error("Failed to update roles:", error);
+                  }
+                };
 
               return (
                 <Dialog open={open} onOpenChange={setOpen}>
@@ -148,7 +155,9 @@ const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof a
                     <DialogHeader>
                       <DialogTitle>{t("pages.admin.list.actions.modify_roles_title")}</DialogTitle>
                       <DialogDescription>
-                        {t("pages.admin.list.actions.modify_roles_description", { name: row.original.name })}
+                        {t("pages.admin.list.actions.modify_roles_description", {
+                          name: row.original.name,
+                        })}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
@@ -158,13 +167,10 @@ const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof a
                         </Label>
                         <MultiSelect
                           options={rolesOptions}
-                          onValueChange={(newRoles) =>
-                            setSelectedRoles(newRoles.map((role) => ({
-                              value: role,
-                              label: getRoleLabel(role as keyof typeof rolesMapping, t),
-                            })))
-                          }
-                          defaultValue={selectedRoles}
+                          onValueChange={(newValues) => {
+                            setSelectedRoles(newValues);
+                          }}
+                          defaultValue={normalizedRoles}
                           placeholder={t("pages.admin.list.actions.select_roles")}
                           variant="inverted"
                           animation={2}
@@ -189,9 +195,11 @@ const adminColumns = (isSuperAdmin: boolean, t: any): ColumnDef<z.infer<typeof a
 export function AdminDataTable({
   data: initialData,
   isSuperAdmin,
+  onRolesUpdated,
 }: {
   data: z.infer<typeof adminSchema>[];
   isSuperAdmin: boolean;
+  onRolesUpdated: () => void;
 }) {
   const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
@@ -209,7 +217,7 @@ export function AdminDataTable({
 
   const table = useReactTable({
     data,
-    columns: adminColumns(isSuperAdmin, t),
+    columns: adminColumns(isSuperAdmin, t, onRolesUpdated),
     state: {
       sorting,
       columnVisibility,
@@ -319,7 +327,7 @@ export function AdminDataTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={adminColumns(isSuperAdmin, t).length}
+                  colSpan={adminColumns(isSuperAdmin, t, onRolesUpdated).length}
                   className="h-24 text-center"
                 >
                   {t("pages.admin.list.no_results")}

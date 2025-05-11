@@ -32,7 +32,7 @@ export default function DeliverymanProfilePage() {
   const navigate = useNavigate();
 
   const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
-  const isDeliverymanManager = admin?.roles.includes("DELIVERYMAN");
+  const isDeliverymanManager = admin?.roles.includes("DELIVERY");
 
   const dispatch = useDispatch()
 
