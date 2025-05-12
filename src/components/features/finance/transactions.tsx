@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { DataTable } from "./data-table";
 import { ExportCSVDialog } from "./csv-dialog";
+import { useTranslation } from "react-i18next";
 
 interface TransactionsProps {
   transactions: Transaction[];
@@ -31,6 +32,7 @@ export function Transactions({
   onPageSizeChange,
 }: TransactionsProps) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleNameFilter = (value: string) => {
     onFilterChange({ ...filters, name: value });
@@ -53,7 +55,7 @@ export function Transactions({
       <div className="flex justify-end">
         <Button onClick={() => setOpen(true)}>
           <Download className="mr-2 h-4 w-4" />
-          Exporter CSV
+          {t("pages.transactions.exportButton")}
         </Button>
       </div>
       <DataTable

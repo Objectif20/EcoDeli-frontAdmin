@@ -15,7 +15,6 @@ import {
 import {
   ColumnsIcon,
   ChevronDownIcon,
-
 } from "lucide-react";
 import { z } from "zod";
 
@@ -49,20 +48,20 @@ export const schema = z.object({
   lastName: z.string(),
 });
 
-export const columnLink = [
-  { column_id: "companyName", text: "Entreprise" },
-  { column_id: "siret", text: "SIRET" },
-  { column_id: "country", text: "Pays" },
-  { column_id: "phone", text: "Téléphone" },
-  { column_id: "description", text: "Description" },
-  { column_id: "profilePicture", text: "Commerçant" },
+export const columnLink = (t: any) => [
+  { column_id: "companyName", text: t("pages.merchant.columns.company") },
+  { column_id: "siret", text: t("pages.merchant.columns.siret") },
+  { column_id: "country", text: t("pages.merchant.columns.country") },
+  { column_id: "phone", text: t("pages.merchant.columns.phone") },
+  { column_id: "description", text: t("pages.merchant.columns.description") },
+  { column_id: "profilePicture", text: t("pages.merchant.columns.merchant") },
 ];
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+const columns = (t: any): ColumnDef<z.infer<typeof schema>>[] => [
   {
     id: "profile",
     accessorKey: "profilePicture",
-    header: "Commerçant",
+    header: t("pages.merchant.columns.merchant"),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
           <Avatar>
@@ -82,7 +81,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "id",
     accessorKey: "companyName",
-    header: "Entreprise",
+    header: t("pages.merchant.columns.company"),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <span>{row.original.companyName}</span>
@@ -90,10 +89,10 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
     enableHiding: false,
   },
-  { accessorKey: "siret", header: "SIRET", cell: ({ row }) => row.original.siret },
-  { accessorKey: "country", header: "Pays", cell: ({ row }) => row.original.country },
-  { accessorKey: "phone", header: "Téléphone", cell: ({ row }) => row.original.phone },
-  { accessorKey: "description", header: "Description", cell: ({ row }) => row.original.description },
+  { accessorKey: "siret", header: t("pages.merchant.columns.siret"), cell: ({ row }) => row.original.siret },
+  { accessorKey: "country", header: t("pages.merchant.columns.country"), cell: ({ row }) => row.original.country },
+  { accessorKey: "phone", header: t("pages.merchant.columns.phone"), cell: ({ row }) => row.original.phone },
+  { accessorKey: "description", header: t("pages.merchant.columns.description"), cell: ({ row }) => row.original.description },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -104,14 +103,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           className="w-fit px-0 text-left text-foreground"
           onClick={() => navigate(`/office/profile/merchants/${row.original.id}`)}
         >
-          Accéder au profil
+          {t("pages.merchant.columns.actions")}
         </Button>
       );
     },
   },
 ];
 
-export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
+export function DataTable({ data: initialData, t }: { data: z.infer<typeof schema>[], t: any }) {
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
@@ -127,7 +126,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
 
   const table = useReactTable({
     data,
-    columns,
+    columns: columns(t),
     state: {
       sorting,
       columnVisibility,
@@ -153,8 +152,8 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">Colonnes</span>
-                <span className="lg:hidden">Colonnes</span>
+                <span className="hidden lg:inline">{t("pages.merchant.colonnes")}</span>
+                <span className="lg:hidden">{t("pages.merchant.colonnes")}</span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -167,7 +166,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
                     column.getCanHide()
                 )
                 .map((column) => {
-                  const columnLinkItem = columnLink.find(
+                  const columnLinkItem = columnLink(t).find(
                     (link) => link.column_id === column.id
                   );
                   const displayText = columnLinkItem
@@ -231,10 +230,10 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns(t).length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("pages.merchant.no-results")}
                 </TableCell>
               </TableRow>
             )}

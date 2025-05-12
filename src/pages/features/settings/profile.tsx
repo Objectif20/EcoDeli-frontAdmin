@@ -132,12 +132,12 @@ const AdminSettings: React.FC = () => {
   return (
     <div className="flex flex-col gap-8">
       <div className="mx-auto grid w-full max-w-6xl gap-2">
-        <h1 className="text-3xl font-semibold">Paramètres</h1>
+        <h1 className="text-3xl font-semibold">{t('pages.parametres.titre')}</h1>
       </div>
       <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
         <nav className="grid gap-4 text-sm text-muted-foreground">
-          <Link to="/office/settings" className="font-semibold text-primary">Général</Link>
-          <Link to="/office/settings/a2f">Double authentification</Link>
+          <Link to="/office/settings" className="font-semibold text-primary">{t('pages.parametres.general')}</Link>
+          <Link to="/office/settings/a2f">{t('pages.parametres.doubleAuth')}</Link>
         </nav>
         <div className="grid gap-6">
         <Card>

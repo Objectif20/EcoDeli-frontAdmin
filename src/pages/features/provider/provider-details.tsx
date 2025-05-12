@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "@/redux/store"
 import { Provider, type ProviderDetails } from "@/api/provider.api"
+import { useTranslation } from "react-i18next"
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -41,6 +42,7 @@ import { ServiceValidationDialog } from "@/components/features/provider/service-
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
 
 export default function ProviderProfilePage() {
+  const { t } = useTranslation()
   const [providerDetails, setProviderDetails] = useState<ProviderDetails | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -52,14 +54,14 @@ export default function ProviderProfilePage() {
 
   const dispatch = useDispatch()
 
-    useEffect(() => {
-      dispatch(
-        setBreadcrumb({
-          segments: ["Accueil", "Prestataires", "Détails du prestataire"],
-          links: ["/office/dashboard" , "/office/profile/providers"],
-        })
-      );
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(
+      setBreadcrumb({
+        segments: [t("pages.provider-details.breadcrumb.home"), t("pages.provider-details.breadcrumb.providers"), t("pages.provider-details.breadcrumb.provider-details")],
+        links: ["/office/dashboard" , "/office/profile/providers"],
+      })
+    );
+  }, [dispatch, t]);
 
   useEffect(() => {
     if (!id) {
@@ -124,11 +126,11 @@ export default function ProviderProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh]">
         <AlertCircle className="h-16 w-16 text-destructive mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Prestataire non trouvé</h2>
-        <p className="text-muted-foreground mb-6">Les détails du prestataire n'ont pas pu être chargés.</p>
+        <h2 className="text-2xl font-bold mb-2">{t("pages.provider-details.provider-not-found")}</h2>
+        <p className="text-muted-foreground mb-6">{t("pages.provider-details.provider-details-not-loaded")}</p>
         <Button onClick={() => navigate("/office/profile/providers")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
+          {t("pages.provider-details.back-to-list")}
         </Button>
       </div>
     )
@@ -139,7 +141,7 @@ export default function ProviderProfilePage() {
       <div className="mb-6">
         <Button variant="ghost" onClick={() => navigate("/office/profile/providers")} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
+          {t("pages.provider-details.back-to-list")}
         </Button>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -154,7 +156,7 @@ export default function ProviderProfilePage() {
                 {providerDetails.info.validated === true && (
                   <Badge variant="success" className="bg-green-100 text-green-800 hover:bg-green-200">
                     <CheckCircle2 className="mr-1 h-3 w-3" />
-                    Validé
+                    {t("pages.provider-details.validated")}
                   </Badge>
                 )}
                 {providerDetails.info.validated === false && (
@@ -181,20 +183,20 @@ export default function ProviderProfilePage() {
             isProviderManager && (
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>Valider le profil</Button>
+                  <Button>{t("pages.provider-details.validate-profile")}</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Validation du profil</DialogTitle>
-                    <DialogDescription>Voulez-vous accepter ce prestataire ?</DialogDescription>
+                    <DialogTitle>{t("pages.provider-details.profile-validation")}</DialogTitle>
+                    <DialogDescription>{t("pages.provider-details.accept-provider")}</DialogDescription>
                   </DialogHeader>
                   <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
                     <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                      Annuler
+                      {t("pages.provider-details.cancel")}
                     </Button>
                     <Button variant="default" onClick={handleAccept}>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Accepter
+                      {t("pages.provider-details.accept")}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -205,8 +207,8 @@ export default function ProviderProfilePage() {
 
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="profile">Profil</TabsTrigger>
-          <TabsTrigger value="services">Services</TabsTrigger>
+          <TabsTrigger value="profile">{t("pages.provider-details.profile")}</TabsTrigger>
+          <TabsTrigger value="services">{t("pages.provider-details.services")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
@@ -214,18 +216,18 @@ export default function ProviderProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-primary" />
-                Informations générales
+                {t("pages.provider-details.general-information")}
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">Description</h3>
+                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.provider-details.description")}</h3>
                   <p>{providerDetails.info.description}</p>
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">Adresse</h3>
+                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.provider-details.address")}</h3>
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                     <p>
@@ -238,7 +240,7 @@ export default function ProviderProfilePage() {
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">Contact</h3>
+                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.provider-details.contact")}</h3>
                   <div className="flex items-center gap-2 mb-2">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <p>{providerDetails.info.email}</p>
@@ -250,7 +252,7 @@ export default function ProviderProfilePage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">SIRET</h3>
+                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.provider-details.siret")}</h3>
                   <p>{providerDetails.info.siret}</p>
                 </div>
               </div>
@@ -261,9 +263,9 @@ export default function ProviderProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
-                Documents
+                {t("pages.provider-details.documents")}
               </CardTitle>
-              <CardDescription>Documents fournis par le prestataire</CardDescription>
+              <CardDescription>{t("pages.provider-details.documents-provided")}</CardDescription>
             </CardHeader>
             <CardContent>
               {providerDetails.documents && providerDetails.documents.length > 0 ? (
@@ -279,7 +281,7 @@ export default function ProviderProfilePage() {
                         <div>
                           <p className="font-medium">{doc.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            Soumis le {new Date(doc.submission_date).toLocaleDateString()}
+                            {t("pages.provider-details.submitted-on")} {new Date(doc.submission_date).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
@@ -294,7 +296,7 @@ export default function ProviderProfilePage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-muted-foreground">Aucun document disponible</div>
+                <div className="text-center py-6 text-muted-foreground">{t("pages.provider-details.no-documents-available")}</div>
               )}
             </CardContent>
           </Card>
@@ -303,9 +305,9 @@ export default function ProviderProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-primary" />
-                Contrats
+                {t("pages.provider-details.contracts")}
               </CardTitle>
-              <CardDescription>Contrats associés au prestataire</CardDescription>
+              <CardDescription>{t("pages.provider-details.associated-contracts")}</CardDescription>
             </CardHeader>
             <CardContent>
               {providerDetails.contracts && providerDetails.contracts.length > 0 ? (
@@ -331,7 +333,7 @@ export default function ProviderProfilePage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-muted-foreground">Aucun contrat disponible</div>
+                <div className="text-center py-6 text-muted-foreground">{t("pages.provider-details.no-contracts-available")}</div>
               )}
             </CardContent>
           </Card>
@@ -352,7 +354,7 @@ export default function ProviderProfilePage() {
                     </div>
                   ) : (
                     <div className="h-48 w-full bg-muted flex items-center justify-center">
-                      <p className="text-muted-foreground">Aucune image</p>
+                      <p className="text-muted-foreground">{t("pages.provider-details.no-service-image")}</p>
                     </div>
                   )}
                   <CardHeader className="pb-2">
@@ -371,14 +373,14 @@ export default function ProviderProfilePage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">{service.duration_minute} min</span>
+                        <span className="text-sm text-muted-foreground">{service.duration_minute} {t("pages.provider-details.duration")}</span>
                       </div>
                     </div>
 
                     {service.validated ? (
                       <div className="flex items-center gap-2 text-green-600 w-full">
                         <CheckCircle2 className="h-5 w-5" />
-                        <span>Validé</span>
+                        <span>{t("pages.provider-details.validated")}</span>
                       </div>
                     ) : (
                       isProviderManager && (
@@ -407,7 +409,7 @@ export default function ProviderProfilePage() {
           ) : (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <p className="text-muted-foreground mb-2">Aucun service disponible</p>
+                <p className="text-muted-foreground mb-2">{t("pages.provider-details.no-services-available")}</p>
                 <p className="text-sm text-muted-foreground">Ce prestataire n'a pas encore ajouté de services.</p>
               </CardContent>
             </Card>

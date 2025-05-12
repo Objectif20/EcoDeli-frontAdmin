@@ -45,60 +45,6 @@ export const languageSchema = z.object({
   available: z.boolean(),
 });
 
-export const languageColumnLink = [
-  { column_id: "name", text: "Nom" },
-  { column_id: "iso_code", text: "Code ISO" },
-  { column_id: "available", text: "Disponible" },
-];
-
-const languageColumns: ColumnDef<z.infer<typeof languageSchema>>[] = [
-  {
-    id: "flag",
-    accessorKey: "iso_code",
-    header: "Drapeau",
-    cell: ({ row }) => (
-      <ReactCountryFlag
-        countryCode={row.original.iso_code}
-        svg
-        style={{
-          width: '2em',
-          height: '2em',
-        }}
-        title={row.original.name}
-      />
-    ),
-    enableHiding: false,
-  },
-  { accessorKey: "name", header: "Nom", cell: ({ row }) => row.original.name },
-  { accessorKey: "iso_code", header: "Code ISO", cell: ({ row }) => row.original.iso_code },
-  {
-    accessorKey: "available",
-    header: "Disponible",
-    cell: ({ row }) => (
-      <Badge variant={row.original.available ? "success" : "destructive"}>
-        {row.original.available ? "Oui" : "Non"}
-      </Badge>
-    ),
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const { t } = useTranslation();
-      const navigate = useNavigate();
-
-      const handleUpdateClick = () => {
-        navigate(`/office/general/languages/${row.original.id}`);
-      };
-
-      return (
-        <Button variant="link" onClick={handleUpdateClick} className="w-fit px-0 text-left text-foreground">
-          {t("pages.languages.languagePage.table.update")}
-        </Button>
-      );
-    },
-  },
-];
-
 export function LanguageDataTable({ data: initialData }: { data: z.infer<typeof languageSchema>[] }) {
   const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
@@ -113,6 +59,62 @@ export function LanguageDataTable({ data: initialData }: { data: z.infer<typeof 
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const languageColumns: ColumnDef<z.infer<typeof languageSchema>>[] = [
+    {
+      id: "flag",
+      accessorKey: "iso_code",
+      header: t("pages.languages.languagePage.table.flag"),
+      cell: ({ row }) => (
+        <ReactCountryFlag
+          countryCode={row.original.iso_code}
+          svg
+          style={{
+            width: '2em',
+            height: '2em',
+          }}
+          title={row.original.name}
+        />
+      ),
+      enableHiding: false,
+    },
+    {
+      accessorKey: "name",
+      header: t("pages.languages.languagePage.table.name"),
+      cell: ({ row }) => row.original.name
+    },
+    {
+      accessorKey: "iso_code",
+      header: t("pages.languages.languagePage.table.isoCode"),
+      cell: ({ row }) => row.original.iso_code
+    },
+    {
+      accessorKey: "available",
+      header: t("pages.languages.languagePage.table.available"),
+      cell: ({ row }) => (
+        <Badge variant={row.original.available ? "success" : "destructive"}>
+          {row.original.available ? t("pages.languages.languagePage.table.yes") : t("pages.languages.languagePage.table.no")}
+        </Badge>
+      ),
+    },
+    {
+      id: "actions",
+      header: t("pages.languages.languagePage.table.actions"),
+      cell: ({ row }) => {
+        const navigate = useNavigate();
+
+        const handleUpdateClick = () => {
+          navigate(`/office/general/languages/${row.original.id}`);
+        };
+
+        return (
+          <Button variant="link" onClick={handleUpdateClick} className="w-fit px-0 text-left text-foreground">
+            {t("pages.languages.languagePage.table.update")}
+          </Button>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -133,6 +135,12 @@ export function LanguageDataTable({ data: initialData }: { data: z.infer<typeof 
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  const languageColumnLink = [
+    { column_id: "name", text: t("pages.languages.languagePage.table.name") },
+    { column_id: "iso_code", text: t("pages.languages.languagePage.table.isoCode") },
+    { column_id: "available", text: t("pages.languages.languagePage.table.available") },
+  ];
 
   return (
     <>

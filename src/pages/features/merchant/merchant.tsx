@@ -4,8 +4,10 @@ import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { AllMerchant, MerchantAPI } from "@/api/merchant.api";
+import { useTranslation } from "react-i18next";
 
 export default function MerchantPage() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [merchants, setMerchants] = useState<AllMerchant[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
@@ -15,11 +17,11 @@ export default function MerchantPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Commerçants"],
+        segments: [t("pages.merchant.breadcrumb.home"), t("pages.merchant.breadcrumb.merchants")],
         links: ["/office/dashboard"],
       })
     );
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   useEffect(() => {
     const fetchMerchants = async () => {
@@ -41,8 +43,8 @@ export default function MerchantPage() {
   return (
     <>
       <div className="w-full">
-        <h1 className="text-2xl font-semibold mb-4">Les commerçants sur EcoDeli</h1>
-        <DataTable key={`${pageIndex}-${pageSize}`} data={merchants} />
+        <h1 className="text-2xl font-semibold mb-4">{t("pages.merchant.title")}</h1>
+        <DataTable key={`${pageIndex}-${pageSize}`} data={merchants} t={t} />
         <PaginationControls
           pageIndex={pageIndex}
           pageSize={pageSize}

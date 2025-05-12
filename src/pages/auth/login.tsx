@@ -119,7 +119,7 @@ export default function LoginPage() {
                           to="/auth/forgot-password"
                           className="ml-auto text-sm underline-offset-4 hover:underline"
                         >
-                          Mot de passe oublié ?
+                          {t("pages.connexion.forgotPassword")}
                         </Link>
                     </div>
                     <Input

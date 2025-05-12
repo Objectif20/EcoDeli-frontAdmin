@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import type { RootState } from "@/redux/store";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,20 +31,21 @@ export default function DeliverymanProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
   const isDeliverymanManager = admin?.roles.includes("DELIVERY");
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Transporteurs", "Détails du transporteur"],
-        links: ["/office/dashboard" , "/office/profile/deliverymen"],
+        segments: [t("pages.deliveryman-details.breadcrumb.home"), t("pages.deliveryman-details.breadcrumb.deliverymen"), t("pages.deliveryman-details.breadcrumb.deliveryman-details")],
+        links: ["/office/dashboard", "/office/profile/deliverymen"],
       })
     );
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,7 +82,7 @@ export default function DeliverymanProfilePage() {
     }
   };
 
-  const handleValidateVehicle = async (vehicleId : string) => {
+  const handleValidateVehicle = async (vehicleId: string) => {
     console.log(`Véhicule avec l'ID ${vehicleId} a été validé.`);
     if (id) {
       await DeliverymanApi.validateVehicle(vehicleId, id);
@@ -109,11 +111,11 @@ export default function DeliverymanProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh]">
         <AlertCircle className="h-16 w-16 text-destructive mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Livreur non trouvé</h2>
-        <p className="text-muted-foreground mb-6">Les détails du livreur n'ont pas pu être chargés.</p>
+        <h2 className="text-2xl font-bold mb-2">{t("pages.deliveryman-details.not-found.title")}</h2>
+        <p className="text-muted-foreground mb-6">{t("pages.deliveryman-details.not-found.description")}</p>
         <Button onClick={() => navigate("/office/profile/deliverymen")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
+          {t("pages.deliveryman-details.back-to-list")}
         </Button>
       </div>
     );
@@ -124,7 +126,7 @@ export default function DeliverymanProfilePage() {
       <div className="mb-6">
         <Button variant="ghost" onClick={() => navigate("/office/profile/deliverymen")} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
+          {t("pages.deliveryman-details.back-to-list")}
         </Button>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -144,19 +146,19 @@ export default function DeliverymanProfilePage() {
                 {deliverymanDetails.info.validated === true && (
                   <Badge variant="success" className="bg-green-100 text-green-800 hover:bg-green-200">
                     <CheckCircle2 className="mr-1 h-3 w-3" />
-                    Validé
+                    {t("pages.deliveryman-details.status.validated")}
                   </Badge>
                 )}
                 {deliverymanDetails.info.validated === false && (
                   <Badge variant="destructive" className="bg-red-100 text-red-800 hover:bg-red-200">
                     <XCircle className="mr-1 h-3 w-3" />
-                    Refusé
+                    {t("pages.deliveryman-details.status.refused")}
                   </Badge>
                 )}
                 {deliverymanDetails.info.validated === null && (
                   <Badge variant="outline" className="bg-amber-100 text-amber-800 hover:bg-amber-200">
                     <AlertCircle className="mr-1 h-3 w-3" />
-                    En attente
+                    {t("pages.deliveryman-details.status.pending")}
                   </Badge>
                 )}
               </div>
@@ -166,20 +168,20 @@ export default function DeliverymanProfilePage() {
           {(deliverymanDetails.info.validated === null || deliverymanDetails.info.validated === false) && isDeliverymanManager && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button>Valider le profil</Button>
+                <Button>{t("pages.deliveryman-details.validate-profile")}</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Validation du profil</DialogTitle>
-                  <DialogDescription>Voulez-vous accepter ce livreur ?</DialogDescription>
+                  <DialogTitle>{t("pages.deliveryman-details.validation.profile-validation")}</DialogTitle>
+                  <DialogDescription>{t("pages.deliveryman-details.validation.accept-deliveryman")}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0">
                   <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Annuler
+                    {t("pages.deliveryman-details.cancel")}
                   </Button>
                   <Button variant="default" onClick={handleAccept}>
                     <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Accepter
+                    {t("pages.deliveryman-details.accept")}
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -192,11 +194,11 @@ export default function DeliverymanProfilePage() {
         <TabsList className="grid grid-cols-2 mb-6">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            Profil
+            {t("pages.deliveryman-details.profile")}
           </TabsTrigger>
           <TabsTrigger value="vehicles" className="flex items-center gap-2">
             <Car className="h-4 w-4" />
-            Véhicules
+            {t("pages.deliveryman-details.vehicles")}
           </TabsTrigger>
         </TabsList>
 
@@ -205,19 +207,19 @@ export default function DeliverymanProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary" />
-                Informations générales
+                {t("pages.deliveryman-details.general-information")}
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-6 md:grid-cols-2">
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">Description</h3>
+                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.deliveryman-details.description")}</h3>
                   <p>{deliverymanDetails.info.description}</p>
                 </div>
 
                 {deliverymanDetails.info.document && (
                   <div>
-                    <h3 className="font-medium text-sm text-muted-foreground mb-1">Document</h3>
+                    <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.deliveryman-details.document")}</h3>
                     <Button
                       variant="outline"
                       size="sm"
@@ -225,7 +227,7 @@ export default function DeliverymanProfilePage() {
                       onClick={() => window.open(deliverymanDetails.info.document, "_blank")}
                     >
                       <FileText className="h-4 w-4 mr-2" />
-                      Voir le document
+                      {t("pages.deliveryman-details.view-document")}
                     </Button>
                   </div>
                 )}
@@ -233,7 +235,7 @@ export default function DeliverymanProfilePage() {
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">Contact</h3>
+                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.deliveryman-details.contact")}</h3>
                   <div className="flex items-center gap-2 mb-2">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <p>{deliverymanDetails.info.email}</p>
@@ -253,12 +255,12 @@ export default function DeliverymanProfilePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Car className="h-5 w-5 text-primary" />
-                Véhicules du livreur
+                {t("pages.deliveryman-details.deliveryman-vehicles")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {vehicles.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">Aucun véhicule enregistré</div>
+                <div className="text-center py-8 text-muted-foreground">{t("pages.deliveryman-details.no-vehicles")}</div>
               ) : (
                 <div className="grid gap-6 md:grid-cols-2">
                   {vehicles.map((vehicle) => (
@@ -305,6 +307,7 @@ interface VehicleCardProps {
 
 function VehicleCard({ vehicle, onValidate }: VehicleCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <Card className="overflow-hidden">
@@ -318,18 +321,18 @@ function VehicleCard({ vehicle, onValidate }: VehicleCardProps) {
           }`}
         >
           {vehicle.allow ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <XCircle className="mr-1 h-3 w-3" />}
-          {vehicle.allow ? "Autorisé" : "Non autorisé"}
+          {vehicle.allow ? t("pages.deliveryman-details.status.validated") : t("pages.deliveryman-details.status.refused")}
         </Badge>
       </div>
       <CardContent className="p-4">
         <h3 className="font-semibold text-lg mb-2">{vehicle.name}</h3>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Immatriculation:</span>
+            <span className="text-muted-foreground">{t("pages.deliveryman-details.registration")}:</span>
             <span className="font-medium">{vehicle.matricule}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Émission CO2:</span>
+            <span className="text-muted-foreground">{t("pages.deliveryman-details.co2-emission")}:</span>
             <span className="font-medium">{vehicle.co2} g/km</span>
           </div>
           <Button
@@ -339,30 +342,30 @@ function VehicleCard({ vehicle, onValidate }: VehicleCardProps) {
             onClick={() => window.open(vehicle.justification_file, "_blank")}
           >
             <FileText className="h-4 w-4 mr-2" />
-            Voir le justificatif
+            {t("pages.deliveryman-details.view-justification")}
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="w-full mt-2">
-                Valider le véhicule
+                {t("pages.deliveryman-details.validate-vehicle")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Valider le véhicule</DialogTitle>
+                <DialogTitle>{t("pages.deliveryman-details.validate-vehicle")}</DialogTitle>
                 <DialogDescription>
-                  Êtes-vous sûr de vouloir valider ce véhicule ?
+                  {t("pages.deliveryman-details.validation.validate-vehicle-confirmation")}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Annuler
+                  {t("pages.deliveryman-details.cancel")}
                 </Button>
                 <Button variant="default" onClick={() => {
                   onValidate(vehicle.id);
                   setIsDialogOpen(false);
                 }}>
-                  Oui
+                  {t("pages.deliveryman-details.yes")}
                 </Button>
               </DialogFooter>
             </DialogContent>

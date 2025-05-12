@@ -49,157 +49,38 @@ export const emailSchema = z.object({
   isNewsletter: z.boolean(),
 });
 
-export const columnLink = [
-  {
-    column_id: "subject",
-    text: "Objet",
-  },
-  {
-    column_id: "sentDate",
-    text: "Date d'envoi",
-  },
-  {
-    column_id: "isSent",
-    text: "Envoyé",
-  },
-  {
-    column_id: "author",
-    text: "Auteur",
-  },
-  {
-    column_id: "profiles",
-    text: "Profils concernés",
-  },
-  {
-    column_id: "isNewsletter",
-    text: "Newsletter",
-  },
-];
+export const ColumnLink = () => {
+  const { t } = useTranslation();
 
-const PROFILE_LABELS: Record<string, string> = {
-  all: "Tout le monde",
-  deliveryman: "Transporteur",
-  merchant: "Commerçant",
-  client: "Expéditeur",
-  provider : "Prestataire",
-};
-
-const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
-  {
-    accessorKey: "subject",
-    header: "Objet",
-    cell: ({ row }) => row.original.subject,
-  },
-  {
-    accessorKey: "sentDate",
-    header: "Date d'envoi",
-    cell: ({ row }) => {
-      const formattedDate = new Intl.DateTimeFormat("fr-FR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }).format(new Date(row.original.sentDate));
-
-      return formattedDate;
+  const columnLink = [
+    {
+      column_id: "subject",
+      text: t("pages.mail.table.columns.subject"),
     },
-  },
-  {
-    accessorKey: "isSent",
-    header: "Envoyé",
-    cell: ({ row }) => (
-      <Badge variant={row.original.isSent ? "success" : "outline"}>
-        {row.original.isSent ? "Envoyé" : "Non envoyé"}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "profiles",
-    header: "Profils",
-    cell: ({ row }) => (
-      <div className="flex flex-wrap gap-2">
-        {row.original.profiles.map((profile, index) => (
-          <Badge key={index} variant="outline">
-            {PROFILE_LABELS[profile] || profile}
-          </Badge>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "isNewsletter",
-    header: "Newsletter",
-    cell: ({ row }) => (
-      <div className="flex items-center">
-        {row.original.isNewsletter ? (
-          <CheckIcon className="text-green-500" />
-        ) : (
-          <XIcon className="text-red-500" />
-        )}
-      </div>
-    ),
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            variant="link"
-            className="w-fit px-0 text-left text-foreground"
-          >
-            Voir plus
-          </Button>
-        </SheetTrigger>
+    {
+      column_id: "sentDate",
+      text: t("pages.mail.table.columns.sentDate"),
+    },
+    {
+      column_id: "isSent",
+      text: t("pages.mail.table.columns.isSent"),
+    },
+    {
+      column_id: "author",
+      text: t("pages.mail.table.columns.author"),
+    },
+    {
+      column_id: "profiles",
+      text: t("pages.mail.table.columns.profiles"),
+    },
+    {
+      column_id: "isNewsletter",
+      text: t("pages.mail.table.columns.isNewsletter"),
+    },
+  ];
 
-        <SheetContent side="right" className="flex flex-col">
-          <SheetHeader className="gap-1">
-            <SheetTitle>{row.original.subject}</SheetTitle>
-            <SheetDescription>Détails de l'email</SheetDescription>
-          </SheetHeader>
-
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
-            <div className="flex flex-col gap-3">
-              <Label>Date d'envoi</Label>
-              <p>
-                {new Intl.DateTimeFormat("fr-FR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                }).format(new Date(row.original.sentDate))}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label>Contenu</Label>
-              <MinimalTiptapEditorReadOnly
-                value={row.original.content}
-                className="w-full"
-                editorContentClassName="p-5"
-                output="html"
-                placeholder="Contenu de l'email"
-                autofocus
-                editable={false}
-                editorClassName="focus:outline-none"
-              />
-            </div>
-          </div>
-          <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
-            <SheetClose asChild>
-              <Button variant="outline" className="w-full">
-                Fermer
-              </Button>
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    ),
-  },
-];
+  return columnLink;
+};
 
 export function EmailDataTable({
   data: initialData,
@@ -219,6 +100,120 @@ export function EmailDataTable({
   React.useEffect(() => {
     setData(initialData);
   }, [initialData]);
+
+  const emailColumns: ColumnDef<z.infer<typeof emailSchema>>[] = [
+    {
+      accessorKey: "subject",
+      header: t("pages.mail.table.columns.subject"),
+      cell: ({ row }) => row.original.subject,
+    },
+    {
+      accessorKey: "sentDate",
+      header: t("pages.mail.table.columns.sentDate"),
+      cell: ({ row }) => {
+        const formattedDate = new Intl.DateTimeFormat("fr-FR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }).format(new Date(row.original.sentDate));
+
+        return formattedDate;
+      },
+    },
+    {
+      accessorKey: "isSent",
+      header: t("pages.mail.table.columns.isSent"),
+      cell: ({ row }) => (
+        <Badge variant={row.original.isSent ? "success" : "outline"}>
+          {row.original.isSent ? t("pages.mail.table.status.sent") : t("pages.mail.table.status.notSent")}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "profiles",
+      header: t("pages.mail.table.columns.profiles"),
+      cell: ({ row }) => (
+        <div className="flex flex-wrap gap-2">
+          {row.original.profiles.map((profile, index) => (
+            <Badge key={index} variant="outline">
+              {t(`pages.mail.table.profileLabels.${profile}`) || profile}
+            </Badge>
+          ))}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "isNewsletter",
+      header: t("pages.mail.table.columns.isNewsletter"),
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          {row.original.isNewsletter ? (
+            <CheckIcon className="text-green-500" />
+          ) : (
+            <XIcon className="text-red-500" />
+          )}
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="link" className="w-fit px-0 text-left text-foreground">
+              {t("pages.mail.table.columns.actions")}
+            </Button>
+          </SheetTrigger>
+
+          <SheetContent side="right" className="flex flex-col">
+            <SheetHeader className="gap-1">
+              <SheetTitle>{row.original.subject}</SheetTitle>
+              <SheetDescription>{t("pages.mail.table.details.title")}</SheetDescription>
+            </SheetHeader>
+
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
+              <div className="flex flex-col gap-3">
+                <Label>{t("pages.mail.table.details.sentDate")}</Label>
+                <p>
+                  {new Intl.DateTimeFormat("fr-FR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  }).format(new Date(row.original.sentDate))}
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Label>{t("pages.mail.table.details.content")}</Label>
+                <MinimalTiptapEditorReadOnly
+                  value={row.original.content}
+                  className="w-full"
+                  editorContentClassName="p-5"
+                  output="html"
+                  placeholder={t("pages.mail.editor.placeholder")}
+                  autofocus
+                  editable={false}
+                  editorClassName="focus:outline-none"
+                />
+              </div>
+            </div>
+            <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
+              <SheetClose asChild>
+                <Button variant="outline" className="w-full">
+                  {t("pages.mail.table.details.close")}
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+      ),
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -249,7 +244,7 @@ export function EmailDataTable({
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
                 <span className="hidden lg:inline">{t("pages.mail.table.columnVisibility.button")}</span>
-                <span className="lg:hidden">Colonnes</span>
+                <span className="lg:hidden">{t("pages.mail.table.columnVisibility.button")}</span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -262,7 +257,6 @@ export function EmailDataTable({
                     column.getCanHide()
                 )
                 .map((column) => {
-
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   flexRender,
   getCoreRowModel,
@@ -35,65 +36,12 @@ export const clientSchema = z.object({
 
 type Client = z.infer<typeof clientSchema>;
 
-export const clientColumns: ColumnDef<z.infer<typeof clientSchema>>[] = [
-  {
-    id: "profile",
-    accessorKey: "profile_picture",
-    header: "Livreur",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage
-              src={row.original.profile_picture || undefined}
-              alt={`${row.original.first_name} ${row.original.last_name}`} />
-            <AvatarFallback>
-              {`${row.original.first_name.charAt(0)}${row.original.last_name.charAt(0)}`}
-            </AvatarFallback>
-          </Avatar>
-
-        <span>{`${row.original.first_name} ${row.original.last_name}`}</span>
-      </div>
-    ),
-    enableHiding: false,
-  },
-  { accessorKey: "email", header: "Email", cell: ({ row }) => row.original.email },
-  {
-    accessorKey: "nbDemandeDeLivraison",
-    header: "Nb Demandes de Livraison",
-    cell: ({ row }) => row.original.nbDemandeDeLivraison,
-  },
-  {
-    accessorKey: "nomAbonnement",
-    header: "Nom Abonnement",
-    cell: ({ row }) => row.original.nomAbonnement,
-  },
-  {
-    accessorKey: "nbSignalements",
-    header: "Nb Signalements",
-    cell: ({ row }) => row.original.nbSignalements,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const navigate = useNavigate();
-      return (
-        <Button
-          variant="link"
-          className="w-fit px-0 text-left text-foreground"
-          onClick={() => navigate(`/office/profile/clients/${row.original.id}`)}
-        >
-          Détails
-        </Button>
-      );
-    },
-  },
-];
-
 interface DataTableProps {
   data: Client[];
 }
 
 export function DataTable({ data: initialData }: DataTableProps) {
+  const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
@@ -106,6 +54,65 @@ export function DataTable({ data: initialData }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const clientColumns: ColumnDef<Client>[] = [
+    {
+      id: "profile",
+      accessorKey: "profile_picture",
+      header: t("pages.client-details.columns.profile"),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage
+              src={row.original.profile_picture || undefined}
+              alt={`${row.original.first_name} ${row.original.last_name}`}
+            />
+            <AvatarFallback>
+              {`${row.original.first_name.charAt(0)}${row.original.last_name.charAt(0)}`}
+            </AvatarFallback>
+          </Avatar>
+          <span>{`${row.original.first_name} ${row.original.last_name}`}</span>
+        </div>
+      ),
+      enableHiding: false,
+    },
+    {
+      accessorKey: "email",
+      header: t("pages.client-details.columns.email"),
+      cell: ({ row }) => row.original.email,
+    },
+    {
+      accessorKey: "nbDemandeDeLivraison",
+      header: t("pages.client-details.columns.nbDemandeDeLivraison"),
+      cell: ({ row }) => row.original.nbDemandeDeLivraison,
+    },
+    {
+      accessorKey: "nomAbonnement",
+      header: t("pages.client-details.columns.nomAbonnement"),
+      cell: ({ row }) => row.original.nomAbonnement,
+    },
+    {
+      accessorKey: "nbSignalements",
+      header: t("pages.client-details.columns.nbSignalements"),
+      cell: ({ row }) => row.original.nbSignalements,
+    },
+    {
+      id: "actions",
+      header: t("pages.client-details.columns.actions"),
+      cell: ({ row }) => {
+        const navigate = useNavigate();
+        return (
+          <Button
+            variant="link"
+            className="w-fit px-0 text-left text-foreground"
+            onClick={() => navigate(`/office/profile/clients/${row.original.id}`)}
+          >
+            {t("pages.client-details.columns.actions")}
+          </Button>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -157,7 +164,7 @@ export function DataTable({ data: initialData }: DataTableProps) {
           ) : (
             <TableRow>
               <TableCell colSpan={clientColumns.length} className="h-24 text-center">
-                No results.
+                {t("pages.client-details.noResults")}
               </TableCell>
             </TableRow>
           )}

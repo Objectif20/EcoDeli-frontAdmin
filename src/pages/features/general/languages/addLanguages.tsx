@@ -30,6 +30,7 @@ interface NewLanguage {
 
 interface JsonField {
   key: string;
+  value: string;
   path: string;
   isObject?: boolean;
 }
@@ -65,7 +66,7 @@ export default function AddLanguage() {
     const fetchDefaultLanguage = async () => {
       try {
         const data = await LanguageApi.getFrenchLanguage();
-  
+
         const emptyValues = (obj: any): any => {
           if (Array.isArray(obj)) {
             return obj.map(emptyValues);
@@ -77,14 +78,14 @@ export default function AddLanguage() {
             return "";
           }
         };
-  
+
         const emptiedData = emptyValues(data);
         setJsonContent(JSON.stringify(emptiedData, null, 2));
       } catch (error) {
         console.error("Erreur lors de la récupération de la langue par défaut", error);
       }
     };
-  
+
     fetchDefaultLanguage();
   }, []);
 
@@ -98,14 +99,14 @@ export default function AddLanguage() {
       const fields: JsonField[] = [];
 
       const extractFields = (obj: any, parentPath: string = "") => {
-        Object.keys(obj).forEach((key) => {
+        Object.entries(obj).forEach(([key, value]) => {
           const currentPath = parentPath ? `${parentPath}.${key}` : key;
 
-          if (typeof obj[key] === "object" && obj[key] !== null) {
-            fields.push({ key, path: currentPath, isObject: true });
-            extractFields(obj[key], currentPath);
+          if (typeof value === "object" && value !== null) {
+            fields.push({ key, value: "", path: currentPath, isObject: true });
+            extractFields(value, currentPath);
           } else {
-            fields.push({ key, path: currentPath, isObject: false });
+            fields.push({ key, value: String(value), path: currentPath, isObject: false });
           }
         });
       };
@@ -150,6 +151,28 @@ export default function AddLanguage() {
 
   const handleJsonChange = (value: string | undefined) => {
     setJsonContent(value || "");
+    try {
+      const parsedJson = JSON.parse(value || "{}");
+      const fields: JsonField[] = [];
+
+      const extractFields = (obj: any, parentPath: string = "") => {
+        Object.entries(obj).forEach(([key, value]) => {
+          const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+          if (typeof value === "object" && value !== null) {
+            fields.push({ key, value: "", path: currentPath, isObject: true });
+            extractFields(value, currentPath);
+          } else {
+            fields.push({ key, value: String(value), path: currentPath, isObject: false });
+          }
+        });
+      };
+
+      extractFields(parsedJson);
+      setJsonFields(fields);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+    }
   };
 
   const handleJsonValidationChange = (isValid: boolean) => {
@@ -171,6 +194,12 @@ export default function AddLanguage() {
       const updatedJson = JSON.stringify(parsedJson, null, 2);
       setJsonContent(updatedJson);
       setIsJsonValid(true);
+
+      setJsonFields(prevFields =>
+        prevFields.map(field =>
+          field.path === path ? { ...field, value: newValue } : field
+        )
+      );
     } catch (error) {
       console.error("Error updating JSON:", error);
       setIsJsonValid(false);
@@ -232,6 +261,7 @@ export default function AddLanguage() {
             <Label htmlFor={field.path}>{field.key}</Label>
             <Input
               id={field.path}
+              value={field.value}
               onChange={(e) => handleFieldChange(field.path, e.target.value)}
               className="mt-1"
             />

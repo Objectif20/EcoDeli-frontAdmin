@@ -3,106 +3,8 @@ import { Transaction } from "@/components/features/finance/column";
 import { Transactions } from "@/components/features/finance/transactions";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-
-export const allTransactions: Transaction[] = [
-  {
-    id: "TR-001",
-    name: "Jean Dupont",
-    type: "sub",
-    category: "sub",
-    date: "01/2024",
-    invoiceUrl: "https://example.com/invoice/TR-001.pdf",
-  },
-  {
-    id: "TR-002",
-    name: "Marie Martin",
-    type: "in",
-    category: "service",
-    date: "2024-02-15",
-    invoiceUrl: "https://example.com/invoice/TR-002.pdf",
-  },
-  {
-    id: "TR-003",
-    name: "Pierre Durand",
-    type: "out",
-    category: "delivery",
-    date: "2024-03-22",
-    invoiceUrl: "https://example.com/invoice/TR-003.pdf",
-  },
-  {
-    id: "TR-004",
-    name: "Sophie Bernard",
-    type: "sub",
-    category: "sub",
-    date: "02/2024",
-    invoiceUrl: "https://example.com/invoice/TR-004.pdf",
-  },
-  {
-    id: "TR-005",
-    name: "Lucas Petit",
-    type: "in",
-    category: "service",
-    date: "2024-01-10",
-    invoiceUrl: "https://example.com/invoice/TR-005.pdf",
-  },
-  {
-    id: "TR-006",
-    name: "Emma Leroy",
-    type: "out",
-    category: "delivery",
-    date: "2023-12-05",
-    invoiceUrl: "https://example.com/invoice/TR-006.pdf",
-  },
-  {
-    id: "TR-007",
-    name: "Thomas Moreau",
-    type: "sub",
-    category: "sub",
-    date: "03/2024",
-    invoiceUrl: "https://example.com/invoice/TR-007.pdf",
-  },
-  {
-    id: "TR-008",
-    name: "Camille Roux",
-    type: "in",
-    category: "service",
-    date: "2024-04-18",
-    invoiceUrl: "https://example.com/invoice/TR-008.pdf",
-  },
-  {
-    id: "TR-009",
-    name: "Antoine Girard",
-    type: "out",
-    category: "delivery",
-    date: "2023-11-30",
-    invoiceUrl: "https://example.com/invoice/TR-009.pdf",
-  },
-  {
-    id: "TR-010",
-    name: "Julie Fournier",
-    type: "sub",
-    category: "sub",
-    date: "04/2024",
-    invoiceUrl: "https://example.com/invoice/TR-010.pdf",
-  },
-  {
-    id: "TR-011",
-    name: "Nicolas Lambert",
-    type: "in",
-    category: "service",
-    date: "2024-05-02",
-    invoiceUrl: "https://example.com/invoice/TR-011.pdf",
-  },
-  {
-    id: "TR-012",
-    name: "Léa Bonnet",
-    type: "out",
-    category: "delivery",
-    date: "2023-10-15",
-    invoiceUrl: "https://example.com/invoice/TR-012.pdf",
-  }
-];
 
 const fetchTransactions = async (
   filters: any,
@@ -155,11 +57,12 @@ export default function TransactionsPage() {
   const [totalRows, setTotalRows] = useState(0);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Transactions"],
+        segments: [t("pages.transactions.accueil"), t("pages.transactions.title")],
         links: ["/office/dashboard"],
       })
     );
@@ -222,7 +125,7 @@ export default function TransactionsPage() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Gestion des Transactions</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("pages.transactions.title")}</h1>
       <Transactions
         transactions={transactions}
         filters={filters}

@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { CheckIcon, StarIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslation } from "react-i18next";
 
 export const deliverymanSchema = z.object({
   id: z.string(),
@@ -36,106 +37,12 @@ export const deliverymanSchema = z.object({
 
 type Deliveryman = z.infer<typeof deliverymanSchema>;
 
-export const deliverymanColumns: ColumnDef<z.infer<typeof deliverymanSchema>>[] = [
-  {
-    id: "profile",
-    accessorKey: "profile_picture",
-    header: "Livreur",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage
-              src={row.original.profile_picture || undefined}
-              alt={`${row.original.first_name} ${row.original.last_name}`} />
-            <AvatarFallback>
-              {`${row.original.first_name.charAt(0)}${row.original.last_name.charAt(0)}`}
-            </AvatarFallback>
-          </Avatar>
-
-        <span>{`${row.original.first_name} ${row.original.last_name}`}</span>
-      </div>
-    ),
-    enableHiding: false,
-  },
-  {
-    accessorKey: "status",
-    header: "Statut",
-    cell: ({ row }) => (
-      <Badge
-        variant={
-          row.original.status === true
-        ? "outline"
-        : row.original.status === false
-        ? "outline"
-        : "outline"
-        }
-        className="gap-1"
-      >
-        {row.original.status === false ? (
-          <>
-        <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
-        En attente
-          </>
-        ) : (
-          <>
-        <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
-        Validé
-          </>
-        ) }
-      </Badge>
-    ),
-  },
-  { accessorKey: "email", header: "Email Pro", cell: ({ row }) => row.original.email },
-  {
-    accessorKey: "rate",
-    header: "Note Globale",
-    cell: ({ row }) =>
-      row.original.rate !== undefined && row.original.rate > 0 ? (
-        <div className="flex items-center">
-          {[...Array(5)].map((_, index) => {
-            const starValue = index + 1;
-            return (
-              <StarIcon
-                key={index}
-                className={`size-4 ${
-                  starValue <= (row.original.rate ?? 0)
-                    ? "text-yellow-500"
-                    : starValue - 0.5 <= (row.original.rate ?? 0)
-                    ? "text-yellow-500/50"
-                    : "text-gray-300"
-                }`}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <Badge variant="outline" className="px-1.5 ">
-          Aucune note
-        </Badge>
-      ),
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const navigate = useNavigate();
-      return (
-        <Button
-          variant="link"
-          className="w-fit px-0 text-left text-foreground"
-          onClick={() => navigate(`/office/profile/deliverymen/${row.original.id}`)}
-        >
-          Détails
-        </Button>
-      );
-    },
-  },
-];
-
 interface DataTableProps {
   data: Deliveryman[];
 }
 
 export function DataTable({ data: initialData }: DataTableProps) {
+  const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
 
   React.useEffect(() => {
@@ -148,6 +55,105 @@ export function DataTable({ data: initialData }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const deliverymanColumns: ColumnDef<Deliveryman>[] = [
+    {
+      id: "profile",
+      accessorKey: "profile_picture",
+      header: t("pages.deliveryman.table.columns.deliveryman"),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage
+                src={row.original.profile_picture || undefined}
+                alt={`${row.original.first_name} ${row.original.last_name}`} />
+              <AvatarFallback>
+                {`${row.original.first_name.charAt(0)}${row.original.last_name.charAt(0)}`}
+              </AvatarFallback>
+            </Avatar>
+          <span>{`${row.original.first_name} ${row.original.last_name}`}</span>
+        </div>
+      ),
+      enableHiding: false,
+    },
+    {
+      accessorKey: "status",
+      header: t("pages.deliveryman.table.columns.status"),
+      cell: ({ row }) => (
+        <Badge
+          variant={
+            row.original.status === true
+          ? "outline"
+          : row.original.status === false
+          ? "outline"
+          : "outline"
+          }
+          className="gap-1"
+        >
+          {row.original.status === false ? (
+            <>
+          <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
+          {t("pages.deliveryman.table.statuses.pending")}
+            </>
+          ) : (
+            <>
+          <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
+          {t("pages.deliveryman.table.statuses.validated")}
+            </>
+          ) }
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: t("pages.deliveryman.table.columns.email"),
+      cell: ({ row }) => row.original.email
+    },
+    {
+      accessorKey: "rate",
+      header: t("pages.deliveryman.table.columns.globalRating"),
+      cell: ({ row }) =>
+        row.original.rate !== undefined && row.original.rate > 0 ? (
+          <div className="flex items-center">
+            {[...Array(5)].map((_, index) => {
+              const starValue = index + 1;
+              return (
+                <StarIcon
+                  key={index}
+                  className={`size-4 ${
+                    starValue <= (row.original.rate ?? 0)
+                      ? "text-yellow-500"
+                      : starValue - 0.5 <= (row.original.rate ?? 0)
+                      ? "text-yellow-500/50"
+                      : "text-gray-300"
+                  }`}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <Badge variant="outline" className="px-1.5 ">
+            {t("pages.deliveryman.table.noRating")}
+          </Badge>
+        ),
+    },
+    {
+      id: "actions",
+      header: t("pages.deliveryman.table.columns.actions"),
+      cell: ({ row }) => {
+        const navigate = useNavigate();
+        return (
+          <Button
+            variant="link"
+            className="w-fit px-0 text-left text-foreground"
+            onClick={() => navigate(`/office/profile/deliverymen/${row.original.id}`)}
+          >
+            {t("pages.deliveryman.table.columns.actions")}
+          </Button>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -199,7 +205,7 @@ export function DataTable({ data: initialData }: DataTableProps) {
           ) : (
             <TableRow>
               <TableCell colSpan={deliverymanColumns.length} className="h-24 text-center">
-                No results.
+                {t("pages.deliveryman.table.noResults")}
               </TableCell>
             </TableRow>
           )}

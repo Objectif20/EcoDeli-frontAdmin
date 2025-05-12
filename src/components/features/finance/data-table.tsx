@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import {
   type ColumnDef,
@@ -49,6 +50,7 @@ export function DataTable<TData, TValue>({
   onPageChange,
   onPageSizeChange,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -81,7 +83,7 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       <div className="flex flex-col gap-4 md:flex-row">
         <Input
-          placeholder="Rechercher par nom..."
+          placeholder={t("pages.transactions.searchPlaceholder")}
           value={filters.name}
           onChange={(event) => onNameFilter(event.target.value)}
           className="max-w-sm"
@@ -89,55 +91,55 @@ export function DataTable<TData, TValue>({
 
         <Select value={filters.type} onValueChange={onTypeFilter}>
           <SelectTrigger className="max-w-[200px]">
-            <SelectValue placeholder="Type de transaction" />
+            <SelectValue placeholder={t("pages.transactions.typeFilter.label")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tous les types</SelectItem>
-            <SelectItem value="abonnements">Abonnements</SelectItem>
-            <SelectItem value="virements reçus">Virements reçus</SelectItem>
-            <SelectItem value="virements émis">Virements émis</SelectItem>
+            <SelectItem value="all">{t("pages.transactions.typeFilter.all")}</SelectItem>
+            <SelectItem value="sub">{t("pages.transactions.typeFilter.sub")}</SelectItem>
+            <SelectItem value="in">{t("pages.transactions.typeFilter.in")}</SelectItem>
+            <SelectItem value="out">{t("pages.transactions.typeFilter.out")}</SelectItem>
           </SelectContent>
         </Select>
 
         <div className="flex gap-2">
           <Select value={filters.year} onValueChange={onYearFilter}>
             <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Année" />
+              <SelectValue placeholder={t("pages.transactions.yearFilter.label")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes</SelectItem>
-              <SelectItem value="2023">2023</SelectItem>
-              <SelectItem value="2024">2024</SelectItem>
+              <SelectItem value="all">{t("pages.transactions.yearFilter.all")}</SelectItem>
+              <SelectItem value="2023">{t("pages.transactions.yearFilter.2023")}</SelectItem>
+              <SelectItem value="2024">{t("pages.transactions.yearFilter.2024")}</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={filters.month} onValueChange={onMonthFilter}>
             <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Mois" />
+              <SelectValue placeholder={t("pages.transactions.monthFilter.label")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous</SelectItem>
-              <SelectItem value="01">Janvier</SelectItem>
-              <SelectItem value="02">Février</SelectItem>
-              <SelectItem value="03">Mars</SelectItem>
-              <SelectItem value="04">Avril</SelectItem>
-              <SelectItem value="05">Mai</SelectItem>
-              <SelectItem value="06">Juin</SelectItem>
-              <SelectItem value="07">Juillet</SelectItem>
-              <SelectItem value="08">Août</SelectItem>
-              <SelectItem value="09">Septembre</SelectItem>
-              <SelectItem value="10">Octobre</SelectItem>
-              <SelectItem value="11">Novembre</SelectItem>
-              <SelectItem value="12">Décembre</SelectItem>
+              <SelectItem value="all">{t("pages.transactions.monthFilter.all")}</SelectItem>
+              <SelectItem value="01">{t("pages.transactions.monthFilter.01")}</SelectItem>
+              <SelectItem value="02">{t("pages.transactions.monthFilter.02")}</SelectItem>
+              <SelectItem value="03">{t("pages.transactions.monthFilter.03")}</SelectItem>
+              <SelectItem value="04">{t("pages.transactions.monthFilter.04")}</SelectItem>
+              <SelectItem value="05">{t("pages.transactions.monthFilter.05")}</SelectItem>
+              <SelectItem value="06">{t("pages.transactions.monthFilter.06")}</SelectItem>
+              <SelectItem value="07">{t("pages.transactions.monthFilter.07")}</SelectItem>
+              <SelectItem value="08">{t("pages.transactions.monthFilter.08")}</SelectItem>
+              <SelectItem value="09">{t("pages.transactions.monthFilter.09")}</SelectItem>
+              <SelectItem value="10">{t("pages.transactions.monthFilter.10")}</SelectItem>
+              <SelectItem value="11">{t("pages.transactions.monthFilter.11")}</SelectItem>
+              <SelectItem value="12">{t("pages.transactions.monthFilter.12")}</SelectItem>
             </SelectContent>
           </Select>
 
           <Button variant="secondary" onClick={onApplyFilters}>
-            Filtrer
+            {t("pages.transactions.filterButton")}
           </Button>
 
           <Button variant="outline" onClick={onResetFilters}>
-            Réinitialiser
+            {t("pages.transactions.resetButton")}
           </Button>
         </div>
       </div>
@@ -169,7 +171,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Aucun résultat.
+                  {t("pages.transactions.table.noResults")}
                 </TableCell>
               </TableRow>
             )}
@@ -179,7 +181,7 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {totalRows} transaction(s)
+          {t("pages.transactions.table.transactionsCount", { count: totalRows })}
         </div>
         <div className="space-x-2">
           <Button
@@ -188,7 +190,7 @@ export function DataTable<TData, TValue>({
             onClick={() => onPageChange(table.getCanPreviousPage() ? pageIndex - 1 : pageIndex)}
             disabled={!table.getCanPreviousPage()}
           >
-            Précédent
+            {t("pages.transactions.table.previous")}
           </Button>
           <Button
             variant="outline"
@@ -196,7 +198,7 @@ export function DataTable<TData, TValue>({
             onClick={() => onPageChange(table.getCanNextPage() ? pageIndex + 1 : pageIndex)}
             disabled={!table.getCanNextPage()}
           >
-            Suivant
+            {t("pages.transactions.table.next")}
           </Button>
         </div>
         <div className="space-x-2">
@@ -220,4 +222,3 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
-

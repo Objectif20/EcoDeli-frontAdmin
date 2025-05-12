@@ -1,68 +1,81 @@
-"use client"
+import { useTranslation } from 'react-i18next';
+import type { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-import type { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Download } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-
-export type TransactionType = "sub" | "in" | "out"
-export type TransactionCategory = "sub" | "delivery" | "service"
+export type TransactionType = "sub" | "in" | "out";
+export type TransactionCategory = "sub" | "delivery" | "service";
 
 export type Transaction = {
-  id: string
-  name: string
-  type: TransactionType
-  category: TransactionCategory
-  date: string
-  invoiceUrl?: string
-}
+  id: string;
+  name: string;
+  type: TransactionType;
+  category: TransactionCategory;
+  date: string;
+  invoiceUrl?: string;
+};
 
 export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "name",
-    header: "Nom",
+    header: () => {
+      const { t } = useTranslation();
+      return t("pages.transactions.table.name");
+    },
   },
   {
     accessorKey: "type",
-    header: "Type de transaction",
+    header: () => {
+      const { t } = useTranslation();
+      return t("pages.transactions.table.type");
+    },
     cell: ({ row }) => {
-      const type = row.getValue("type") as TransactionType
+      const { t } = useTranslation();
+      const type = row.getValue("type") as TransactionType;
       const typeDisplayMap = {
-        "sub": "Abonnement",
-        "in": "Virement reçu",
-        "out": "Virement émis"
-      }
+        "sub": t("pages.transactions.badge.sub"),
+        "in": t("pages.transactions.badge.in"),
+        "out": t("pages.transactions.badge.out")
+      };
 
       return (
         <Badge variant={type === "sub" ? "default" : type === "in" ? "success" : "destructive"}>
           {typeDisplayMap[type]}
         </Badge>
-      )
+      );
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
   },
   {
     accessorKey: "category",
-    header: "Catégorie",
+    header: () => {
+      const { t } = useTranslation();
+      return t("pages.transactions.table.category");
+    },
     cell: ({ row }) => {
-      const category = row.getValue("category") as TransactionCategory
+      const { t } = useTranslation();
+      const category = row.getValue("category") as TransactionCategory;
       const categoryDisplayMap = {
-        "sub": "Abonnement",
-        "delivery": "Livraison",
-        "service": "Prestation"
-      }
+        "sub": t("pages.transactions.badge.sub"),
+        "delivery": t("pages.transactions.badge.delivery"),
+        "service": t("pages.transactions.badge.service")
+      };
 
-      return <Badge variant="outline">{categoryDisplayMap[category]}</Badge>
+      return <Badge variant="outline">{categoryDisplayMap[category]}</Badge>;
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
   },
   {
     accessorKey: "date",
-    header: "Date",
+    header: () => {
+      const { t } = useTranslation();
+      return t("pages.transactions.table.date");
+    },
     cell: ({ row }) => {
       const date = row.getValue("date") as string;
 
@@ -76,9 +89,13 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     id: "actions",
-    header: "Facture",
+    header: () => {
+      const { t } = useTranslation();
+      return t("pages.transactions.table.invoice");
+    },
     cell: ({ row }) => {
-      const transaction = row.original
+      const { t } = useTranslation();
+      const transaction = row.original;
 
       return (
         <Button
@@ -88,9 +105,9 @@ export const columns: ColumnDef<Transaction>[] = [
           onClick={() => window.open(transaction.invoiceUrl, "_blank")}
         >
           <Download className="h-4 w-4 mr-2" />
-          Télécharger
+          {t("pages.transactions.table.downloadInvoice")}
         </Button>
-      )
+      );
     },
   },
-]
+];

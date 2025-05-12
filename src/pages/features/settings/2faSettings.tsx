@@ -52,7 +52,7 @@ const AdminSettings: React.FC = () => {
       useEffect(() => {
         url(
           setBreadcrumb({
-            segments: ["Accueil", "Double authentification"],
+            segments: [t("pages.parametres.breadcrumb.accueil"), t("pages.parametres.breadcrumb.doubleAuth")],
             links: ["/office/dashboard"],
           })
         );
@@ -136,8 +136,8 @@ const AdminSettings: React.FC = () => {
       </div>
       <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
         <nav className="grid gap-4 text-sm text-muted-foreground">
-          <Link to="/office/settings">Général</Link>
-          <Link to="/office/settings/a2f" className="font-semibold text-primary">Double authentification</Link>
+          <Link to="/office/settings">{t('pages.parametres.general')}</Link>
+          <Link to="/office/settings/a2f" className="font-semibold text-primary">{t('pages.parametres.doubleAuth')}</Link>
         </nav>
         <div className="grid gap-6">
           <Card>

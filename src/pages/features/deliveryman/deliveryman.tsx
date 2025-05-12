@@ -4,8 +4,10 @@ import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { DataTable } from "@/components/features/deliveryman/data-table";
 import { AllDeliveryPerson, DeliverymanApi } from "@/api/deliveryman.api";
+import { useTranslation } from "react-i18next";
 
 export default function DeliverymanPage() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [deliverymen, setDeliverymen] = useState<AllDeliveryPerson[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
@@ -15,7 +17,7 @@ export default function DeliverymanPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Transporteurs"],
+        segments: [t("pages.deliveryman-details.breadcrumb.home"), t("pages.deliveryman-details.breadcrumb.deliverymen")],
         links: ["/office/dashboard"],
       })
     );
@@ -31,12 +33,12 @@ export default function DeliverymanPage() {
     };
 
     fetchDeliverymen();
-  }, [dispatch, pageIndex, pageSize]);
+  }, [dispatch, pageIndex, pageSize, t]);
 
   return (
     <>
       <div className="w-full">
-        <h1 className="text-2xl font-semibold mb-4">Les livreurs sur EcoDeli</h1>
+        <h1 className="text-2xl font-semibold mb-4">{t("pages.deliveryman-details.title")}</h1>
         <DataTable key={`${pageIndex}-${pageSize}`} data={deliverymen} />
         <PaginationControls
           pageIndex={pageIndex}

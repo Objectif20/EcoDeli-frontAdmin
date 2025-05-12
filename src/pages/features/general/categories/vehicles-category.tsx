@@ -28,7 +28,7 @@ export default function VehicleCategoriesPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", t("pages.category.title")],
+        segments: [t("pages.category.accueil"), t("pages.category.title")],
         links: ["/office/dashboard"],
       })
     );

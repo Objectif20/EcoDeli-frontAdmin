@@ -76,57 +76,57 @@ export const schema = z.object({
 });
 
 export const columnLink = [
-  { column_id: "report_message", text: "Message" },
-  { column_id: "user_email", text: "Email Utilisateur" },
-  { column_id: "admin_name", text: "Nom Admin" },
-  { column_id: "status", text: "Statut" },
+  { column_id: "report_message", text: "pages.report.table.columns.report_message" },
+  { column_id: "user_email", text: "pages.report.table.columns.user_email" },
+  { column_id: "admin_name", text: "pages.report.table.columns.admin_name" },
+  { column_id: "status", text: "pages.report.table.columns.status" },
 ];
 
 const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[] => [
   {
     accessorKey: "report_message",
-    header: "Message",
+    header: t("pages.report.table.columns.report_message"),
     cell: ({ row }) => (
       <Dialog>
-      <DialogTrigger>
-        <Button className="w-fit px-0 text-left text-foreground">
-          {t("pages.report.table.dialog.buttons.viewMessage")}
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t("pages.report.table.dialog.buttons.content")}</DialogTitle>
-          <DialogDescription>
-            {t("pages.report.table.dialog.description.contentDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <Label htmlFor="message">{t("pages.report.table.dialog.labels.message")}</Label>
-          <MinimalTiptapEditorReadOnly
-            value={row.original.report_message}
-            className="w-full"
-            editorContentClassName="p-5"
-            output="html"
-            placeholder="Contenu du signalement"
-            autofocus
-            editable={false}
-            editorClassName="focus:outline-none"
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
+        <DialogTrigger>
+          <Button className="w-fit">
+            {t("pages.report.table.dialog.buttons.viewMessage")}
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("pages.report.table.dialog.title.content")}</DialogTitle>
+            <DialogDescription>
+              {t("pages.report.table.dialog.description.contentDescription")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Label htmlFor="message">{t("pages.report.table.dialog.labels.message")}</Label>
+            <MinimalTiptapEditorReadOnly
+              value={row.original.report_message}
+              className="w-full"
+              editorContentClassName="p-5"
+              output="html"
+              placeholder="Contenu du signalement"
+              autofocus
+              editable={false}
+              editorClassName="focus:outline-none"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     )
   },
   {
     id: "user_email",
     accessorKey: "user.email",
-    header: "Email Utilisateur",
+    header: t("pages.report.table.columns.user_email"),
     cell: ({ row }) => <span>{row.original.user.email}</span>,
   },
   {
     id: "admin_name",
     accessorKey: "admin",
-    header: "Attribué à l'admin",
+    header: t("pages.report.table.columns.admin_name"),
     cell: ({ row }) => {
       const admin = row.original.admin ? row.original.admin[0] : null;
       return admin ? `${admin.first_name} ${admin.last_name}` : "N/A";
@@ -134,7 +134,7 @@ const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[
   },
   {
     accessorKey: "status",
-    header: "Statut",
+    header: t("pages.report.table.columns.status"),
     cell: ({ row }) => (
       <Badge
         variant={row.original.status === "wait" ? "outline" : "success"}
@@ -156,6 +156,7 @@ const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[
   },
   {
     id: "actions",
+    header: t("pages.report.table.columns.actions"),
     cell: ({ row }) => (
       <AssignAdminModal
         reportId={row.original.report_id}
@@ -210,7 +211,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
                 <span className="hidden lg:inline">{t("pages.report.table.columnVisibility.button")}</span>
-                <span className="lg:hidden">Colonnes</span>
+                <span className="lg:hidden">{t("pages.report.table.columnVisibility.button")}</span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -280,10 +281,10 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns(t).length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("pages.report.table.noResults")}
                 </TableCell>
               </TableRow>
             )}

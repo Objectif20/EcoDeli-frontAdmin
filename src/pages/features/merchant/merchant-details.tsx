@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -21,6 +22,8 @@ import {
   User,
 } from "lucide-react"
 import { MerchantAPI } from "@/api/merchant.api"
+import { useDispatch } from "react-redux"
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
 
 interface MerchantDetails {
   info: {
@@ -40,15 +43,27 @@ interface MerchantDetails {
 }
 
 export default function MerchantProfilePage() {
+  const { t } = useTranslation()
   const [merchantDetails, setMerchantDetails] = useState<MerchantDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const { id } = useParams()
   const navigate = useNavigate()
 
+  const dispatch = useDispatch()
+  
+  useEffect(() => {
+    dispatch(
+      setBreadcrumb({
+        segments: [t("pages.merchant-details.breadcrumb.home"), t("pages.merchant-details.breadcrumb.merchants"), t("pages.merchant-details.breadcrumb.merchant-details")],
+        links: ["/office/dashboard" , "/office/profile/providers"],
+      })
+    );
+  }, [dispatch, t]);
+
   useEffect(() => {
     const fetchMerchantDetails = async () => {
       try {
-        const response = await MerchantAPI.getMerchantDetails(id as string);
+        const response = await MerchantAPI.getMerchantDetails(id as string)
         setLoading(true)
         setMerchantDetails(response)
       } catch (error) {
@@ -91,11 +106,11 @@ export default function MerchantProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh]">
         <ArrowLeft className="h-16 w-16 text-destructive mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Commerçant non trouvé</h2>
-        <p className="text-muted-foreground mb-6">Les détails du commerçant n'ont pas pu être chargés.</p>
+        <h2 className="text-2xl font-bold mb-2">{t("pages.merchant-details.merchant-not-found")}</h2>
+        <p className="text-muted-foreground mb-6">{t("pages.merchant-details.merchant-details-not-loaded")}</p>
         <Button onClick={() => navigate("/office/profile/merchants")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
+          {t("pages.merchant-details.back-to-list")}
         </Button>
       </div>
     )
@@ -105,14 +120,14 @@ export default function MerchantProfilePage() {
     <div className="container mx-auto p-4 max-w-6xl">
       <Button variant="ghost" onClick={() => navigate("/office/profile/merchants")} className="mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Retour à la liste
+        {t("pages.merchant-details.back-to-list")}
       </Button>
 
       <div className="grid gap-6">
-        <Card >
+        <Card>
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-              <Avatar className="h-24 w-24 border-4 ">
+              <Avatar className="h-24 w-24 border-4">
                 <AvatarImage
                   src={merchantDetails.info.profile_picture || ""}
                   alt={`${merchantDetails.info.first_name} ${merchantDetails.info.last_name}`}
@@ -154,42 +169,42 @@ export default function MerchantProfilePage() {
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Livraisons</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("pages.merchant-details.deliveries")}</p>
                   <h3 className="text-3xl font-bold mt-2">{merchantDetails.info.nbDemandeDeLivraison}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Demandes totales</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pages.merchant-details.total-requests")}</p>
                 </div>
-                <div className=" p-3 rounded-full">
-                  <Package className="h-6 w-6 " />
+                <div className="p-3 rounded-full">
+                  <Package className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card >
+          <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Abonnement</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("pages.merchant-details.subscription")}</p>
                   <h3 className="text-3xl font-bold mt-2">{merchantDetails.info.nomAbonnement}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Formule active</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pages.merchant-details.active-plan")}</p>
                 </div>
-                <div className=" p-3 rounded-full">
-                  <CreditCard className="h-6 w-6 " />
+                <div className="p-3 rounded-full">
+                  <CreditCard className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card >
+          <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Signalements</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("pages.merchant-details.reports")}</p>
                   <h3 className="text-3xl font-bold mt-2">{merchantDetails.info.nbSignalements}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Total reçus</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pages.merchant-details.total-received")}</p>
                 </div>
-                <div className=" p-3 rounded-full">
-                  <AlertTriangle className="h-6 w-6 " />
+                <div className="p-3 rounded-full">
+                  <AlertTriangle className="h-6 w-6" />
                 </div>
               </div>
             </CardContent>
@@ -200,14 +215,14 @@ export default function MerchantProfilePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building className="h-5 w-5 text-primary" />
-              Informations professionnelles
+              {t("pages.merchant-details.professional-information")}
             </CardTitle>
-            <CardDescription>Détails de l'entreprise et informations légales</CardDescription>
+            <CardDescription>{t("pages.merchant-details.business-details")}</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
             <div className="space-y-4">
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Entreprise</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.merchant-details.company")}</h3>
                 <div className="flex items-center gap-2">
                   <Building className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{merchantDetails.info.entreprise}</p>
@@ -215,7 +230,7 @@ export default function MerchantProfilePage() {
               </div>
 
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">SIRET</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.merchant-details.siret")}</h3>
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{merchantDetails.info.siret}</p>
@@ -225,7 +240,7 @@ export default function MerchantProfilePage() {
 
             <div className="space-y-4">
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Pays</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.merchant-details.country")}</h3>
                 <div className="flex items-center gap-2">
                   <Globe className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{merchantDetails.info.pays}</p>
@@ -233,7 +248,7 @@ export default function MerchantProfilePage() {
               </div>
 
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Contact principal</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.merchant-details.main-contact")}</h3>
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{`${merchantDetails.info.first_name} ${merchantDetails.info.last_name}`}</p>

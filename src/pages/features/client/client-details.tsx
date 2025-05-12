@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -19,12 +20,26 @@ import {
   ExternalLink,
 } from "lucide-react"
 import { ClientApi, ClientDetails } from "@/api/client.api"
+import { useDispatch } from "react-redux"
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
 
 export default function ClientProfilePage() {
+  const { t } = useTranslation()
   const [clientDetails, setClientDetails] = useState<ClientDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const { id } = useParams()
   const navigate = useNavigate()
+
+  const dispatch = useDispatch()
+  
+  useEffect(() => {
+    dispatch(
+      setBreadcrumb({
+        segments: [t("pages.client-details.breadcrumb.home"), t("pages.client-details.breadcrumb.clients"), t("pages.client-details.breadcrumb.client-details")],
+        links: ["/office/dashboard" , "/office/profile/providers"],
+      })
+    );
+  }, [dispatch, t]);
 
   useEffect(() => {
     const fetchClientDetails = async () => {
@@ -74,11 +89,11 @@ export default function ClientProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh]">
         <ArrowLeft className="h-16 w-16 text-destructive mb-4" />
-        <h2 className="text-2xl font-bold mb-2">Client non trouvé</h2>
-        <p className="text-muted-foreground mb-6">Les détails du client n'ont pas pu être chargés.</p>
+        <h2 className="text-2xl font-bold mb-2">{t("pages.client-details.client-not-found")}</h2>
+        <p className="text-muted-foreground mb-6">{t("pages.client-details.client-details-not-loaded")}</p>
         <Button onClick={() => navigate("/office/profile/clients")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Retour à la liste
+          {t("pages.client-details.back-to-list")}
         </Button>
       </div>
     )
@@ -88,11 +103,11 @@ export default function ClientProfilePage() {
     <div className="container mx-auto p-4 max-w-6xl">
       <Button variant="ghost" onClick={() => navigate("/office/profile/clients")} className="mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Retour à la liste
+        {t("pages.client-details.back-to-list")}
       </Button>
 
       <div className="grid gap-6">
-        <Card >
+        <Card>
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
               <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
@@ -120,7 +135,7 @@ export default function ClientProfilePage() {
                     {clientDetails.info.profilTransporteur && (
                       <Badge variant="outline" className="bg-teal-100 text-teal-800 hover:bg-teal-100 font-medium">
                         <Truck className="w-3.5 h-3.5 mr-1" />
-                        Transporteur
+                        {t("pages.client-details.delivery-status")}
                       </Badge>
                     )}
                   </div>
@@ -139,7 +154,7 @@ export default function ClientProfilePage() {
                     onClick={() => navigate(`/office/profile/deliverymen/${clientDetails.info.idTransporteur}`)}
                   >
                     <Truck className="mr-2 h-4 w-4" />
-                    Voir profil transporteur
+                    {t("pages.client-details.view-delivery-profile")}
                     <ExternalLink className="ml-2 h-3.5 w-3.5" />
                   </Button>
                 )}
@@ -154,9 +169,9 @@ export default function ClientProfilePage() {
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Livraisons</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("pages.client-details.delivery-requests")}</p>
                   <h3 className="text-3xl font-bold mt-2">{clientDetails.info.nbDemandeDeLivraison}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Demandes totales</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pages.client-details.total-requests")}</p>
                 </div>
                 <div className=" p-3 rounded-full">
                   <Package className="h-6 w-6 " />
@@ -169,9 +184,9 @@ export default function ClientProfilePage() {
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Prestations</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("pages.client-details.services")}</p>
                   <h3 className="text-3xl font-bold mt-2">{clientDetails.info.nombreDePrestations}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Services réalisés</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pages.client-details.services-completed")}</p>
                 </div>
                 <div className=" p-3 rounded-full">
                   <ClipboardList className="h-6 w-6 " />
@@ -180,13 +195,13 @@ export default function ClientProfilePage() {
             </CardContent>
           </Card>
 
-          <Card >
+          <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Signalements</p>
+                  <p className="text-sm font-medium text-muted-foreground">{t("pages.client-details.reports")}</p>
                   <h3 className="text-3xl font-bold mt-2">{clientDetails.info.nbSignalements}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Total reçus</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pages.client-details.total-received")}</p>
                 </div>
                 <div className=" p-3 rounded-full">
                   <AlertTriangle className="h-6 w-6 " />
@@ -201,14 +216,14 @@ export default function ClientProfilePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-primary" />
-              Informations détaillées
+              {t("pages.client-details.detailed-information")}
             </CardTitle>
-            <CardDescription>Détails du profil client et préférences</CardDescription>
+            <CardDescription>{t("pages.client-details.detailed-information")}</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
             <div className="space-y-4">
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Abonnement</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.client-details.subscription")}</h3>
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{clientDetails.info.nomAbonnement}</p>
@@ -218,7 +233,7 @@ export default function ClientProfilePage() {
 
             <div className="space-y-4">
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Contact</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.client-details.contact")}</h3>
                 <div className="flex items-center gap-2 mb-2">
                   <Mail className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">{clientDetails.info.email}</p>
@@ -226,13 +241,13 @@ export default function ClientProfilePage() {
               </div>
 
               <div className="p-4 rounded-lg border bg-muted/50">
-                <h3 className="font-medium text-sm text-muted-foreground mb-2">Statut transporteur</h3>
+                <h3 className="font-medium text-sm text-muted-foreground mb-2">{t("pages.client-details.delivery-status")}</h3>
                 <div className="flex items-center gap-2">
                   <Truck className="h-5 w-5 text-muted-foreground" />
                   <p className="font-medium">
                     {clientDetails.info.profilTransporteur
-                      ? `Actif (ID: ${clientDetails.info.idTransporteur})`
-                      : "Inactif"}
+                      ? t("pages.client-details.active", { id: clientDetails.info.idTransporteur })
+                      : t("pages.client-details.inactive")}
                   </p>
                 </div>
                 {clientDetails.info.profilTransporteur && clientDetails.info.idTransporteur && (
@@ -243,7 +258,7 @@ export default function ClientProfilePage() {
                     onClick={() => navigate(`/office/profile/deliverymen/${clientDetails.info.idTransporteur}`)}
                   >
                     <Truck className="mr-2 h-4 w-4" />
-                    Voir profil transporteur
+                    {t("pages.client-details.view-delivery-profile")}
                   </Button>
                 )}
               </div>

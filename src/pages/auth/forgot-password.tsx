@@ -6,6 +6,7 @@ import logo from "@/assets/logo.svg";
 import forgotPasswordSvg from "@/assets/illustrations/auth1.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { requestPasswordReset } from "@/api/auth.api";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState<string>("");
@@ -14,6 +15,7 @@ export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const newPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +27,7 @@ export default function ForgotPasswordPage() {
       setSuccess(true);
       navigate("/info/newPasswordSend");
     } catch (err) {
-      setError("Erreur lors de l'envoi de l'email");
+      setError(t("pages.newPassword.error"));
     } finally {
       setLoading(false);
     }
@@ -45,18 +47,18 @@ export default function ForgotPasswordPage() {
           <div className="w-full max-w-xs">
             <form className="flex flex-col gap-6" onSubmit={newPassword}>
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Mot de passe oublié</h1>
+                <h1 className="text-2xl font-bold">{t("pages.newPassword.title")}</h1>
                 <p className="text-balance text-sm text-muted-foreground">
-                  Entrez votre adresse email pour réinitialiser votre mot de passe.
+                  {t("pages.newPassword.description")}
                 </p>
               </div>
               <div className="grid gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("pages.newPassword.emailLabel")}</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Entrez votre email"
+                    placeholder={t("pages.newPassword.emailPlaceholder")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -65,11 +67,11 @@ export default function ForgotPasswordPage() {
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 {success && (
                   <p className="text-green-500 text-sm">
-                    Un email de réinitialisation a été envoyé.
+                    {t("pages.newPassword.success")}
                   </p>
                 )}
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Envoi en cours..." : "Envoyer"}
+                  {loading ? t("pages.newPassword.sending") : t("pages.newPassword.submitButton")}
                 </Button>
               </div>
             </form>

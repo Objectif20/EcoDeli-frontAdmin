@@ -4,9 +4,11 @@ import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { DataTable } from "@/components/features/client/data-table";
 import { AllClient, ClientApi } from "@/api/client.api";
+import { useTranslation } from "react-i18next";
 
 export default function ClientPage() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [clients, setClients] = useState<AllClient[]>([]);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -15,7 +17,7 @@ export default function ClientPage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Clients"],
+        segments: [t("pages.client.breadcrumb.home"), t("pages.client.breadcrumb.clients")],
         links: ["/office/dashboard"],
       })
     );
@@ -31,12 +33,12 @@ export default function ClientPage() {
     };
 
     fetchClients();
-  }, [dispatch, pageIndex, pageSize]);
+  }, [dispatch, pageIndex, pageSize, t]);
 
   return (
     <>
       <div className="w-full">
-        <h1 className="text-2xl font-semibold mb-4">Les clients sur EcoDeli</h1>
+        <h1 className="text-2xl font-semibold mb-4">{t("pages.client.title")}</h1>
         <DataTable key={`${pageIndex}-${pageSize}`} data={clients} />
         <PaginationControls
           pageIndex={pageIndex}

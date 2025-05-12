@@ -4,6 +4,7 @@ import { PaginationControls } from "@/components/pagination-controle";
 import { useDispatch } from "react-redux";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { Provider } from "@/api/provider.api";
+import { useTranslation } from "react-i18next";
 
 export default function ProviderPage() {
   const dispatch = useDispatch();
@@ -11,12 +12,12 @@ export default function ProviderPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
-
+  const {t} = useTranslation("");
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: ["Accueil", "Prestataires"],
-        links: ["/office/dashboard"],
+        segments: [t("pages.provider.breadcrumb.home"), t("pages.provider.breadcrumb.providers")],
+        links: ["/office/dashboard"]
       })
     );
   }, [dispatch]);
@@ -49,7 +50,7 @@ export default function ProviderPage() {
   return (
     <>
       <div className="w-full">
-      <h1 className="text-2xl font-semibold mb-4">Les prestataires sur EcoDeli</h1>
+      <h1 className="text-2xl font-semibold mb-4">{t("pages.provider.title")}</h1>
       <DataTable key={`${pageIndex}-${pageSize}`} data={providers} />
       <PaginationControls
         pageIndex={pageIndex}

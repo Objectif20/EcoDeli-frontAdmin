@@ -13,7 +13,8 @@
       "otpSousTitre": "La double authentification est activée sur votre compte, veuillez saisir le code OTP présent dans votre authentificateur.",
       "otpLabel": "Code OTP",
       "valider": "Valider",
-      "erreurOtp": "Votre code OTP est invalide"
+      "erreurOtp": "Votre code OTP est invalide",
+      "forgotPassword": "Mot de passe oublié ?"
     },
     "erreurs": {
       "404": {
@@ -25,9 +26,12 @@
     "parametres": {
       "breadcrumb": {
         "accueil": "Accueil",
-        "parametres": "Paramètres"
+        "parametres": "Général",
+        "doubleAuth" : "Double Authentification"
       },
       "titre": "Paramètres",
+      "general" : "Général",
+      "doubleAuth" : "Double Authentification",
       "sousTitre": "Personnalisez votre expérience EcoDeli.",
       "imageAlt": "Image de profil",
       "imageAction": "Changer l'image",
@@ -237,7 +241,8 @@
           "deliveryman": "Transporteur",
           "merchant": "Commerçant",
           "client": "Expéditeur",
-          "provider": "Prestataire"
+          "provider": "Prestataire",
+          "admin": "Administrateur"
         },
         "status": {
           "sent": "Envoyé",
@@ -267,6 +272,9 @@
         "home": "Accueil",
         "reports": "Signalements"
       },
+      "reportPage": {
+        "title": "Liste des Signalements"
+      },
       "table": {
         "columns": {
           "report_message": "Message",
@@ -286,25 +294,34 @@
           "title": {
             "manage": "Gérer le Ticket",
             "assign": "Attribuer à un Admin",
-            "comment": "Ajouter un Commentaire"
+            "comment": "Ajouter un Commentaire",
+            "content": "Contenu du Signalement",
+            "viewMessage": "Voir le Message"
           },
           "description": {
             "manage": "Gérez ce signalement.",
             "assign": "Sélectionnez un administrateur pour attribuer ce signalement.",
-            "comment": "Ajoutez un commentaire pour ce signalement."
+            "comment": "Ajoutez un commentaire pour ce signalement.",
+            "contentDescription": "Voici le contenu du signalement.",
+            "manageDescription": "Gérez ce signalement.",
+            "assignDescription": "Sélectionnez un administrateur pour attribuer ce signalement.",
+            "commentDescription": "Ajoutez un commentaire pour ce signalement."
           },
           "labels": {
             "selectAdmin": "Sélectionnez un administrateur",
-            "addComment": "Ajouter un commentaire"
+            "addComment": "Ajouter un commentaire",
+            "message": "Message"
           },
           "buttons": {
             "assign": "Attribuer",
             "submit": "Soumettre",
             "manage": "Gérer",
             "assignAdmin": "Attribuer",
-            "comment": "Commenter"
+            "comment": "Commenter",
+            "viewMessage": "Voir le Message"
           }
-        }
+        },
+        "noResults": "Aucun résultat."
       }
     },
     "languages": {
@@ -322,6 +339,8 @@
           "name": "Nom",
           "isoCode": "Code ISO",
           "available": "Disponible",
+          "yes": "Oui",
+          "no": "Non",
           "actions": "Actions",
           "update": "Mettre à jour",
           "noResults": "Aucun résultat."
@@ -361,7 +380,7 @@
           "jsonEditor": "Éditeur JSON",
           "uploadFile": "Fichier de langue (JSON)",
           "uploadDescription": "Téléchargez un fichier JSON contenant les traductions pour cette langue.",
-          "submitButton": "Télécharger le JSON",
+          "submitButton": "Mettre à jour la langue",
           "updateButton": "Mettre à jour"
         },
         "tabs": {
@@ -369,6 +388,122 @@
           "file": "Importer un fichier",
           "visual": "Édition visuelle"
         }
+      }
+    },
+    "stripe": {
+      "dashboardTitle": "Tableau de bord Stripe",
+      "dashboardDescription": "Surveillez vos statistiques de paiement et transactions",
+      "totalRevenue": "Revenu Total",
+      "customers": "Clients",
+      "successRate": "Taux de Réussite",
+      "averageTransaction": "Transaction Moyenne",
+      "overview": "Aperçu",
+      "customersTab": "Clients",
+      "revenueProfit": "Revenu et Profit",
+      "revenueProfitDescription": "Tendances mensuelles de revenu et profit",
+      "grossMargin": "Marge Brute",
+      "grossMarginDescription": "Tendances mensuelles de la marge brute",
+      "customerStats": "Statistiques des Clients",
+      "customerStatsDescription": "Aperçu des données clients",
+      "activeSubscribers": "Abonnés Actifs",
+      "newCustomers": "Nouveaux Clients",
+      "barChartTitle": "Graphique à barres",
+      "barChartDescription": "Janvier - Juin 2024",
+      "radialChartTitle": "Graphique Radial",
+      "radialChartDescription": "Janvier - Juin 2024",
+      "increaseThisMonth": "En hausse de 5,2% ce mois-ci",
+      "totalVisitors": "Affichage du total des visiteurs pour les 6 derniers mois",
+      "period": {
+        "7days": "7 derniers jours",
+        "30days": "30 derniers jours",
+        "90days": "90 derniers jours",
+        "year": "Cette année"
+      },
+      "breadcrumb": {
+        "home": "Accueil",
+        "stripeManagement": "Gestion de Stripe"
+      },
+      "number": "Transactions",
+      "value": "Valeur",
+      "revenue": "Revenu",
+      "profit": "Profit",
+      "margin": "Marge",
+      "januaryToJune2024": "Janvier - Juin 2024",
+      "comparedToPreviousPeriod": "par rapport à la période précédente",
+      "refundRate": "taux de remboursement",
+      "perSuccessfulTransaction": "Par transaction réussie",
+      "ofTotalCustomers": "des clients totaux",
+      "duringCurrentPeriod": "Pendant la période actuelle"
+    },
+    "transactions": {
+      "title": "Gestion des Transactions",
+      "accueil": "Accueil",
+      "searchPlaceholder": "Rechercher par nom...",
+      "typeFilter": {
+        "label": "Type de transaction",
+        "all": "Tous les types",
+        "sub": "Abonnements",
+        "in": "Virements reçus",
+        "out": "Virements émis"
+      },
+      "yearFilter": {
+        "label": "Année",
+        "all": "Toutes",
+        "2023": "2023",
+        "2024": "2024"
+      },
+      "monthFilter": {
+        "label": "Mois",
+        "all": "Tous",
+        "01": "Janvier",
+        "02": "Février",
+        "03": "Mars",
+        "04": "Avril",
+        "05": "Mai",
+        "06": "Juin",
+        "07": "Juillet",
+        "08": "Août",
+        "09": "Septembre",
+        "10": "Octobre",
+        "11": "Novembre",
+        "12": "Décembre"
+      },
+      "filterButton": "Filtrer",
+      "resetButton": "Réinitialiser",
+      "exportButton": "Exporter CSV",
+      "exportDialog": {
+        "title": "Exporter les transactions",
+        "description": "Sélectionnez la période et les catégories à exporter au format CSV.",
+        "period": "Période",
+        "startMonth": "Mois de début",
+        "startYear": "Année de début",
+        "endMonth": "Mois de fin",
+        "endYear": "Année de fin",
+        "categories": "Catégories",
+        "categorySub": "Abonnements",
+        "categoryDelivery": "Livraison",
+        "categoryService": "Prestations",
+        "cancelButton": "Annuler",
+        "exportButton": "Exporter"
+      },
+      "table": {
+        "name": "Nom",
+        "type": "Type de transaction",
+        "category": "Catégorie",
+        "date": "Date",
+        "invoice": "Facture",
+        "downloadInvoice": "Télécharger",
+        "noResults": "Aucun résultat.",
+        "transactionsCount": "{{count}} transaction(s)",
+        "previous": "Précédent",
+        "next": "Suivant"
+      },
+      "badge": {
+        "sub": "Abonnement",
+        "in": "Virement reçu",
+        "out": "Virement émis",
+        "delivery": "Livraison",
+        "service": "Prestation"
       }
     },
     "contracts": {
@@ -420,8 +555,8 @@
         "page": {
           "title": "Ensemble des abonnés EcoDeli"
         }
-      }, 
-      "plan" : {
+      },
+      "plan": {
         "breadcrumb": {
           "home": "Accueil",
           "subscriptions": "Abonnements"
@@ -440,13 +575,13 @@
           "first_shipping_free": "Première livraison gratuite : {{free}}",
           "first_shipping_free_threshold": "Seuil pour la première livraison gratuite : {{threshold}} €",
           "is_pro": "Formule professionnelle : {{isPro}}",
-          "create_plan" : "Créer une formule d'abonnement"
+          "create_plan": "Créer une formule d'abonnement"
         },
         "buttons": {
           "edit": "Modifier"
         }
       },
-      "update" : {
+      "update": {
         "breadcrumb": {
           "home": "Accueil",
           "subscriptions": "Abonnements"
@@ -529,7 +664,7 @@
           }
         }
       }
-    }, 
+    },
     "admin": {
       "list": {
         "breadcrumb_home": "Accueil",
@@ -579,6 +714,7 @@
       }
     },
     "category": {
+      "accueil": "Accueil",
       "title": "Catégories de véhicules",
       "description": "Gérez les différentes catégories de véhicules disponibles.",
       "addCategory": "Ajouter une catégorie",
@@ -607,6 +743,275 @@
         "weightPositive": "Le poids doit être un nombre positif",
         "volumePositive": "Le volume doit être un nombre positif",
         "uniqueName": "Le nom de la catégorie doit être unique"
+      }
+    },
+    "newPassword": {
+      "title": "Mot de passe oublié",
+      "description": "Entrez votre adresse email pour réinitialiser votre mot de passe.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Entrez votre email",
+      "submitButton": "Envoyer",
+      "sending": "Envoi en cours...",
+      "error": "Erreur lors de l'envoi de l'email",
+      "success": "Un email de réinitialisation a été envoyé."
+    },
+    "createNewPassword": {
+      "title": "Nouveau mot de passe",
+      "description": "Veuillez entrer votre nouveau mot de passe.",
+      "passwordLabel": "Nouveau mot de passe",
+      "passwordPlaceholder": "Entrez votre nouveau mot de passe",
+      "confirmPasswordLabel": "Confirmez le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
+      "submitButton": "Changer le mot de passe",
+      "changing": "Changement en cours...",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "passwordRequirements": "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre et un caractère spécial.",
+      "passwordChangeError": "Erreur lors de la modification du mot de passe",
+      "twoFATitle": "Validation 2FA",
+      "twoFADescription": "Veuillez entrer le code 2FA envoyé à votre adresse email.",
+      "otpLabel": "Code 2FA",
+      "validateButton": "Valider",
+      "validating": "Validation en cours...",
+      "twoFAError": "Erreur lors de la validation 2FA: "
+    },
+    "newPasswordSent": {
+      "title": "Un email vous a été envoyé",
+      "description": "Veuillez vérifier votre boîte de réception pour réinitialiser votre mot de passe."
+    },
+    "provider": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "providers": "Prestataires"
+      },
+      "title": "Les prestataires sur EcoDeli",
+      "table": {
+        "columns": {
+          "name": "Nom",
+          "company": "Entreprise",
+          "status": "Statut",
+          "service_number": "Prestations",
+          "phone_number": "Téléphone",
+          "rate": "Note Globale",
+          "actions": "Accéder au profil",
+          "no_results": "Aucun résultat.",
+          "prestataire": "Prestataire",
+          "entreprise": "Entreprise",
+          "statut": "Statut",
+          "prestations": "Prestations",
+          "telephone": "Téléphone",
+          "note_globale": "Note Globale"
+        },
+        "badges": {
+          "no_services": "Aucune prestation",
+          "no_rating": "Aucune note"
+        },
+        "status": {
+          "wait": "En attente",
+          "okay": "Validé",
+          "refused": "Refusé"
+        },
+        "columns_toggle": "Colonnes"
+      },
+      "actions": {
+        "delete_profile": "Supprimer le profil",
+        "edit_profile": "Modifier le profil"
+      },
+      "messages": {
+        "error_loading_data": "Erreur de chargement des données",
+        "no_data_found": "Aucune donnée trouvée"
+      }
+    },
+    "provider-service": {
+      "dialog": {
+        "trigger": "Valider le service",
+        "title": "Valider le service",
+        "description": "Êtes-vous sûr de vouloir valider ce service \"{{serviceName}}\" ? Il sera disponible partout sur EcoDeli.",
+        "price_label": "Vous pouvez modifier le prix si vous estimez qu'il correspond mieux à la valeur du service :",
+        "cancel": "Annuler",
+        "confirm": "Confirmer la validation"
+      }
+    },
+    "provider-details": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "providers": "Prestataires",
+        "provider-details": "Détails du prestataire"
+      },
+      "back-to-list": "Retour à la liste",
+      "provider-not-found": "Prestataire non trouvé",
+      "provider-details-not-loaded": "Les détails du prestataire n'ont pas pu être chargés.",
+      "validate-profile": "Valider le profil",
+      "profile-validation": "Validation du profil",
+      "accept-provider": "Voulez-vous accepter ce prestataire ?",
+      "cancel": "Annuler",
+      "accept": "Accepter",
+      "general-information": "Informations générales",
+      "description": "Description",
+      "address": "Adresse",
+      "contact": "Contact",
+      "siret": "SIRET",
+      "documents": "Documents",
+      "documents-provided": "Documents fournis par le prestataire",
+      "submitted-on": "Soumis le",
+      "no-documents-available": "Aucun document disponible",
+      "contracts": "Contrats",
+      "associated-contracts": "Contrats associés au prestataire",
+      "no-contracts-available": "Aucun contrat disponible",
+      "services": "Services",
+      "no-services-available": "Aucun service disponible",
+      "no-service-image": "Aucune image",
+      "validated": "Validé",
+      "price": "Prix",
+      "duration": "min",
+      "profile" : "Profil"
+    },
+    "merchant-details": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "merchants": "Commerçants",
+        "merchant-details": "Détails du commerçant"
+      },
+      "back-to-list": "Retour à la liste",
+      "merchant-not-found": "Commerçant non trouvé",
+      "merchant-details-not-loaded": "Les détails du commerçant n'ont pas pu être chargés.",
+      "deliveries": "Livraisons",
+      "total-requests": "Demandes totales",
+      "subscription": "Abonnement",
+      "active-plan": "Formule active",
+      "reports": "Signalements",
+      "total-received": "Total reçus",
+      "professional-information": "Informations professionnelles",
+      "business-details": "Détails de l'entreprise et informations légales",
+      "company": "Entreprise",
+      "siret": "SIRET",
+      "country": "Pays",
+      "main-contact": "Contact principal"
+    },
+    "merchant": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "merchants": "Commerçants"
+      },
+      "colonnes" : "Colonnes",
+      "title": "Les commerçants sur EcoDeli",
+      "columns": {
+        "merchant": "Commerçant",
+        "company": "Entreprise",
+        "siret": "SIRET",
+        "country": "Pays",
+        "phone": "Téléphone",
+        "description": "Description",
+        "actions": "Accéder au profil"
+      },
+      "no-results": "Aucun résultat."
+    },
+    "deliveryman": {
+      "title": "Les livreurs sur EcoDeli",
+      "breadcrumb": {
+        "home": "Accueil",
+        "deliverymen": "Transporteurs"
+      },
+      "table": {
+        "columns": {
+          "deliveryman": "Livreur",
+          "status": "Statut",
+          "email": "Email Pro",
+          "globalRating": "Note Globale",
+          "actions": "Détails"
+        },
+        "statuses": {
+          "pending": "En attente",
+          "validated": "Validé"
+        },
+        "noRating": "Aucune note",
+        "noResults": "Aucun résultat."
+      }
+    },
+    "deliveryman-details": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "deliverymen": "Transporteurs",
+        "deliveryman-details": "Détails du transporteur"
+      },
+      "title": "Les livreurs sur EcoDeli",
+      "back-to-list": "Retour à la liste",
+      "profile": "Profil",
+      "vehicles": "Véhicules",
+      "general-information": "Informations générales",
+      "description": "Description",
+      "document": "Document",
+      "view-document": "Voir le document",
+      "contact": "Contact",
+      "deliveryman-vehicles": "Véhicules du livreur",
+      "no-vehicles": "Aucun véhicule enregistré",
+      "registration": "Immatriculation",
+      "co2-emission": "Émission CO2",
+      "view-justification": "Voir le justificatif",
+      "validate-vehicle": "Valider le véhicule",
+      "validate-profile": "Valider le profil",
+      "accept": "Accepter",
+      "cancel": "Annuler",
+      "yes": "Oui",
+      "validation": {
+        "profile-validation": "Validation du profil",
+        "accept-deliveryman": "Voulez-vous accepter ce livreur ?",
+        "validate-vehicle-confirmation": "Êtes-vous sûr de vouloir valider ce véhicule ?"
+      },
+      "status": {
+        "validated": "Validé",
+        "refused": "Refusé",
+        "pending": "En attente"
+      },
+      "not-found": {
+        "title": "Livreur non trouvé",
+        "description": "Les détails du livreur n'ont pas pu être chargés."
+      }
+    },
+    "client-details": {
+      "breadcrumb": {
+        "home": "Accueil",
+        "clients": "Particuliers",
+        "client-details": "Détails du particulier"
+      },
+      "back-to-list": "Retour à la liste",
+      "client-not-found": "Client non trouvé",
+      "client-details-not-loaded": "Les détails du client n'ont pas pu être chargés.",
+      "delivery-requests": "Livraisons",
+      "total-requests": "Demandes totales",
+      "services": "Prestations",
+      "services-completed": "Services réalisés",
+      "reports": "Signalements",
+      "total-received": "Total reçus",
+      "detailed-information": "Informations détaillées",
+      "subscription": "Abonnement",
+      "contact": "Contact",
+      "delivery-status": "Statut transporteur",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "view-delivery-profile": "Voir profil transporteur",
+      "columns" : {
+        "profile" : "Particuliers",
+        "email" : "Email",
+        "nbDemandeDeLivraison" : "Nb Demandes de Livraison",
+        "nomAbonnement" : "Nom Abonnement",
+        "nbSignalements" : "Nb Signalements",
+        "actions" : "Détails"
+      }
+    },
+    "client": {
+      "title": "Les Particuliers sur EcoDeli",
+      "columns": {
+        "profile": "Livreur",
+        "email": "Email",
+        "nbDemandeDeLivraison": "Nb Demandes de Livraison",
+        "nomAbonnement": "Nom Abonnement",
+        "nbSignalements": "Nb Signalements",
+        "actions": "Détails"
+      },
+      "noResults": "Aucun résultat.",
+      "breadcrumb": {
+        "home": "Accueil",
+        "clients": "Particuliers"
       }
     }
   },
@@ -1570,7 +1975,7 @@
             "cancelSubscription": "Stopper votre abonnement"
           },
           "deliveryman": {
-            "deliverymanSettings": "Paramètres du Livreur",
+            "deliverymanSettings": "Paramètres du transporteur",
             "modifyInfo": "Modifier vos informations",
             "professionalEmail": "Email Professionnel",
             "invalidEmail": "Adresse email invalide",
@@ -1591,7 +1996,7 @@
             "yourPostalCode": "Votre code postal"
           },
           "merchant": {
-            "merchantSettings": "Paramètres du Marchand",
+            "merchantSettings": "Paramètres du commerçant",
             "modifyInfo": "Modifier vos informations",
             "companyName": "Nom de l'Entreprise",
             "companyNameRequired": "Le nom de l'entreprise est requis",
@@ -1616,7 +2021,7 @@
             "yourPhone": "Votre téléphone"
           },
           "provider": {
-            "providerSettings": "Paramètres du Fournisseur",
+            "providerSettings": "Paramètres du Prestataire",
             "modifyInfo": "Modifier vos informations",
             "companyName": "Nom de l'Entreprise",
             "companyNameRequired": "Le nom de l'entreprise est requis",
@@ -2066,7 +2471,7 @@
         "becomeDeliveryman": "Devenir Transporteur ?",
         "createDeliveryRequest": "Nouvelle demande de livraison",
         "activeShipments": "Annonces actives",
-        "createTrolleyDrop" : "Lâcher de chariot",
+        "createTrolleyDrop": "Lâcher de chariot",
         "createService": "Nouvelle prestation",
         "becomeDeliverymanDescription": "Devenez transporteur et livrez vos colis en toute sécurité avec EcoDeli. Inscrivez-vous dès maintenant pour profiter de nos offres exclusives.",
         "close": "Fermer",
@@ -2106,9 +2511,11 @@
         "providerProfileUnderReviewDescription": "Votre profil Prestataire est en cours d'analyse. Vous serez informé dès que le processus sera terminé.",
         "deliverymanProfileUnderReview": "Profil Transporteur en cours d'analyse",
         "deliverymanProfileUnderReviewDescription": "Votre profil Transporteur est en cours d'analyse. Vous serez informé dès que le processus sera terminé.",
-        "availability" : "Disponibilités"
+        "availability": "Disponibilités",
+        "services": "Mes prestations",
+        "stripeValidationRequired": "Demande de livraison impossible",
+        "validateNow": "Renseigner mes coordonnées bancaires"
       },
-      
       "disclosure": {
         "completed": "(complété)",
         "previous": "Précédent",
@@ -2178,5 +2585,13 @@
         "search": "Rechercher"
       }
     }
+  },
+  "multiSelect": {
+    "placeholder": "Sélectionner des options",
+    "searchPlaceholder": "Rechercher...",
+    "noResults": "Aucun résultat",
+    "selectAll": "(Tout sélectionner)",
+    "reset": "Réinitialiser",
+    "close": "Fermer"
   }
 }
