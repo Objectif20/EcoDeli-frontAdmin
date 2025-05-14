@@ -119,4 +119,12 @@ export const updateAdminRoles = async (admin_id: string, roles: string[]) => {
     console.error("Erreur lors de la mise à jour des rôles de l'admin:", error);
   }
 };
+
+export const updateLanguage = async (language_id: string) => {
+  try {
+    await axiosInstance.patch(`/admin/profile/language`, { language_id });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la langue de l'admin:", error);
+  }
+}
  

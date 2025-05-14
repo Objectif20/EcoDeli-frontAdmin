@@ -10,6 +10,7 @@ export interface Admin {
   super_admin: boolean;
   language: string;  
   iso_code: string; 
+  language_id: string;
   roles: string[];
   otp?:boolean | false;
 }

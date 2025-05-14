@@ -131,7 +131,7 @@ export default function EditPlanPage() {
   }
 
   if (!planDetail) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return (

@@ -57,7 +57,7 @@ export default function StripeDashboard() {
   };
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return (

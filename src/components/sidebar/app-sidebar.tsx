@@ -25,13 +25,15 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { RootState } from "@/redux/store"
 import { useTranslation } from "react-i18next"
+import { NavLanguage } from "./nav-language"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const admin = useSelector((state: RootState) => state.admin.admin)
-
+  const {isMobile} = useSidebar()
   const { t } = useTranslation()
 
   const userData = {
@@ -143,6 +145,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       </ScrollArea>
       <SidebarFooter>
+        {isMobile && (
+          <NavLanguage />
+        )}
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />

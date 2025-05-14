@@ -21,6 +21,11 @@
         "titre": "Erreur 404",
         "message": "La page que vous cherchez n'existe pas.",
         "bouton": "Revenir en arrière"
+      }, 
+      "403" : {
+        "titre": "Erreur 403",
+        "message": "Vous n'avez pas l'autorisation d'accéder à cette page.",
+        "bouton": "Revenir en arrière"
       }
     },
     "parametres": {
@@ -1416,7 +1421,10 @@
           "closeButton": "Fermer",
           "selectService": "Sélectionnez une prestation pour voir les détails.",
           "selectServiceDescription": "Vous pouvez cliquer sur une des prestations à gauche pour afficher ses informations.",
-          "viewDetails": "Voir les détails"
+          "viewDetails": "Voir les détails",
+          "accueil"  : "Accueil",
+          "myServices" : "Mes prestations",
+          "services-details" : "Prestations"
         },
         "register": {
           "firstProfileChoice": {
@@ -1454,6 +1462,10 @@
             "acceptTerms": "J'accepte les conditions générales du site EcoDeli, disponibles ",
             "termsLink": "ici",
             "continue": "Continuer",
+            "firstNamePlaceholder": "Jean",
+            "lastNamePlaceholder": "Dupont",
+            "passwordPlaceholder": "••••••••",
+            "confirmPasswordPlaceholder": "••••••••",
             "validation": {
               "email": "Veuillez entrer une adresse email valide.",
               "passwordLength": "Le mot de passe doit contenir au moins 12 caractères.",
@@ -1521,6 +1533,20 @@
             "selectActivitySector": "Sélectionnez votre secteur d'activité",
             "selectLanguage": "Sélectionnez votre langue",
             "termsLink": "les conditions générales",
+            "placeholders": {
+              "lastName": "Dupont",
+              "firstName": "Jean",
+              "email": "exemple@email.com",
+              "password": "********",
+              "confirmPassword": "********",
+              "companyName": "Ma Société",
+              "siretNumber": "12345678901234",
+              "address": "123 rue de Paris",
+              "postalCode": "75001",
+              "city": "Paris",
+              "phone": "0612345678",
+              "description": "Décrivez votre entreprise..."
+            },
             "validation": {
               "firstNameMin": "Le prénom doit contenir au moins 2 caractères",
               "lastNameMin": "Le nom doit contenir au moins 2 caractères",
@@ -1585,7 +1611,19 @@
             "country": "Pays",
             "phone": "Téléphone",
             "language": "Langue",
-            "description": "Description"
+            "description": "Description",
+            "firstNamePlaceholder": "Prénom",
+            "lastNamePlaceholder": "Nom",
+            "emailPlaceholder": "exemple@email.com",
+            "passwordPlaceholder": "••••••••",
+            "confirmPasswordPlaceholder": "••••••••",
+            "companyNamePlaceholder": "Nom de l'entreprise",
+            "siretPlaceholder": "12345678901234",
+            "addressPlaceholder": "123 rue de Paris",
+            "postalCodePlaceholder": "75001",
+            "cityPlaceholder": "Paris",
+            "phonePlaceholder": "0612345678",
+            "descriptionPlaceholder": "Décrivez votre entreprise..."
           },
           "deliverymanProfile": {
             "title": "Inscription Livreur",
@@ -1771,7 +1809,53 @@
             "alt": "Illustration",
             "message": "Veuillez vérifier votre boîte de réception pour réinitialiser votre mot de passe."
           }
-        }
+        },
+      "deliveries-details": {
+        "title": "{{name}}",
+        "reference": "Référence N°{{id}}",
+        "departureDate": "Départ prévu:",
+        "arrivalDate": "Arrivée prévue:",
+        "departure": "Départ",
+        "arrival": "Arrivée",
+        "progress": "Progression",
+        "proposedPrice": "Prix proposé",
+        "takeDelivery": "Prendre la livraison",
+        "partialDelivery": "Prise en charge partielle",
+        "overview": "Aperçu",
+        "packages": "Colis ({{count}})",
+        "additionalInfo": "Informations complémentaires",
+        "deliveryStatus": "État de la livraison",
+        "packageOverview": "Aperçu des colis",
+        "shippingDetails": "Détails de l'expédition",
+        "statut": "Statut",
+        "status" : {
+          "pending": "En attente",
+          "inProgress": "En cours",
+          "finished": "Terminé"
+        },
+        "distance": "Distance",
+        "totalWeight": "Poids total",
+        "packageDetails": "Détails des colis",
+        "weight": "Poids",
+        "volume": "Volume",
+        "fragile": "Fragile",
+        "fullCoverage": "Le transporteur assure toute la distance",
+        "partialCoverage": "Le transporteur assure une partie de la distance",
+        "remainingCoverage": "Le transporteur assure le reste de la distance",
+        "noSteps": "Aucune étape pour le moment",
+        "urgent": "URGENT",
+        "bookSuccess": "Réservation réussie !",
+        "bookError": "Erreur de réservation:",
+        "negotiationError": "Erreur de négociation:",
+        "eligibilityError": "Erreur d'éligibilité:",
+        "loadingError": "Erreur de chargement de la livraison:",
+        "missingId": "Erreur : ID de livraison manquant",
+        "loading": "Chargement...",
+        "yes": "Oui",
+        "no": "Non",
+        "fullDelivery": "Prise en charge complète",
+        "partialDeliveryMessage": "Vous serez redirigé vers la messagerie pour en discuter."
+      }
       },
       "office": {
         "myDocuments": {
@@ -1795,6 +1879,22 @@
           },
           "uploadedOn": "Uploadé le"
         },
+        "proofs": {
+          "title": "Liste des Documents",
+          "addProof": "Ajouter un justificatif",
+          "addProofDialogTitle": "Ajouter un justificatif",
+          "addProofDialogDescription": "Veuillez sélectionner un fichier, donner un nom et une description.",
+          "documentName": "Nom du document",
+          "documentNamePlaceholder": "Entrez un nom",
+          "documentDescription": "Description",
+          "documentDescriptionPlaceholder": "Entrez une description",
+          "submit": "Envoyer",
+          "accessAllDocuments": "Accéder à tous mes documents",
+          "downloadDocument": "Télécharger le document",
+          "errorFetchingDocuments": "Erreur lors de la récupération des documents",
+          "errorUploadingDocument": "Erreur lors de l'envoi du document :",
+          "alertSelectFile": "Veuillez sélectionner un fichier et entrer un nom."
+        },
         "chat": {
           "home": "Accueil",
           "messaging": "Messagerie",
@@ -1804,6 +1904,32 @@
           "offline": "Hors ligne",
           "typeMessage": "Tapez votre message ici...",
           "selectContact": "Sélectionnez un contact pour commencer à discuter."
+        },
+        "chat-negotiation": {
+          "negotiateDelivery": "Négocier la livraison",
+          "proposeNewConditions": "Proposez de nouvelles conditions pour cette livraison",
+          "selectDelivery": "Sélection de la livraison",
+          "delivery": "Livraison",
+          "selectDeliveryPlaceholder": "Sélectionner une livraison",
+          "priceInformation": "Informations de prix",
+          "modifyPrice": "Modifier le prix pour le reste de la demande de livraison",
+          "negotiatedPrice": "Prix pour une livraison négociée avec ce transporteur",
+          "destination": "Destination",
+          "warehouse": "Entrepôt",
+          "customAddress": "Adresse personnalisée",
+          "selectWarehouse": "Sélectionner un entrepôt",
+          "selectWarehousePlaceholder": "Sélectionner un entrepôt",
+          "searchAddress": "Rechercher une adresse",
+          "searchAddressPlaceholder": "Rechercher une ville ou une adresse",
+          "coordinates": "Coordonnées",
+          "isBox": "S'agit-il d'un box ?",
+          "endDate": "Date de fin",
+          "selectDate": "Sélectionner une date",
+          "submitProposal": "Soumettre la proposition",
+          "errorLoadingWarehouses": "Erreur lors du chargement des entrepôts :",
+          "errorLoadingDeliveries": "Erreur lors du chargement des livraisons :",
+          "errorSubmittingData": "Erreur lors de la soumission des données :",
+          "errorFetchingCityName": "Error fetching city name from OpenStreetMap:"
         },
         "settings": {
           "general": {
@@ -1844,7 +1970,8 @@
             "blockedUsers": "Liste des utilisateurs que vous avez bloqués",
             "options": "Options",
             "unblockUser": "Débloquer l'utilisateur",
-            "noBlockedUsers": "Vous n'avez bloqué aucun utilisateur."
+            "noBlockedUsers": "Vous n'avez bloqué aucun utilisateur.",
+            "updateProfileImage" : "Mettre à jour l'image de profil"
           },
           "confidentiality": {
             "home": "Accueil",
@@ -1866,32 +1993,71 @@
             "enable2FA": "Activer la double authentification",
             "enable2FADescription": "Afin d'améliorer la sécurité de votre compte, EcoDeli vous recommande d'activer cette double authentification. Pour cela, vous avez besoin d'une application d'authentification (Authy...)",
             "activate2FA": "Activer la double authentification",
+            "disable2FA": "Désactiver la double authentification",
+            "enterOtp": "Entrez le code OTP pour désactiver la double authentification.",
+            "scanQrCode": "Scannez le code QR avec votre application d'authentification.",
+            "imageAlt": "Code QR pour l'authentification à deux facteurs",
+            "loading": "Chargement...",
+            "validate": "Valider",
+            "cancel": "Annuler",
             "whatIs2FA": "Qu'est-ce que l'A2F ? Retrouvez l'explication juste",
             "here": "ici",
             "accessPrivacyPolicy": "Accéder à la",
             "privacyPolicy": "politique de confidentialité de EcoDeli"
           },
-          "billing": {
+          "billings": {
             "title": "Facturations",
-            "breadcrumbHome": "Accueil",
-            "breadcrumbSettings": "Paramètres",
-            "breadcrumbBilling": "Facturations",
-            "generalSettings": "Paramètres généraux",
-            "profile": "Profil",
-            "privacy": "Confidentialité",
-            "contactDetails": "Coordonnées",
-            "subscriptions": "Abonnements",
-            "billing": "Facturations",
-            "reports": "Signalements",
-            "yourBalance": "Votre solde",
-            "currentBalance": "Solde actuel",
-            "requestTransfer": "Demander un virement immédiat",
-            "connectedStripeAccount": "Vous êtes bien connecté avec un compte Stripe",
-            "updateBankDetails": "Mettre à jour vos coordonnées bancaires",
-            "updateStripeAccount": "Mettre à jour mon compte pour virement",
-            "ibanLabel": "IBAN",
-            "saveIban": "Enregistrer mon IBAN",
-            "stripeAccountCreated": "Votre compte Stripe a été créé avec succès."
+            "breadcrumb": {
+              "home": "Accueil",
+              "settings": "Paramètres",
+              "billings": "Facturations"
+            },
+            "nav": {
+              "general": "Paramètres généraux",
+              "profile": "Profil",
+              "privacy": "Confidentialité",
+              "contact": "Coordonnées",
+              "subscriptions": "Abonnements",
+              "billings": "Facturations",
+              "reports": "Signalements"
+            },
+            "balance": {
+              "title": "Votre solde",
+              "current": "Solde actuel :",
+              "request": "Demander un virement immédiat"
+            },
+            "stripe": {
+              "valid": "Votre compte Stripe est valide",
+              "invalid": "Mettre à jour vos coordonnées bancaires",
+              "update": "Mettre à jour mon compte pour virement",
+              "configure": "Configurer mon compte Stripe",
+              "dialog": {
+                "title": "Redirection vers Stripe",
+                "description": "Vous allez être redirigé vers la plateforme Stripe pour gérer votre compte.",
+                "descriptionUpdate": "Vous allez être redirigé vers la plateforme Stripe pour mettre à jour votre compte.",
+                "descriptionCreate": "Vous allez être redirigé vers la plateforme Stripe pour créer votre compte.",
+                "yes": "Oui",
+                "no": "Non"
+              }
+            },
+            "table": {
+              "filter": "Filtrer par date",
+              "columns": {
+                "date": "Date",
+                "amount": "Montant",
+                "type": "Type",
+                "invoice": "Facture"
+              },
+              "type": {
+                "auto": "Automatique",
+                "manual": "Manuel"
+              },
+              "download": "Télécharger",
+              "noResults": "Aucun résultat.",
+              "previous": "Précédent",
+              "next": "Suivant"
+            },
+            "loading": "Chargement des facturations..."
           },
           "contactDetails": {
             "title": "Coordonnées",
@@ -1932,7 +2098,12 @@
             "startTime": "Heure de début",
             "endTime": "Heure de fin",
             "errorFetchingAvailability": "Erreur lors de la récupération des disponibilités",
-            "errorUpdatingAvailability": "Erreur lors de la mise à jour des disponibilités"
+            "errorUpdatingAvailability": "Erreur lors de la mise à jour des disponibilités",
+            "loading": "Chargement...",
+            "noDisponibility" : "Aucune disponibilité sélectionnée",
+            "addDisponibility": "Ajoutez des jours de disponibilité pour permettre aux clients de prendre rendez-vous avec vous.",
+            "breadCrumb_accueil"  : "Accueil",
+            "breadCrumb_disponibility" : "Mes disponibilités"
           },
           "reports": {
             "title": "Signalements",
@@ -1972,7 +2143,17 @@
             "whatToDo": "Que souhaitez-vous faire ?",
             "discoverPlans": "Découvrir les autres formules d'abonnements",
             "changePlan": "Changer de formule",
-            "cancelSubscription": "Stopper votre abonnement"
+            "cancelSubscription": "Stopper votre abonnement",
+            "updateBankDetails": "Mettre à jour mes informations bancaires",
+            "addBankDetails": "Ajouter des coordonnées bancaires",
+            "updateBankDetailsDescription": "Mettez à jour vos coordonnées bancaires pour les futures transactions.",
+            "addBankDetailsDescription": "Ajoutez vos coordonnées bancaires pour pouvoir effectuer des transactions.",
+            "cardNumber": "Numéro de carte",
+            "expiryDate": "Date d'expiration",
+            "cvc": "CVC",
+            "cancel": "Annuler",
+            "submit": "Soumettre",
+            "processing": "Traitement..."
           },
           "deliveryman": {
             "deliverymanSettings": "Paramètres du transporteur",
@@ -2057,7 +2238,9 @@
             "month": "Mois",
             "week": "Semaine",
             "day": "Jour",
-            "agenda": "Agenda"
+            "agenda": "Agenda",
+            "breadcrumbHome": "Accueil",
+            "breadcrumbPlanning": "Mon planning"
           }
         },
         "delivery": {
@@ -2349,6 +2532,7 @@
           },
           "ongoingDeliveries": {
             "title": "Mes livraisons en cours",
+            "home": "Accueil",
             "noDeliveries": "Aucune livraison en cours",
             "noDeliveriesDescription": "Vous n'avez pas de livraison en cours.",
             "deliveryId": "Livraison {{id}}",
@@ -2357,7 +2541,41 @@
             "currentPosition": "Position actuelle",
             "packageTransmitted": "Colis transmis",
             "estimatedArrivalDate": "Date d'arrivée estimée :"
-          }
+          },
+          "my-routes": {
+              "routeManagement": "Gestion des Trajets",
+              "addRoute": "Ajouter un trajet",
+              "errorFetchingRoutes": "Erreur lors de la récupération des trajets:",
+              "errorAddingRoute": "Erreur lors de l'ajout du trajet:",
+              "activeAndPermanentRoutes": "Trajets actifs et permanents",
+              "noActiveOrPermanentRoutes": "Aucun trajet actif ou permanent",
+              "pastRoutes": "Trajets passés",
+              "departure": "Départ",
+              "arrival": "Arrivée",
+              "coordinates": "Coordonnées",
+              "day": "Jour",
+              "date": "Date",
+              "toleranceRadius": "Rayon de tolérance",
+              "return": "Retour",
+              "sameDay": "Le même jour",
+              "nextDay": "Le lendemain",
+              "type": "Type",
+              "permanent": "Permanent",
+              "oneTime": "Ponctuel",
+              "departureRequired": "Le lieu de départ est requis",
+              "arrivalRequired": "Le lieu d'arrivée est requis",
+              "radiusPositive": "Le rayon doit être positif",
+              "weekdayOrDateRequired": "Un jour de la semaine est requis pour les trajets permanents, une date pour les trajets ponctuels",
+              "days": {
+                "monday": "Lundi",
+                "tuesday": "Mardi",
+                "wednesday": "Mercredi",
+                "thursday": "Jeudi",
+                "friday": "Vendredi",
+                "saturday": "Samedi",
+                "sunday": "Dimanche"
+              }
+            }
         },
         "services": {
           "client": {
@@ -2392,6 +2610,141 @@
               "dropdown": {
                 "columns": "Colonnes"
               }
+            },
+            "services-reviews": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "services": "Prestations",
+                "my-reviews": "Mes avis"
+              },
+              "title": "Mes avis",
+              "error": "Erreur lors de la récupération des avis",
+              "columns": {
+                "provider": "Prestataire",
+                "message": "Message",
+                "service": "Service",
+                "rate": "Note",
+                "date": "Date",
+                "columns": "Colonnes"
+              },
+              "full-message": "Message complet",
+              "no-results": "No results."
+            }
+          },
+          "successCreate": {
+            "title": "Prestation bien créée !",
+            "description": "Votre demande de prestation a été enregistrée avec succès.",
+            "confirmation": "Confirmation",
+            "confirmationDescription": "Votre demande de prestation va être étudiée par notre équipe. Vous serez notifié dès qu'une décision sera prise.",
+            "thankYou": "Merci pour votre patience.",
+            "dashboard": "Aller au tableau de bord"
+          },
+          "services-details": {
+            "breadcrumbHome": "Accueil",
+            "breadcrumbMyServices": "Mes prestations",
+            "selectService": "Sélectionnez un service",
+            "selectServiceDescription": "Veuillez sélectionner un service pour voir les détails.",
+            "proposedBy": "Proposé par {name}",
+            "description": "Description",
+            "customerReviews": "Avis des clients",
+            "noReviews": "Aucun avis pour le moment"
+          },
+          "create": {
+            "breadcrumbHome": "Accueil",
+            "breadcrumbMyServices": "Mes prestations",
+            "breadcrumbCreateService": "Créer une prestation",
+            "title": "Créer une nouvelle prestation",
+            "description": "Remplissez les informations ci-dessous pour proposer votre prestation sur notre plateforme.",
+            "serviceType": "Type de service",
+            "serviceName": "Nom de la prestation",
+            "serviceDescription": "Description",
+            "city": "Ville",
+            "price": "Prix",
+            "duration": "Durée (en minutes)",
+            "keywords": "Mots-clés",
+            "addKeywords": "Ajoutez un mot-clé",
+            "acceptTerms": "J'accepte qu'EcoDeli analyse ma prestation",
+            "addImages": "Ajouter des images",
+            "submit": "Envoyer ma demande de prestation",
+            "error": {
+              "serviceTypeRequired": "Type de service requis",
+              "nameRequired": "Nom requis",
+              "descriptionTooShort": "Description trop courte",
+              "cityRequired": "Ville requise",
+              "invalidPrice": "Prix invalide",
+              "invalidDuration": "Durée invalide",
+              "acceptTermsRequired": "Vous devez accepter les conditions.",
+              "imageRequired": "Vous devez ajouter au moins une image."
+            }
+          },
+          "provider": {
+            "services-history": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "history": "Historique des prestations"
+              },
+              "title": "Historique des prestations sur EcoDeli",
+              "error": "Erreur lors de la récupération de l'historique des services :",
+              "columns": {
+                "client": "Client",
+                "date": "Date",
+                "time": "Heure",
+                "service": "Service",
+                "rating": "Note",
+                "columns": "Colonnes"
+              },
+              "no-results": "No results."
+            },
+            "services-list": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "my-services": "Mes prestations"
+              },
+              "title": "Mes services sur EcoDeli",
+              "error": "Erreur lors de la récupération des services :",
+              "add-service": "Ajouter une nouvelle prestation",
+              "columns": {
+                "name": "Nom",
+                "description": "Description",
+                "type": "Type",
+                "city": "Ville",
+                "price": "Prix",
+                "duration": "Durée",
+                "status": "Statut",
+                "columns": "Colonnes"
+              },
+              "status": {
+                "active": "Actif",
+                "inactive": "Inactif"
+              },
+              "actions": {
+                "details": "Détails"
+              },
+              "no-results": "No results."
+            },
+            "services-reviews": {
+              "breadcrumb": {
+                "home": "Accueil",
+                "reviews": "Avis"
+              },
+              "title": "Les avis sur EcoDeli",
+              "error": "Erreur lors de la récupération des avis",
+              "columns": {
+                "author": "Auteur",
+                "service": "Service",
+                "rate": "Note",
+                "date": "Date",
+                "message": "Message",
+                "columns": "Colonnes"
+              },
+              "reply-message": "Message de réponse:",
+              "selected-review-id": "ID de l'avis sélectionné:",
+              "reply-placeholder": "Répondre à cet avis...",
+              "send": "Envoyer",
+              "actions": {
+                "details": "Détails"
+              },
+              "no-results": "No results."
             }
           }
         },
@@ -2465,7 +2818,9 @@
         "qui_sommes_nous": "Qui sommes-nous ?",
         "register": "S'inscrire",
         "login": "Se connecter",
-        "goToDashboard": "Accéder à mon espace"
+        "goToDashboard": "Accéder à mon espace",
+        "game" : "Découvrez notre jeu vidéo ! EcoQuest !",
+        "gameLink" : "Accéder au jeu"
       },
       "sidebar": {
         "becomeDeliveryman": "Devenir Transporteur ?",
@@ -2593,5 +2948,13 @@
     "selectAll": "(Tout sélectionner)",
     "reset": "Réinitialiser",
     "close": "Fermer"
+  },
+  "game" : {
+    "score" : "Score : ",
+    "boxes" : "Colis : ",
+    "resultTitle" : "Voici vos résultats !",
+    "retryButton" : "Réessayer",
+    "title" : "Game Over",
+    "back" : "Retour sur Ecodeli"
   }
 }

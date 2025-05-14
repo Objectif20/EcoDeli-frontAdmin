@@ -98,6 +98,16 @@ export class LanguageApi {
     }
   }
 
+  static async getAlllanguage(): Promise<Language[]> {
+    try {
+        const response = await axiosInstance.get("/client/register/language");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching languages:", error);
+        return [];
+    }
+}
+
 }
 
 
