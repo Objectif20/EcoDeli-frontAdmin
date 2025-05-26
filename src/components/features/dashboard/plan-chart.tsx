@@ -1,6 +1,6 @@
 "use client";
 
-import { LabelList, Pie, PieChart } from "recharts";
+import { Cell, LabelList, Pie, PieChart } from "recharts";
 import {
   Card,
   CardContent,
@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -19,30 +18,26 @@ import { TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PlanChartData } from "@/api/finance.api";
 
-const chartConfig = {
-  number: {
-    label: "Clients",
-  },
-  free: {
-    label: "Free",
-    color: "hsl(var(--chart-1))",
-  },
-  starter: {
-    label: "Starter",
-    color: "hsl(var(--chart-2))",
-  },
-  premium: {
-    label: "Premium",
-    color: "hsl(var(--chart-3))",
-  },
-} satisfies ChartConfig;
-
 interface PlanChartProps {
   data: PlanChartData[];
 }
 
 export default function PlanChart({ data }: PlanChartProps) {
   const { t } = useTranslation();
+
+  const dynamicChartConfig = data.reduce((acc, item) => {
+    const colorIndex = (Number(item.colorIndex) % 5) + 1;
+    acc[item.plan] = {
+      label: item.plan,
+      color: `hsl(var(--chart-${colorIndex}))`,
+    };
+    return acc;
+  }, {} as Record<string, { label: string; color: string }>);
+
+  const chartConfig: Record<string, { label: string; color?: string }> = {
+    number: { label: "Clients" },
+    ...dynamicChartConfig,
+  };
 
   return (
     <Card className="flex flex-col">
@@ -51,7 +46,7 @@ export default function PlanChart({ data }: PlanChartProps) {
         <CardDescription>{t("pages.dashboard.planChart.description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-      <ChartContainer
+        <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
         >
@@ -59,17 +54,21 @@ export default function PlanChart({ data }: PlanChartProps) {
             <ChartTooltip
               content={<ChartTooltipContent nameKey="number" hideLabel />}
             />
-            <Pie data={data} dataKey="number">
-              <LabelList
-                dataKey="plan"
-                className="fill-background"
-                stroke="none"
-                fontSize={12}
-                formatter={(value: keyof typeof chartConfig) =>
-                  chartConfig[value]?.label
-                }
-              />
-            </Pie>
+              <Pie data={data} dataKey="number">
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={chartConfig[entry.plan]?.color}
+                  />
+                ))}
+                <LabelList
+                  dataKey="plan"
+                  className="fill-background"
+                  stroke="none"
+                  fontSize={12}
+                  formatter={(value: string) => chartConfig[value]?.label}
+                />
+              </Pie>
           </PieChart>
         </ChartContainer>
       </CardContent>

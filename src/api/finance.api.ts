@@ -80,7 +80,7 @@ export interface SubscriptionChartData {
 export interface PlanChartData {
   plan: string;
   number: number;
-  fill: string;
+  colorIndex: number;
 }
 
 export interface ParcelsChartData {
