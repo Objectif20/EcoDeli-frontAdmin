@@ -17,6 +17,18 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
+};
 
 export default function ProviderContractPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -174,8 +186,8 @@ export default function ProviderContractPage() {
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        {prestataire.photoUrl && (
-                          <AvatarImage src={prestataire.photoUrl} alt={`${prestataire.prenom} ${prestataire.nom}`} />
+                        {prestataire.profilePicture && (
+                          <AvatarImage src={prestataire.profilePicture} alt={`${prestataire.prenom} ${prestataire.nom}`} />
                         )}
                         <AvatarFallback>
                           {prestataire.prenom.charAt(0)}{prestataire.nom.charAt(0)}
@@ -186,7 +198,7 @@ export default function ProviderContractPage() {
                           {prestataire.nom} {prestataire.prenom}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {t("pages.contracts.provider.contratDate")}: {prestataire.dateContrat}
+                          {t("pages.contracts.provider.contratDate")}: {formatDate(prestataire.dateContrat)}
                         </p>
                       </div>
                     </div>

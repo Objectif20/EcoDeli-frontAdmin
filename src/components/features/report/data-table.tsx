@@ -1,31 +1,31 @@
-"use client";
+"use client"
 
-import * as React from "react";
+import * as React from "react"
+
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import {
-  ColumnsIcon,
-  ChevronDownIcon,
-  CheckIcon,
-} from "lucide-react";
-import { z } from "zod";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "@tanstack/react-table"
+import { toast } from "sonner"
+import { ColumnsIcon, ChevronDownIcon, CheckIcon } from "lucide-react"
+
+import { z } from "zod"
+
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   Dialog,
   DialogContent,
@@ -34,29 +34,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { getAllAdmins } from "@/api/admin.api";
-import { ReportApi } from "@/api/report.api";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { useTranslation } from "react-i18next";
-import { MinimalTiptapEditorReadOnly } from "@/components/minimal-tiptap";
+} from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { getAllAdmins } from "@/api/admin.api"
+import { ReportApi } from "@/api/report.api"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/redux/store"
+import { useTranslation } from "react-i18next"
+import { MinimalTiptapEditorReadOnly } from "@/components/minimal-tiptap"
+import { Textarea } from "@/components/ui/textarea"
 
 export const schema = z.object({
   report_id: z.string(),
@@ -67,38 +55,38 @@ export const schema = z.object({
     user_id: z.string(),
     email: z.string(),
   }),
-  admin: z.array(z.object({
-    admin_id: z.string(),
-    email: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-  })).nullable(),
-});
+  admin: z
+    .array(
+      z.object({
+        admin_id: z.string(),
+        email: z.string(),
+        first_name: z.string(),
+        last_name: z.string(),
+      }),
+    )
+    .nullable(),
+})
 
 export const columnLink = [
   { column_id: "report_message", text: "pages.report.table.columns.report_message" },
   { column_id: "user_email", text: "pages.report.table.columns.user_email" },
   { column_id: "admin_name", text: "pages.report.table.columns.admin_name" },
   { column_id: "status", text: "pages.report.table.columns.status" },
-];
+]
 
-const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[] => [
+const columns = (t: (key: string) => string, onActionComplete: () => void): ColumnDef<z.infer<typeof schema>>[] => [
   {
     accessorKey: "report_message",
     header: t("pages.report.table.columns.report_message"),
     cell: ({ row }) => (
       <Dialog>
         <DialogTrigger>
-          <Button className="w-fit">
-            {t("pages.report.table.dialog.buttons.viewMessage")}
-          </Button>
+          <Button className="w-fit">{t("pages.report.table.dialog.buttons.viewMessage")}</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t("pages.report.table.dialog.title.content")}</DialogTitle>
-            <DialogDescription>
-              {t("pages.report.table.dialog.description.contentDescription")}
-            </DialogDescription>
+            <DialogDescription>{t("pages.report.table.dialog.description.contentDescription")}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <Label htmlFor="message">{t("pages.report.table.dialog.labels.message")}</Label>
@@ -115,7 +103,7 @@ const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[
           </div>
         </DialogContent>
       </Dialog>
-    )
+    ),
   },
   {
     id: "user_email",
@@ -128,19 +116,16 @@ const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[
     accessorKey: "admin",
     header: t("pages.report.table.columns.admin_name"),
     cell: ({ row }) => {
-      const admin = row.original.admin ? row.original.admin[0] : null;
-      return admin ? `${admin.first_name} ${admin.last_name}` : "N/A";
+      const admin = row.original.admin ? row.original.admin[0] : null
+      return admin ? `${admin.first_name} ${admin.last_name}` : "N/A"
     },
   },
   {
     accessorKey: "status",
     header: t("pages.report.table.columns.status"),
     cell: ({ row }) => (
-      <Badge
-        variant={row.original.status === "wait" ? "outline" : "success"}
-        className="gap-1"
-      >
-        {row.original.status === "wait" ? (
+      <Badge variant={row.original.status === "pending" ? "outline" : "success"} className="gap-1">
+        {row.original.status === "pending" ? (
           <>
             <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>
             {t("pages.report.table.status.waiting")}
@@ -160,31 +145,35 @@ const columns = (t: (key: string) => string): ColumnDef<z.infer<typeof schema>>[
     cell: ({ row }) => (
       <AssignAdminModal
         reportId={row.original.report_id}
-        admin_id={row.original.admin && row.original.admin[0]?.admin_id || undefined}
+        admin_id={(row.original.admin && row.original.admin[0]?.admin_id) || undefined}
         message={row.original.report_message}
+        onActionComplete={onActionComplete}
       />
     ),
   },
-];
+]
 
-export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
-  const { t } = useTranslation();
-  const [data, setData] = React.useState(initialData);
+export function DataTable({
+  data: initialData,
+  onActionComplete,
+}: { data: z.infer<typeof schema>[]; onActionComplete: () => void }) {
+  const { t } = useTranslation()
+  const [data, setData] = React.useState(initialData)
 
   React.useEffect(() => {
     if (initialData && initialData.length > 0) {
-      setData(initialData);
+      setData(initialData)
     }
-  }, [initialData]);
+  }, [initialData])
 
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([])
 
   const table = useReactTable({
     data,
-    columns: columns(t),
+    columns: columns(t, onActionComplete),
     state: {
       sorting,
       columnVisibility,
@@ -200,7 +189,7 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-  });
+  })
 
   return (
     <>
@@ -218,24 +207,18 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
             <DropdownMenuContent align="end" className="w-56">
               {table
                 .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
+                .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
                 .map((column) => {
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
                       className="capitalize"
                       checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
                       {t(`pages.report.table.columns.${column.id}`)}
                     </DropdownMenuCheckboxItem>
-                  );
+                  )
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -249,14 +232,9 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -264,26 +242,15 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns(t).length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns(t, onActionComplete).length} className="h-24 text-center">
                   {t("pages.report.table.noResults")}
                 </TableCell>
               </TableRow>
@@ -292,46 +259,88 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
         </Table>
       </div>
     </>
-  );
+  )
 }
 
-function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, admin_id?: string, message: string }) {
-  const { t } = useTranslation();
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedAdminId, setSelectedAdminId] = React.useState<string | undefined>(admin_id);
-  const [admins, setAdmins] = React.useState<AdminData[]>([]);
-  const [comment, setComment] = React.useState<string>("");
+function AssignAdminModal({
+  reportId,
+  admin_id,
+  message,
+  onActionComplete,
+}: { reportId: string; admin_id?: string; message: string; onActionComplete: () => void }) {
+  const { t } = useTranslation()
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [selectedAdminId, setSelectedAdminId] = React.useState<string | undefined>(admin_id)
+  const [admins, setAdmins] = React.useState<AdminData[]>([])
+  const [comment, setComment] = React.useState<string>("")
+  const [isLoading, setIsLoading] = React.useState(false)
 
-  const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin);
-
-  const isSuperAdmin = admin.super_admin || false;
-  const adminId = admin.admin_id;
+  const admin = useSelector((state: RootState & { admin: { admin: any } }) => state.admin.admin)
+  const isSuperAdmin = admin.super_admin || false
+  const adminId = admin.admin_id
 
   React.useEffect(() => {
     getAllAdmins().then((data) => {
       if (data) {
-        setAdmins(data);
+        setAdmins(data)
       }
-    });
-  }, []);
+    })
+  }, [])
 
   const handleAssignAdmin = async () => {
-    if (selectedAdminId) {
-      await ReportApi.attributeReport(reportId, selectedAdminId);
-      setIsOpen(false);
+    if (selectedAdminId && !isLoading) {
+      setIsLoading(true)
+      try {
+        await ReportApi.attributeReport(reportId, selectedAdminId)
+        toast(t("pages.report.toast.success.title"), {
+          description: t("pages.report.toast.success.assignAdmin"),
+        })
+        setIsOpen(false)
+        setTimeout(() => {
+          onActionComplete()
+        }, 100)
+      } catch (error) {
+        toast( t("pages.report.toast.error.title"),{
+          description: t("pages.report.toast.error.assignAdmin"),
+        })
+      } finally {
+        setIsLoading(false)
+      }
     }
-  };
+  }
 
   const handleCommentSubmit = async () => {
-    await ReportApi.responseReport(reportId, comment);
-    setIsOpen(false);
-  };
+    if (comment.trim() && !isLoading) {
+      setIsLoading(true)
+      try {
+        await ReportApi.responseReport(reportId, comment)
+        toast(t("pages.report.toast.success.title"),{
+          description: t("pages.report.toast.success.comment"),
+        })
+        setIsOpen(false)
+        setComment("")
+        setTimeout(() => {
+          onActionComplete()
+        }, 100)
+      } catch (error) {
+        toast(t("pages.report.toast.error.title"),{
+          description: t("pages.report.toast.error.comment"),
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="link" className="w-fit px-0 text-left text-foreground">
-          {adminId === admin_id ? t("pages.report.table.dialog.buttons.manage") : isSuperAdmin ? t("pages.report.table.dialog.buttons.assignAdmin") : t("pages.report.table.dialog.buttons.comment")}
+          {adminId === admin_id
+            ? t("pages.report.table.dialog.buttons.manage")
+            : isSuperAdmin
+              ? t("pages.report.table.dialog.buttons.assignAdmin")
+              : t("pages.report.table.dialog.buttons.comment")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -340,26 +349,26 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
             {adminId === admin_id
               ? t("pages.report.table.dialog.title.manage")
               : isSuperAdmin
-              ? t("pages.report.table.dialog.title.assign")
-              : t("pages.report.table.dialog.title.comment")}
+                ? t("pages.report.table.dialog.title.assign")
+                : t("pages.report.table.dialog.title.comment")}
           </DialogTitle>
           <DialogDescription>
             {adminId === admin_id
               ? t("pages.report.table.dialog.description.manage")
               : isSuperAdmin
-              ? t("pages.report.table.dialog.description.assign")
-              : t("pages.report.table.dialog.description.comment")}
+                ? t("pages.report.table.dialog.description.assign")
+                : t("pages.report.table.dialog.description.comment")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           {isSuperAdmin && adminId !== admin_id ? (
             <>
               <Label htmlFor="admin_id_get">{t("pages.report.table.dialog.labels.selectAdmin")}</Label>
-              <Select
-                value={selectedAdminId}
-                onValueChange={setSelectedAdminId}
-              >
-                <SelectTrigger id="admin_id_get" className="h-auto ps-2 w-full [&>span]:flex [&>span]:items-center [&>span]:gap-2">
+              <Select value={selectedAdminId} onValueChange={setSelectedAdminId} disabled={isLoading}>
+                <SelectTrigger
+                  id="admin_id_get"
+                  className="h-auto ps-2 w-full [&>span]:flex [&>span]:items-center [&>span]:gap-2"
+                >
                   <SelectValue placeholder={t("pages.report.table.dialog.labels.selectAdmin")} />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -370,11 +379,11 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
                           {admin.photo ? (
                             <img
                               className="rounded-full w-8 h-8 object-cover"
-                              src={admin.photo}
+                              src={admin.photo || "/placeholder.svg"}
                               alt={admin.first_name}
                               onError={(e) => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = "";
+                                e.currentTarget.onerror = null
+                                e.currentTarget.src = ""
                               }}
                             />
                           ) : (
@@ -386,9 +395,7 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
                             <span className="block font-medium text-left">
                               {admin.first_name} {admin.last_name}
                             </span>
-                            <span className="text-muted-foreground text-xs">
-                              {admin.email}
-                            </span>
+                            <span className="text-muted-foreground text-xs">{admin.email}</span>
                           </span>
                         </span>
                       </SelectItem>
@@ -401,35 +408,60 @@ function AssignAdminModal({ reportId, admin_id, message }: { reportId: string, a
             </>
           ) : (
             <>
-              <div>{message}</div>
+              <div>
+                <MinimalTiptapEditorReadOnly
+                  value={message}
+                  className="w-full"
+                  editorContentClassName="p-5"
+                  output="html"
+                  placeholder="Contenu du signalement"
+                  autofocus
+                  editable={false}
+                  editorClassName="focus:outline-none"
+                />
+              </div>
               <Label htmlFor="comment">{t("pages.report.table.dialog.labels.addComment")}</Label>
-              <textarea
+              <Textarea
                 id="comment"
                 className="w-full p-2 border rounded"
+                style={{ maxHeight: "70px" }}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                disabled={isLoading}
               />
             </>
           )}
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={isSuperAdmin && adminId !== admin_id ? handleAssignAdmin : handleCommentSubmit}>
-            {isSuperAdmin && adminId !== admin_id ? t("pages.report.table.dialog.buttons.assign") : t("pages.report.table.dialog.buttons.submit")}
+          <Button
+            type="submit"
+            onClick={isSuperAdmin && adminId !== admin_id ? handleAssignAdmin : handleCommentSubmit}
+            disabled={
+              isLoading ||
+              (!(isSuperAdmin && adminId !== admin_id) && !comment.trim()) ||
+              (isSuperAdmin && adminId !== admin_id && !selectedAdminId)
+            }
+          >
+            {isLoading
+              ? t("pages.report.table.dialog.buttons.loading")
+              : isSuperAdmin && adminId !== admin_id
+                ? t("pages.report.table.dialog.buttons.assign")
+                : t("pages.report.table.dialog.buttons.submit")}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
 interface AdminData {
-  admin_id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  photo?: string;
+  admin_id: string
+  first_name: string
+  last_name: string
+  email: string
+  photo?: string
 }
 
 function getAdminInitials(admin: AdminData) {
-  return `${admin.first_name.charAt(0)}${admin.last_name.charAt(0)}`;
+  return `${admin.first_name.charAt(0)}${admin.last_name.charAt(0)}`
 }

@@ -6,7 +6,7 @@ export interface Contracts {
     prenom: string
     contratUrl: string
     dateContrat: string
-    photoUrl: string
+    profilePicture ?: string | null
   }
 
 export type VehicleCategory = {

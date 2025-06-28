@@ -17,7 +17,18 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
 
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date);
+};
 
 export default function DeliverymanContractPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -175,8 +186,8 @@ export default function DeliverymanContractPage() {
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        {deliveryman.photoUrl && (
-                          <AvatarImage src={deliveryman.photoUrl} alt={`${deliveryman.prenom} ${deliveryman.nom}`} />
+                        {deliveryman.profilePicture && (
+                          <AvatarImage src={deliveryman.profilePicture} alt={`${deliveryman.prenom} ${deliveryman.nom}`} />
                         )}
                         <AvatarFallback>
                           {deliveryman.prenom.charAt(0)}{deliveryman.nom.charAt(0)}
@@ -187,7 +198,7 @@ export default function DeliverymanContractPage() {
                           {deliveryman.nom} {deliveryman.prenom}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {t("pages.contracts.deliveryman.contratDate")}: {deliveryman.dateContrat}
+                          {t("pages.contracts.deliveryman.contratDate")}: {formatDate(deliveryman.dateContrat)}
                         </p>
                       </div>
                     </div>
