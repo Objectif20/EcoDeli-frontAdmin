@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import logo from "@/assets/logo.svg";
-import auth1 from "@/assets/illustrations/auth1.svg";
+import auth1 from "@/assets/illustrations/password.svg";
 import otpSvg from "@/assets/illustrations/otp.svg";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import {

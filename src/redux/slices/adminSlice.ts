@@ -45,8 +45,13 @@ const adminSlice = createSlice({
         state.admin.language = action.payload;
       }
     },
+    updateA2FStatus: (state, action: PayloadAction<boolean>) => {
+      if (state.admin) {
+        state.admin.otp = action.payload;
+      }
+    },
   },
 });
 
-export const { setAdmin, setLoading, setError, updateLang } = adminSlice.actions;
+export const { setAdmin, setLoading, setError, updateLang, updateA2FStatus } = adminSlice.actions;
 export default adminSlice.reducer;

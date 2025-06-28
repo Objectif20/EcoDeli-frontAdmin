@@ -163,7 +163,6 @@ export default function ClientProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardContent className="p-6">
@@ -180,7 +179,7 @@ export default function ClientProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className=" border-none shadow-md">
+          <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -211,7 +210,6 @@ export default function ClientProfilePage() {
           </Card>
         </div>
 
-        {/* Client Information */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

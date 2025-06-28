@@ -41,7 +41,11 @@ export default function DeliverymanProfilePage() {
   useEffect(() => {
     dispatch(
       setBreadcrumb({
-        segments: [t("pages.deliveryman-details.breadcrumb.home"), t("pages.deliveryman-details.breadcrumb.deliverymen"), t("pages.deliveryman-details.breadcrumb.deliveryman-details")],
+        segments: [
+          t("pages.deliveryman-details.breadcrumb.home"),
+          t("pages.deliveryman-details.breadcrumb.deliverymen"),
+          t("pages.deliveryman-details.breadcrumb.deliveryman-details"),
+        ],
         links: ["/office/dashboard", "/office/profile/deliverymen"],
       })
     );
@@ -83,7 +87,7 @@ export default function DeliverymanProfilePage() {
   };
 
   const handleValidateVehicle = async (vehicleId: string) => {
-    console.log(`Véhicule avec l'ID ${vehicleId} a été validé.`);
+    console.log(`Vehicle with ID ${vehicleId} has been validated.`);
     if (id) {
       await DeliverymanApi.validateVehicle(vehicleId, id);
       const details = await DeliverymanApi.getDeliverymanDetails(id);
@@ -212,10 +216,12 @@ export default function DeliverymanProfilePage() {
             </CardHeader>
             <CardContent className="grid gap-6 md:grid-cols-2">
               <div className="space-y-4">
-                <div>
-                  <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.deliveryman-details.description")}</h3>
-                  <p>{deliverymanDetails.info.description}</p>
-                </div>
+                {deliverymanDetails.info.description && deliverymanDetails.info.description.trim() !== "" && (
+                  <div>
+                    <h3 className="font-medium text-sm text-muted-foreground mb-1">{t("pages.deliveryman-details.description")}</h3>
+                    <p>{deliverymanDetails.info.description}</p>
+                  </div>
+                )}
 
                 {deliverymanDetails.info.document && (
                   <div>
@@ -344,32 +350,34 @@ function VehicleCard({ vehicle, onValidate }: VehicleCardProps) {
             <FileText className="h-4 w-4 mr-2" />
             {t("pages.deliveryman-details.view-justification")}
           </Button>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full mt-2">
-                {t("pages.deliveryman-details.validate-vehicle")}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t("pages.deliveryman-details.validate-vehicle")}</DialogTitle>
-                <DialogDescription>
-                  {t("pages.deliveryman-details.validation.validate-vehicle-confirmation")}
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  {t("pages.deliveryman-details.cancel")}
+          {!vehicle.allow && (
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="w-full mt-2">
+                  {t("pages.deliveryman-details.validate-vehicle")}
                 </Button>
-                <Button variant="default" onClick={() => {
-                  onValidate(vehicle.id);
-                  setIsDialogOpen(false);
-                }}>
-                  {t("pages.deliveryman-details.yes")}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t("pages.deliveryman-details.validate-vehicle")}</DialogTitle>
+                  <DialogDescription>
+                    {t("pages.deliveryman-details.validation.validate-vehicle-confirmation")}
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    {t("pages.deliveryman-details.cancel")}
+                  </Button>
+                  <Button variant="default" onClick={() => {
+                    onValidate(vehicle.id);
+                    setIsDialogOpen(false);
+                  }}>
+                    {t("pages.deliveryman-details.yes")}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </CardContent>
     </Card>
