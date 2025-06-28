@@ -1,58 +1,62 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useDispatch } from "react-redux";
-import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
-import { Download, Upload, Eye } from "lucide-react";
-import MonacoEditorWrapper from "@/components/monacoEditorWrapper";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { LanguageApi } from "@/api/languages.api";
+import type React from "react"
+
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useDispatch } from "react-redux"
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent } from "@/components/ui/card"
+import { Download, Upload, Eye } from "lucide-react"
+import MonacoEditorWrapper from "@/components/monacoEditorWrapper"
+import { useTranslation } from "react-i18next"
+import { useNavigate, useParams } from "react-router-dom"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { LanguageApi } from "@/api/languages.api"
 
 interface UpdatedLanguage {
-  language_name: string;
-  iso_code: string;
-  active: boolean;
-  file: File | null;
+  language_name: string
+  iso_code: string
+  active: boolean
+  file: File | null
 }
 
 interface JsonField {
-  key: string;
-  value: string;
-  path: string;
-  isObject?: boolean;
+  key: string
+  value: string
+  path: string
+  isObject?: boolean
 }
 
 export default function UpdateLanguage() {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-  const mockInitialData = {
-    language_name: "Français",
-    iso_code: "fr",
-    active: true,
-  };
+  const [updatedLanguage, setUpdatedLanguage] = useState<UpdatedLanguage>({
+    language_name: "",
+    iso_code: "",
+    active: false,
+    file: null,
+  })
+
+  const [jsonContent, setJsonContent] = useState<string>("")
+  const [updateMethod, setUpdateMethod] = useState<"editor" | "file" | "visual">("editor")
+  const [isJsonValid, setIsJsonValid] = useState<boolean>(true)
+  const [jsonFields, setJsonFields] = useState<JsonField[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     if (!id) {
-      console.error("ID is not defined");
-      navigate("/office/general/languages");
+      console.error("ID is not defined")
+      navigate("/office/general/languages")
     }
-  }, [id, navigate]);
+  }, [id, navigate])
 
   useEffect(() => {
     dispatch(
@@ -63,172 +67,166 @@ export default function UpdateLanguage() {
           t("pages.languages.breadcrumb.updateLanguage"),
         ],
         links: ["/office/dashboard", "/office/general/languages"],
-      })
-    );
-  }, [dispatch, t]);
-
-  const [updatedLanguage, setUpdatedLanguage] = useState<UpdatedLanguage>({
-    language_name: mockInitialData.language_name,
-    iso_code: mockInitialData.iso_code,
-    active: mockInitialData.active,
-    file: null,
-  });
-
-  const [jsonContent, setJsonContent] = useState<string>("");
+      }),
+    )
+  }, [dispatch, t])
 
   useEffect(() => {
-    const fetchDefaultLanguage = async () => {
+    const fetchLanguageData = async () => {
+      if (!id) return
+
+      setIsLoading(true)
       try {
-        if (id) {
-          const data = await LanguageApi.getDefaultLanguage(id);
-          setJsonContent(JSON.stringify(data, null, 2));
-        }
+        const languageData = await LanguageApi.getLanguageById(id)
+        setUpdatedLanguage({
+          language_name: languageData.language_name,
+          iso_code: languageData.iso_code,
+          active: languageData.active,
+          file: null,
+        })
+
+        // Récupérer le contenu JSON par défaut
+        const defaultLanguageData = await LanguageApi.getDefaultLanguage(id)
+        setJsonContent(JSON.stringify(defaultLanguageData, null, 2))
       } catch (error) {
-        console.error("Erreur lors de la récupération de la langue par défaut", error);
+        console.error("Erreur lors de la récupération des données de la langue", error)
+        // En cas d'erreur, rediriger vers la liste des langues
+        navigate("/office/general/languages")
+      } finally {
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchDefaultLanguage();
-  }, [id]);
-
-  const [updateMethod, setUpdateMethod] = useState<"editor" | "file" | "visual">("editor");
-  const [isJsonValid, setIsJsonValid] = useState<boolean>(true);
-  const [jsonFields, setJsonFields] = useState<JsonField[]>([]);
+    fetchLanguageData()
+  }, [id, navigate])
 
   useEffect(() => {
     try {
-      const parsedJson = JSON.parse(jsonContent);
-      const fields: JsonField[] = [];
-
-      const extractFields = (obj: any, parentPath: string = "") => {
+      const parsedJson = JSON.parse(jsonContent)
+      const fields: JsonField[] = []
+      const extractFields = (obj: any, parentPath = "") => {
         Object.entries(obj).forEach(([key, value]) => {
-          const currentPath = parentPath ? `${parentPath}.${key}` : key;
-
+          const currentPath = parentPath ? `${parentPath}.${key}` : key
           if (typeof value === "object" && value !== null) {
-            fields.push({ key, value: "", path: currentPath, isObject: true });
-            extractFields(value, currentPath);
+            fields.push({ key, value: "", path: currentPath, isObject: true })
+            extractFields(value, currentPath)
           } else {
-            fields.push({ key, value: String(value), path: currentPath, isObject: false });
+            fields.push({ key, value: String(value), path: currentPath, isObject: false })
           }
-        });
-      };
-
-      extractFields(parsedJson);
-      setJsonFields(fields);
+        })
+      }
+      extractFields(parsedJson)
+      setJsonFields(fields)
     } catch (error) {
-      console.error("Error parsing JSON:", error);
+      console.error("Error parsing JSON:", error)
     }
-  }, [jsonContent]);
+  }, [jsonContent])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target
     setUpdatedLanguage((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+    }))
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    setUpdatedLanguage((prev) => ({ ...prev, file }));
+    const file = e.target.files ? e.target.files[0] : null
+    setUpdatedLanguage((prev) => ({ ...prev, file }))
 
     if (file && file.type === "application/json") {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (event) => {
         if (event.target?.result && typeof event.target.result === "string") {
           try {
-            const json = JSON.parse(event.target.result);
-            setJsonContent(JSON.stringify(json, null, 2));
-            setUpdateMethod("editor");
-            setIsJsonValid(true);
+            const json = JSON.parse(event.target.result)
+            setJsonContent(JSON.stringify(json, null, 2))
+            setUpdateMethod("editor")
+            setIsJsonValid(true)
           } catch (error) {
-            console.error("Invalid JSON file", error);
-            setIsJsonValid(false);
+            console.error("Invalid JSON file", error)
+            setIsJsonValid(false)
           }
         }
-      };
-      reader.readAsText(file);
+      }
+      reader.readAsText(file)
     }
-  };
+  }
 
   const handleJsonChange = (value: string | undefined) => {
-    setJsonContent(value || "");
-  };
+    setJsonContent(value || "")
+  }
 
   const handleJsonValidationChange = (isValid: boolean) => {
-    setIsJsonValid(isValid);
-  };
+    setIsJsonValid(isValid)
+  }
 
   const handleFieldChange = (path: string, newValue: string) => {
     try {
-      const parsedJson = JSON.parse(jsonContent);
-      const pathParts = path.split(".");
-
-      let current = parsedJson;
+      const parsedJson = JSON.parse(jsonContent)
+      const pathParts = path.split(".")
+      let current = parsedJson
       for (let i = 0; i < pathParts.length - 1; i++) {
-        current = current[pathParts[i]];
+        current = current[pathParts[i]]
       }
-
-      current[pathParts[pathParts.length - 1]] = newValue;
-
-      const updatedJson = JSON.stringify(parsedJson, null, 2);
-      setJsonContent(updatedJson);
-      setIsJsonValid(true);
+      current[pathParts[pathParts.length - 1]] = newValue
+      const updatedJson = JSON.stringify(parsedJson, null, 2)
+      setJsonContent(updatedJson)
+      setIsJsonValid(true)
     } catch (error) {
-      console.error("Error updating JSON:", error);
-      setIsJsonValid(false);
+      console.error("Error updating JSON:", error)
+      setIsJsonValid(false)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
-      const { language_name, iso_code, active, file } = updatedLanguage;
-      const updateData: UpdatedLanguage = { language_name, iso_code, active, file };
+      const { language_name, iso_code, active, file } = updatedLanguage
+      const updateData = { language_name, iso_code, active }
 
-      let jsonFile: File | null = null;
+      let jsonFile: File | null = null
 
       if (updateMethod === "editor" || updateMethod === "visual") {
-        const blob = new Blob([jsonContent], { type: "application/json" });
-        jsonFile = new File([blob], `${iso_code}_translations.json`, { type: "application/json" });
+        const blob = new Blob([jsonContent], { type: "application/json" })
+        jsonFile = new File([blob], `${iso_code}_translations.json`, { type: "application/json" })
       } else if (updateMethod === "file" && file) {
-        jsonFile = file;
+        jsonFile = file
       }
 
       if (!jsonFile) {
-        alert(t("pages.languages.updateLanguage.form.invalidJsonAlert"));
-        return;
+        alert(t("pages.languages.updateLanguage.form.invalidJsonAlert"))
+        return
       }
 
-      if (!id) throw new Error("ID is not defined");
+      if (!id) throw new Error("ID is not defined")
 
-      const response = await LanguageApi.updateLanguage(id, updateData, jsonFile);
-      console.log("Language updated successfully", response);
+      await LanguageApi.updateLanguage(id, updateData, jsonFile)
+      console.log("Language updated successfully")
+
+      // Rediriger vers la page des langues après la mise à jour réussie
+      navigate("/office/general/languages")
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de la langue", error);
-      alert(t("pages.languages.updateLanguage.form.updateError"));
+      console.error("Erreur lors de la mise à jour de la langue", error)
+      alert(t("pages.languages.updateLanguage.form.updateError"))
     }
-  };
+  }
 
   const renderJsonField = (field: JsonField, allFields: JsonField[]) => {
     if (field.isObject) {
       const childFields = allFields.filter(
-        (f) =>
-          f.path.startsWith(field.path + ".") &&
-          f.path.split(".").length === field.path.split(".").length + 1
-      );
+        (f) => f.path.startsWith(field.path + ".") && f.path.split(".").length === field.path.split(".").length + 1,
+      )
 
       return (
         <AccordionItem value={field.path} key={field.path}>
           <AccordionTrigger>{field.key}</AccordionTrigger>
           <AccordionContent>
-            <Accordion type="multiple">
-              {childFields.map((child) => renderJsonField(child, allFields))}
-            </Accordion>
+            <Accordion type="multiple">{childFields.map((child) => renderJsonField(child, allFields))}</Accordion>
           </AccordionContent>
         </AccordionItem>
-      );
+      )
     } else {
       return (
         <div key={field.path} className="mb-4 flex items-start gap-2">
@@ -242,9 +240,19 @@ export default function UpdateLanguage() {
             />
           </div>
         </div>
-      );
+      )
     }
-  };
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-6 space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Chargement...</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -336,13 +344,7 @@ export default function UpdateLanguage() {
                 <Label htmlFor="file" className="mb-2 block">
                   {t("pages.languages.updateLanguage.form.uploadFile")}
                 </Label>
-                <Input
-                  accept=".json"
-                  type="file"
-                  onChange={handleFileChange}
-                  id="file"
-                  className="mt-1"
-                />
+                <Input accept=".json" type="file" onChange={handleFileChange} id="file" className="mt-1" />
                 <p className="text-sm text-muted-foreground mt-2">
                   {t("pages.languages.updateLanguage.form.uploadDescription")}
                 </p>
@@ -364,7 +366,11 @@ export default function UpdateLanguage() {
         </Tabs>
 
         <div className="flex justify-end mt-6">
-          <Button type="submit" size="lg" disabled={!isJsonValid && (updateMethod === "editor" || updateMethod === "visual")}>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={!isJsonValid && (updateMethod === "editor" || updateMethod === "visual")}
+          >
             {updateMethod === "file"
               ? t("pages.languages.updateLanguage.form.updateButton")
               : t("pages.languages.updateLanguage.form.submitButton")}
@@ -372,5 +378,5 @@ export default function UpdateLanguage() {
         </div>
       </form>
     </div>
-  );
+  )
 }

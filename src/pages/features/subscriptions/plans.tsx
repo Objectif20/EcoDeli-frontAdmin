@@ -130,12 +130,6 @@ export default function PlansPage() {
                   {t("pages.subscription.plan.page.first_shipping_free_threshold", { threshold: plan.first_shipping_free_threshold })}
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Check className="h-5 w-5 text-green-500" />
-                <span>
-                  {t("pages.subscription.plan.page.is_pro", { isPro: plan.is_pro ? "Oui" : "Non" })}
-                </span>
-              </div>
             </CardContent>
             <CardFooter className="flex justify-center mt-4">
             </CardFooter>

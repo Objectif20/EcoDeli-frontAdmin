@@ -68,7 +68,7 @@ export default function AdminPage() {
     <>
       <div className="w-full">
         <h1 className="text-2xl font-semibold mb-4">{t("pages.admin.list.title")}</h1>
-        <CreateAdmin onAdminCreated={fetchAdminData} />
+        {isSuperAdmin && (<CreateAdmin onAdminCreated={fetchAdminData} />)}
         <AdminDataTable
           key={`${pageIndex}-${pageSize}`}
           data={paginatedData}

@@ -261,24 +261,6 @@ export default function AddPlanPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={control}
-              name="is_pro"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="mr-2"
-                    />
-                  </FormControl>
-                  <FormLabel>{t("pages.subscription.add.page.form.is_pro")}</FormLabel>
-                  <FormDescription>{t("pages.subscription.add.page.form.is_pro_description")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <CardFooter className="flex justify-center mt-4">
               <Button type="submit" className="btn btn-primary">
                 {t("pages.subscription.add.page.form.add_button")}

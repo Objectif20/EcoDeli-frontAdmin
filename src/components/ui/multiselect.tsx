@@ -260,9 +260,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
         <PopoverContent className="w-auto p-0" align="start" onEscapeKeyDown={() => setIsPopoverOpen(false)}>
           <Command>
             <CommandInput placeholder={t('multiSelect.searchPlaceholder')} onKeyDown={handleInputKeyDown} />
-            <CommandList>
+            <CommandList className="overflow-y-hidden">
               <CommandEmpty>{t('multiSelect.noResults')}</CommandEmpty>
-              <CommandGroup>
+              <CommandGroup className="hide-scrollbar">
                 <CommandItem key="all" onSelect={toggleAll} className="cursor-pointer">
                   <div
                     className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary ${

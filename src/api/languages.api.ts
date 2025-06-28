@@ -38,6 +38,16 @@ export class LanguageApi {
     }
   }
 
+  static async getLanguageById(id: string): Promise<Language> {
+    try {
+      const response = await axiosInstance.get(`/admin/languages/${id}/details`)
+      return response.data
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la langue", error)
+      throw new Error("Erreur lors de la récupération de la langue")
+    }
+  }
+
   static async addLanguage(data : CreateLanguage, languages : File) : Promise<Language | {message : string}> {
     try {
       const formData = new FormData();

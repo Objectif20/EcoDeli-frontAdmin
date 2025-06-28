@@ -3,18 +3,13 @@ import { FinanceApi, StripeStats } from "@/api/finance.api";
 import {
   ArrowDown,
   ArrowUp,
-  Calendar,
   CreditCard,
   DollarSign,
-  Download,
   LineChartIcon,
-  RefreshCcw,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GrossMarginChart, RadialChartComponent, RevenueProfitChart, TransactionBarChart } from "@/components/features/finance/stripe-chart";
 import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 import { useDispatch } from "react-redux";
@@ -22,7 +17,6 @@ import { useTranslation } from "react-i18next";
 
 export default function StripeDashboard() {
   const { t } = useTranslation();
-  const [period, setPeriod] = useState("30days");
   const [data, setData] = useState<StripeStats | null>(null);
   const dispatch = useDispatch();
 
@@ -66,26 +60,6 @@ export default function StripeDashboard() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("pages.stripe.dashboardTitle")}</h1>
           <p className="text-muted-foreground">{t("pages.stripe.dashboardDescription")}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[180px]">
-              <Calendar className="mr-2 h-4 w-4" />
-              <SelectValue placeholder={t("pages.stripe.period.30days")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7days">{t("pages.stripe.period.7days")}</SelectItem>
-              <SelectItem value="30days">{t("pages.stripe.period.30days")}</SelectItem>
-              <SelectItem value="90days">{t("pages.stripe.period.90days")}</SelectItem>
-              <SelectItem value="year">{t("pages.stripe.period.year")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="icon">
-            <RefreshCcw className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <Download className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
