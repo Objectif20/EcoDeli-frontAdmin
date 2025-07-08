@@ -34,7 +34,12 @@ import {
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { MinimalTiptapEditorReadOnly } from "@/components/minimal-tiptap";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTranslation } from "react-i18next";
 
 // Nouveau schéma pour les emails
@@ -128,7 +133,9 @@ export function EmailDataTable({
       header: t("pages.mail.table.columns.isSent"),
       cell: ({ row }) => (
         <Badge variant={row.original.isSent ? "success" : "outline"}>
-          {row.original.isSent ? t("pages.mail.table.status.sent") : t("pages.mail.table.status.notSent")}
+          {row.original.isSent
+            ? t("pages.mail.table.status.sent")
+            : t("pages.mail.table.status.notSent")}
         </Badge>
       ),
     },
@@ -163,7 +170,10 @@ export function EmailDataTable({
       cell: ({ row }) => (
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="link" className="w-fit px-0 text-left text-foreground">
+            <Button
+              variant="link"
+              className="w-fit px-0 text-left text-foreground"
+            >
               {t("pages.mail.table.columns.actions")}
             </Button>
           </SheetTrigger>
@@ -171,7 +181,9 @@ export function EmailDataTable({
           <SheetContent side="right" className="flex flex-col">
             <SheetHeader className="gap-1">
               <SheetTitle>{row.original.subject}</SheetTitle>
-              <SheetDescription>{t("pages.mail.table.details.title")}</SheetDescription>
+              <SheetDescription>
+                {t("pages.mail.table.details.title")}
+              </SheetDescription>
             </SheetHeader>
 
             <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
@@ -243,8 +255,12 @@ export function EmailDataTable({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">{t("pages.mail.table.columnVisibility.button")}</span>
-                <span className="lg:hidden">{t("pages.mail.table.columnVisibility.button")}</span>
+                <span className="hidden lg:inline">
+                  {t("pages.mail.table.columnVisibility.button")}
+                </span>
+                <span className="lg:hidden">
+                  {t("pages.mail.table.columnVisibility.button")}
+                </span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -315,7 +331,7 @@ export function EmailDataTable({
                   colSpan={emailColumns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("pages.merchant.no-results")}
                 </TableCell>
               </TableRow>
             )}

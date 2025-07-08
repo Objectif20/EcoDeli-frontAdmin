@@ -17,7 +17,6 @@ import {
   ChevronDownIcon,
   StarIcon,
   CheckIcon,
-  X,
 } from "lucide-react";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -58,8 +57,14 @@ export const columnLink = (t: any) => [
   { column_id: "name", text: t("pages.provider.table.columns.name") },
   { column_id: "company", text: t("pages.provider.table.columns.company") },
   { column_id: "status", text: t("pages.provider.table.columns.status") },
-  { column_id: "service_number", text: t("pages.provider.table.columns.service_number") },
-  { column_id: "phone_number", text: t("pages.provider.table.columns.phone_number") },
+  {
+    column_id: "service_number",
+    text: t("pages.provider.table.columns.service_number"),
+  },
+  {
+    column_id: "phone_number",
+    text: t("pages.provider.table.columns.phone_number"),
+  },
   { column_id: "rate", text: t("pages.provider.table.columns.rate") },
 ];
 
@@ -75,9 +80,7 @@ const columns = (t: any): ColumnDef<z.infer<typeof schema>>[] => [
             src={row.original.profile_picture || undefined}
             alt={`${row.original.name}`}
           />
-          <AvatarFallback>
-            {`${row.original.name.charAt(0)}`}
-          </AvatarFallback>
+          <AvatarFallback>{`${row.original.name.charAt(0)}`}</AvatarFallback>
         </Avatar>
         <span>{`${row.original.name}`}</span>
       </div>
@@ -114,13 +117,20 @@ const columns = (t: any): ColumnDef<z.infer<typeof schema>>[] => [
             </>
           ) : row.original.status === "okay" ? (
             <>
-              <CheckIcon className="text-emerald-500" size={12} aria-hidden="true" />
+              <CheckIcon
+                className="text-emerald-500"
+                size={12}
+                aria-hidden="true"
+              />
               {t("pages.provider.table.status.okay")}
             </>
           ) : (
             <>
-              <X className="text-red-500" size={12} aria-hidden="true" />
-              {t("pages.provider.table.status.refused")}
+              <span
+                className="size-1.5 rounded-full bg-amber-500"
+                aria-hidden="true"
+              ></span>
+              {t("pages.provider.table.status.wait")}
             </>
           )}
         </Badge>
@@ -182,7 +192,9 @@ const columns = (t: any): ColumnDef<z.infer<typeof schema>>[] => [
         <Button
           variant="link"
           className="w-fit px-0 text-left text-foreground"
-          onClick={() => navigate(`/office/profile/providers/${row.original.id}`)}
+          onClick={() =>
+            navigate(`/office/profile/providers/${row.original.id}`)
+          }
         >
           {t("pages.provider.table.columns.actions")}
         </Button>
@@ -191,7 +203,11 @@ const columns = (t: any): ColumnDef<z.infer<typeof schema>>[] => [
   },
 ];
 
-export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
+export function DataTable({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[];
+}) {
   const { t } = useTranslation();
   const [data, setData] = React.useState(initialData);
 
@@ -202,8 +218,11 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
   }, [initialData]);
 
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
@@ -234,8 +253,12 @@ export function DataTable({ data: initialData }: { data: z.infer<typeof schema>[
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <ColumnsIcon className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">{t("pages.provider.table.columns_toggle")}</span>
-                <span className="lg:hidden">{t("pages.provider.table.columns_toggle")}</span>
+                <span className="hidden lg:inline">
+                  {t("pages.provider.table.columns_toggle")}
+                </span>
+                <span className="lg:hidden">
+                  {t("pages.provider.table.columns_toggle")}
+                </span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>

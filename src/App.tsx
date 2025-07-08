@@ -3,8 +3,8 @@ import AppRoutes from "./routes/routes";
 import "./index.css";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import i18n, { loadTranslations } from "./i18n";
 import { Spinner } from "./components/ui/spinner";
+import { initI18n } from "./i18n";
 
 function App() {
   const admin = useSelector((state: RootState) => state.admin.admin);
@@ -15,13 +15,7 @@ function App() {
       const localLang = localStorage.getItem("i18nextLng");
       const userLang = localLang || admin?.language || "fr";
 
-      const translations = await loadTranslations(userLang);
-      i18n.addResourceBundle(userLang, "translation", translations, true, true);
-
-      if (i18n.language !== userLang) {
-        await i18n.changeLanguage(userLang);
-      }
-
+      await initI18n(userLang);
       localStorage.setItem("i18nextLng", userLang);
       setI18nReady(true);
     };

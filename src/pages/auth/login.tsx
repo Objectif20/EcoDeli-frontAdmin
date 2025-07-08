@@ -16,6 +16,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -41,11 +42,15 @@ export default function LoginPage() {
       if (res.twoFactorRequired) {
         setIs2faRequired(true);
       } else {
-        dispatch(login({ accessToken: res.accessToken ?? null, twoFactorRequired: false }));
+        dispatch(
+          login({
+            accessToken: res.accessToken ?? null,
+            twoFactorRequired: false,
+          })
+        );
         if (res.accessToken) {
           navigate("/office/dashboard");
-          }
-
+        }
       }
     } catch (err) {
       setError("Erreur de connexion");
@@ -58,12 +63,14 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-  
+
     try {
       const res = await loginAdminA2F(email, password, otp);
-  
+
       if (res && res.accessToken) {
-        dispatch(login({ accessToken: res.accessToken, twoFactorRequired: false }));
+        dispatch(
+          login({ accessToken: res.accessToken, twoFactorRequired: false })
+        );
         setIs2faRequired(false);
         navigate("/office/dashboard");
       } else {
@@ -93,7 +100,9 @@ export default function LoginPage() {
             <div className="w-full max-w-xs">
               <form className="flex flex-col gap-6" onSubmit={handleLogin}>
                 <div className="flex flex-col items-center gap-2 text-center">
-                  <h1 className="text-2xl font-bold">{t("pages.connexion.titre")}</h1>
+                  <h1 className="text-2xl font-bold">
+                    {t("pages.connexion.titre")}
+                  </h1>
                   <p className="text-balance text-sm text-muted-foreground">
                     {t("pages.connexion.soustitre")}
                   </p>
@@ -116,13 +125,13 @@ export default function LoginPage() {
                         {t("pages.connexion.motdepasse")}
                       </Label>
                       <Link
-                          to="/auth/forgot-password"
-                          className="ml-auto text-sm underline-offset-4 hover:underline"
-                        >
-                          {t("pages.connexion.forgotPassword")}
-                        </Link>
+                        to="/auth/forgot-password"
+                        className="ml-auto text-sm underline-offset-4 hover:underline"
+                      >
+                        {t("pages.connexion.forgotPassword")}
+                      </Link>
                     </div>
-                    <Input
+                    <PasswordInput
                       id="password"
                       type="password"
                       value={password}
@@ -133,7 +142,9 @@ export default function LoginPage() {
                   </div>
                   {error && <p className="text-red-500 text-sm">{error}</p>}
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? t("pages.connexion.chargement") : t("pages.connexion.connexion")}
+                    {loading
+                      ? t("pages.connexion.chargement")
+                      : t("pages.connexion.connexion")}
                   </Button>
                 </div>
               </form>
@@ -152,30 +163,34 @@ export default function LoginPage() {
                   </p>
                 </div>
                 <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="otp">
-                        {t("pages.connexion.otpLabel")}
-                        </Label>
-                        <div className="flex justify-center">
-                        <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-                            <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            </InputOTPGroup>
-                            <InputOTPSeparator />
-                            <InputOTPGroup>
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                            </InputOTPGroup>
-                        </InputOTP>
-                        </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="otp">{t("pages.connexion.otpLabel")}</Label>
+                    <div className="flex justify-center">
+                      <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                        </InputOTPGroup>
+                        <InputOTPSeparator />
+                        <InputOTPGroup>
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
                     </div>
+                  </div>
 
-                  {error && <p className="text-red-500 text-sm text-center">{t("pages.connexion.erreurOtp")}</p>}
+                  {error && (
+                    <p className="text-red-500 text-sm text-center">
+                      {t("pages.connexion.erreurOtp")}
+                    </p>
+                  )}
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? t("pages.connexion.chargement") : t("pages.connexion.valider")}
+                    {loading
+                      ? t("pages.connexion.chargement")
+                      : t("pages.connexion.valider")}
                   </Button>
                 </div>
               </form>

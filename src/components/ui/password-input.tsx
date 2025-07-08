@@ -1,64 +1,60 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import * as React from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-import { Button } from '@/components/ui/button'
-import { Input, InputProps } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+interface PasswordInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  showLabel?: boolean;
+  error?: string;
+}
 
-const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => {
-	const [showPassword, setShowPassword] = React.useState(false)
-    const disabled = props.disabled
+export function PasswordInput({
+  label = "Mot de passe",
+  showLabel = true,
+  error,
+  className,
+  ...props
+}: PasswordInputProps) {
+  const [showPassword, setShowPassword] = React.useState(false);
 
-	const togglePasswordVisibility = () => {
-		console.log('Current showPassword state:', showPassword)
-		setShowPassword((prev) => {
-			const newState = !prev
-			console.log('Toggling password visibility to:', newState)
-			return newState
-		})
-	}
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-	console.log('Button disabled state:', disabled)
-
-	return (
-		<div className="relative">
-			<Input
-				type={showPassword ? 'text' : 'password'}
-				className={cn('hide-password-toggle pr-10', className)}
-				ref={ref}
-				{...props}
-			/>
-			<Button
-				type="button"
-				variant="ghost"
-				size="sm"
-				className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-				onClick={togglePasswordVisibility}
-				disabled={disabled}
-			>
-				{showPassword && !disabled ? (
-					<EyeIcon className="h-4 w-4" aria-hidden="true" />
-				) : (
-					<EyeOffIcon className="h-4 w-4" aria-hidden="true" />
-				)}
-				<span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
-			</Button>
-
-			{/* hides browsers password toggles */}
-			<style>{`
-				.hide-password-toggle::-ms-reveal,
-				.hide-password-toggle::-ms-clear {
-					visibility: hidden;
-					pointer-events: none;
-					display: none;
-				}
-			`}</style>
-		</div>
-	)
-})
-
-PasswordInput.displayName = 'PasswordInput'
-
-export { PasswordInput }
+  return (
+    <div className="space-y-2">
+      <div className="relative">
+        <Input
+          {...props}
+          type={showPassword ? "text" : "password"}
+          className={cn("pr-10", className)}
+          id={props.id || "password"}
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          onClick={togglePasswordVisibility}
+          aria-label={
+            showPassword
+              ? "Masquer le mot de passe"
+              : "Afficher le mot de passe"
+          }
+        >
+          {showPassword ? (
+            <EyeOff className="h-4 w-4 text-foreground" />
+          ) : (
+            <Eye className="h-4 w-4 text-foreground" />
+          )}
+        </Button>
+      </div>
+      {error && <p className="text-sm text-red-500">{error}</p>}
+    </div>
+  );
+}
